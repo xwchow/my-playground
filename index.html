@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Playground | Interactive Toys, Mental Sports & Web Experiments</title>
+  <meta name="description" content="A collection of interactive toys, mental calculation trainers, games, and web experiments.">
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              200: '#c7d2fe',
+              300: '#a5b4fc',
+              400: '#818cf8',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+              800: '#3730a3',
+              900: '#312e81',
+              950: '#1e1b4b',
+            }
+          },
+          fontFamily: {
+            mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    /* Card hover lift & glow */
+    .project-card {
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .project-card:hover {
+      transform: translateY(-4px) scale(1.01);
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans transition-colors duration-200 selection:bg-indigo-500 selection:text-white">
+
+  <!-- TOP HEADER -->
+  <header class="border-b border-slate-800/80 bg-slate-900/60 backdrop-blur-md sticky top-0 z-30 px-4 py-3 sm:px-8">
+    <div class="max-w-6xl mx-auto flex items-center justify-between">
+      <a href="./" class="flex items-center gap-3 group">
+        <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center shadow-lg shadow-indigo-500/25 text-white font-black text-xl group-hover:rotate-6 transition duration-300">
+          ✨
+        </div>
+        <div>
+          <h1 class="text-lg font-black tracking-tight bg-gradient-to-r from-white via-slate-100 to-indigo-200 bg-clip-text text-transparent">
+            Playground
+          </h1>
+          <p class="text-[11px] text-slate-400 font-medium">Interactive Web Toys & Experiments</p>
+        </div>
+      </a>
+
+      <!-- Header Controls -->
+      <div class="flex items-center gap-2">
+        <button id="btn-theme-toggle" onclick="toggleTheme()" class="p-2 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white transition border border-slate-700/60" title="Toggle Light/Dark Theme">
+          <i id="icon-theme" data-lucide="sun" class="w-5 h-5"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN HERO & GRID -->
+  <main class="flex-1 max-w-6xl w-full mx-auto p-4 sm:p-8 space-y-8">
+    
+    <!-- Hero Intro -->
+    <div class="text-center space-y-4 max-w-2xl mx-auto pt-6 sm:pt-10">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-300 border border-indigo-500/20 text-xs font-semibold">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        Curated Interactive Experiments
+      </div>
+      <h2 class="text-4xl sm:text-5xl font-black tracking-tight text-white leading-tight">
+        Tiny toys, mental math, & <span class="bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">curious ideas</span>
+      </h2>
+      <p class="text-slate-400 text-sm sm:text-base leading-relaxed">
+        A collection of fun web applications built for speed, learning, mental acrobatics, and pure play.
+      </p>
+    </div>
+
+    <!-- Search & Filter Bar -->
+    <div class="space-y-4 max-w-4xl mx-auto">
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-3">
+        <!-- Filter Pills -->
+        <div class="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto pb-1 sm:pb-0" id="filter-container">
+          <button onclick="filterCategory('all')" class="btn-filter px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-indigo-600 text-white shadow-md shadow-indigo-600/20 transition" data-cat="all">All Projects</button>
+          <button onclick="filterCategory('mental-math')" class="btn-filter px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 transition" data-cat="mental-math">Mental Math</button>
+          <button onclick="filterCategory('puzzles')" class="btn-filter px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 transition" data-cat="puzzles">Puzzles</button>
+          <button onclick="filterCategory('games')" class="btn-filter px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 transition" data-cat="games">Games</button>
+          <button onclick="filterCategory('tools')" class="btn-filter px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 transition" data-cat="tools">Tools</button>
+        </div>
+
+        <!-- Live Search -->
+        <div class="relative w-full sm:w-64">
+          <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+          <input type="text" id="project-search" oninput="searchProjects(this.value)" placeholder="Search projects..." class="w-full bg-slate-900 border border-slate-800 rounded-xl pl-9 pr-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 transition">
+        </div>
+      </div>
+    </div>
+
+    <!-- PROJECT CARDS GRID -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 max-w-5xl mx-auto" id="projects-grid">
+      
+      <!-- CARD 1: DOOMSDAY RULE TRAINER (FEATURED LIVE PROJECT) -->
+      <a href="./doomsday/" class="project-card group relative rounded-3xl bg-gradient-to-b from-slate-900 via-slate-900/90 to-slate-950 border-2 border-indigo-500/50 hover:border-indigo-400 p-6 flex flex-col justify-between shadow-xl hover:shadow-2xl hover:shadow-indigo-500/10 overflow-hidden" data-category="mental-math games tools" data-title="Doomsday Rule Trainer Day of the Week Calculation Conway">
+        <!-- Live Glow Accent -->
+        <div class="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 rounded-full blur-2xl pointer-events-none"></div>
+
+        <div>
+          <!-- Top Row: Icon & Status -->
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-3xl shadow-lg shadow-indigo-500/25 group-hover:scale-110 transition duration-300">
+              📅
+            </div>
+            <span class="px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[11px] font-bold flex items-center gap-1.5">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+              Live App
+            </span>
+          </div>
+
+          <!-- Title & Description -->
+          <h3 class="text-xl font-bold text-white group-hover:text-indigo-300 transition flex items-center gap-2 mb-2">
+            Doomsday Rule Trainer
+            <i data-lucide="arrow-up-right" class="w-4 h-4 opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition"></i>
+          </h3>
+          <p class="text-xs text-slate-400 leading-relaxed mb-6">
+            Master John Conway's legendary mental algorithm to calculate the day of the week for any date in history in seconds. Features Sprint, Time Attack, and Zen modes.
+          </p>
+        </div>
+
+        <!-- Card Footer -->
+        <div class="flex items-center justify-between pt-4 border-t border-slate-800/80 text-xs">
+          <div class="flex items-center gap-1.5 flex-wrap">
+            <span class="px-2 py-0.5 rounded-md bg-indigo-950 text-indigo-300 border border-indigo-800/60 text-[10px] font-mono">Mental Math</span>
+            <span class="px-2 py-0.5 rounded-md bg-slate-800 text-slate-300 text-[10px] font-mono">Speed Run</span>
+          </div>
+          <span class="font-bold text-indigo-400 group-hover:translate-x-1 transition flex items-center gap-1">
+            Launch &rarr;
+          </span>
+        </div>
+      </a>
+
+      <!-- CARD 2: CHRONO GUESSER (INCUBATOR / TEASER) -->
+      <div class="project-card group relative rounded-3xl bg-slate-900/60 border border-slate-800 hover:border-slate-700 p-6 flex flex-col justify-between" data-category="games puzzles" data-title="Chrono Guesser History Timeline Guessing Game">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-500/20 to-orange-500/20 text-amber-400 flex items-center justify-center text-3xl border border-amber-500/30">
+              ⏳
+            </div>
+            <span class="px-2.5 py-1 rounded-full bg-slate-800 text-slate-400 text-[10px] font-semibold">
+              Coming Soon
+            </span>
+          </div>
+          <h3 class="text-lg font-bold text-white mb-2">Chrono Guesser</h3>
+          <p class="text-xs text-slate-400 leading-relaxed mb-6">
+            Test your historical intuition. Place famous world events, inventions, and ancient discoveries on a chronological timeline without errors.
+          </p>
+        </div>
+        <div class="flex items-center justify-between pt-4 border-t border-slate-800/80 text-xs text-slate-500">
+          <div class="flex gap-1.5">
+            <span class="px-2 py-0.5 rounded-md bg-slate-800/60 text-slate-400 text-[10px] font-mono">History</span>
+            <span class="px-2 py-0.5 rounded-md bg-slate-800/60 text-slate-400 text-[10px] font-mono">Timeline</span>
+          </div>
+          <span class="text-[11px] italic">In development</span>
+        </div>
+      </div>
+
+      <!-- CARD 3: CLOCK ANGLE GYM (INCUBATOR / TEASER) -->
+      <div class="project-card group relative rounded-3xl bg-slate-900/60 border border-slate-800 hover:border-slate-700 p-6 flex flex-col justify-between" data-category="mental-math puzzles" data-title="Clock Angle Gym Mental Math Geometry Speedrun">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-blue-500/20 text-cyan-400 flex items-center justify-center text-3xl border border-cyan-500/30">
+              ⏱️
+            </div>
+            <span class="px-2.5 py-1 rounded-full bg-slate-800 text-slate-400 text-[10px] font-semibold">
+              Coming Soon
+            </span>
+          </div>
+          <h3 class="text-lg font-bold text-white mb-2">Clock Angle Gym</h3>
+          <p class="text-xs text-slate-400 leading-relaxed mb-6">
+            Rapidly calculate the exact acute angle between the hour and minute hands for random times using modular arithmetic tricks.
+          </p>
+        </div>
+        <div class="flex items-center justify-between pt-4 border-t border-slate-800/80 text-xs text-slate-500">
+          <div class="flex gap-1.5">
+            <span class="px-2 py-0.5 rounded-md bg-slate-800/60 text-slate-400 text-[10px] font-mono">Geometry</span>
+            <span class="px-2 py-0.5 rounded-md bg-slate-800/60 text-slate-400 text-[10px] font-mono">Mental Math</span>
+          </div>
+          <span class="text-[11px] italic">In development</span>
+        </div>
+      </div>
+
+      <!-- CARD 4: MEMORY MATRIX (INCUBATOR / TEASER) -->
+      <div class="project-card group relative rounded-3xl bg-slate-900/60 border border-slate-800 hover:border-slate-700 p-6 flex flex-col justify-between" data-category="puzzles games" data-title="Memory Matrix Working Memory Span Benchmark">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-teal-500/20 text-emerald-400 flex items-center justify-center text-3xl border border-emerald-500/30">
+              🧠
+            </div>
+            <span class="px-2.5 py-1 rounded-full bg-slate-800 text-slate-400 text-[10px] font-semibold">
+              Coming Soon
+            </span>
+          </div>
+          <h3 class="text-lg font-bold text-white mb-2">Memory Matrix</h3>
+          <p class="text-xs text-slate-400 leading-relaxed mb-6">
+            A spatial working-memory benchmark testing your recall span against increasingly complex flashing patterns and distractor grids.
+          </p>
+        </div>
+        <div class="flex items-center justify-between pt-4 border-t border-slate-800/80 text-xs text-slate-500">
+          <div class="flex gap-1.5">
+            <span class="px-2 py-0.5 rounded-md bg-slate-800/60 text-slate-400 text-[10px] font-mono">Cognition</span>
+            <span class="px-2 py-0.5 rounded-md bg-slate-800/60 text-slate-400 text-[10px] font-mono">Benchmark</span>
+          </div>
+          <span class="text-[11px] italic">In development</span>
+        </div>
+      </div>
+
+      <!-- CARD 5: SOROBAN ANZAN ARITHMETIC (INCUBATOR / TEASER) -->
+      <div class="project-card group relative rounded-3xl bg-slate-900/60 border border-slate-800 hover:border-slate-700 p-6 flex flex-col justify-between" data-category="mental-math tools" data-title="Anzan Soroban Mental Abacus Arithmetic">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-rose-500/20 to-pink-500/20 text-rose-400 flex items-center justify-center text-3xl border border-rose-500/30">
+              🧮
+            </div>
+            <span class="px-2.5 py-1 rounded-full bg-slate-800 text-slate-400 text-[10px] font-semibold">
+              Coming Soon
+            </span>
+          </div>
+          <h3 class="text-lg font-bold text-white mb-2">Anzan Flash Gym</h3>
+          <p class="text-xs text-slate-400 leading-relaxed mb-6">
+            Practice Japanese flash mental arithmetic with numbers flashing at custom millisecond intervals.
+          </p>
+        </div>
+        <div class="flex items-center justify-between pt-4 border-t border-slate-800/80 text-xs text-slate-500">
+          <div class="flex gap-1.5">
+            <span class="px-2 py-0.5 rounded-md bg-slate-800/60 text-slate-400 text-[10px] font-mono">Anzan</span>
+            <span class="px-2 py-0.5 rounded-md bg-slate-800/60 text-slate-400 text-[10px] font-mono">Flash Math</span>
+          </div>
+          <span class="text-[11px] italic">In development</span>
+        </div>
+      </div>
+
+      <!-- CARD 6: COLOR TEMPERATURE GUESSER (INCUBATOR / TEASER) -->
+      <div class="project-card group relative rounded-3xl bg-slate-900/60 border border-slate-800 hover:border-slate-700 p-6 flex flex-col justify-between" data-category="games tools" data-title="Color Temperature Kelvin Optics Perception">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-violet-500/20 to-indigo-500/20 text-violet-400 flex items-center justify-center text-3xl border border-violet-500/30">
+              🌈
+            </div>
+            <span class="px-2.5 py-1 rounded-full bg-slate-800 text-slate-400 text-[10px] font-semibold">
+              Coming Soon
+            </span>
+          </div>
+          <h3 class="text-lg font-bold text-white mb-2">Kelvin Color Lab</h3>
+          <p class="text-xs text-slate-400 leading-relaxed mb-6">
+            Guess and match black-body radiation color temperatures from candle flame (1800K) to deep blue sky (10,000K).
+          </p>
+        </div>
+        <div class="flex items-center justify-between pt-4 border-t border-slate-800/80 text-xs text-slate-500">
+          <div class="flex gap-1.5">
+            <span class="px-2 py-0.5 rounded-md bg-slate-800/60 text-slate-400 text-[10px] font-mono">Physics</span>
+            <span class="px-2 py-0.5 rounded-md bg-slate-800/60 text-slate-400 text-[10px] font-mono">Optics</span>
+          </div>
+          <span class="text-[11px] italic">In development</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Empty search state -->
+    <div id="empty-state" class="hidden text-center py-12 space-y-2">
+      <p class="text-slate-400 text-sm">No experiments found matching your search.</p>
+      <button onclick="filterCategory('all'); document.getElementById('project-search').value='';" class="text-xs text-indigo-400 hover:underline">
+        Reset filters
+      </button>
+    </div>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-slate-900 bg-slate-950/80 text-center py-8 text-xs text-slate-500">
+    <div class="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <p>Built with curiosity • Zero trackers • Open source on GitHub.</p>
+      <div class="flex items-center gap-3 text-slate-400 text-xs">
+        <a href="./doomsday/" class="hover:text-indigo-400 transition">Doomsday Trainer</a>
+        <span>•</span>
+        <a href="https://github.com" target="_blank" rel="noopener" class="hover:text-indigo-400 transition flex items-center gap-1">
+          <i data-lucide="github" class="w-3.5 h-3.5"></i> GitHub
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- SCRIPT -->
+  <script>
+    lucide.createIcons();
+
+    let activeCategory = 'all';
+
+    function filterCategory(cat) {
+      activeCategory = cat;
+      document.querySelectorAll('.btn-filter').forEach(btn => {
+        if (btn.getAttribute('data-cat')) {
+          if (btn.getAttribute('data-cat') === cat) {
+            btn.className = "btn-filter px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-indigo-600 text-white shadow-md shadow-indigo-600/20 transition";
+          } else {
+            btn.className = "btn-filter px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 transition";
+          }
+        }
+      });
+      applyFilters();
+    }
+
+    function searchProjects(val) {
+      applyFilters();
+    }
+
+    function applyFilters() {
+      const searchVal = (document.getElementById('project-search').value || '').toLowerCase().trim();
+      const cards = document.querySelectorAll('.project-card');
+      let visibleCount = 0;
+
+      cards.forEach(card => {
+        const cat = card.getAttribute('data-category') || '';
+        const title = (card.getAttribute('data-title') || '').toLowerCase();
+        const text = card.textContent.toLowerCase();
+
+        const matchesCat = activeCategory === 'all' || cat.includes(activeCategory);
+        const matchesSearch = !searchVal || title.includes(searchVal) || text.includes(searchVal);
+
+        if (matchesCat && matchesSearch) {
+          card.classList.remove('hidden');
+          visibleCount++;
+        } else {
+          card.classList.add('hidden');
+        }
+      });
+
+      document.getElementById('empty-state').classList.toggle('hidden', visibleCount > 0);
+    }
+
+    // Theme Toggle
+    let isDark = true;
+    function toggleTheme() {
+      isDark = !isDark;
+      document.documentElement.classList.toggle('dark', isDark);
+      const icon = document.getElementById('icon-theme');
+      icon.setAttribute('data-lucide', isDark ? 'sun' : 'moon');
+      lucide.createIcons();
+      localStorage.setItem('hub_theme', isDark ? 'dark' : 'light');
+    }
+
+    // Load theme
+    const savedTheme = localStorage.getItem('hub_theme');
+    if (savedTheme === 'light') {
+      toggleTheme();
+    }
+  </script>
+</body>
+</html>
