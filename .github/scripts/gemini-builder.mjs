@@ -281,6 +281,7 @@ Generate the complete, beautiful, fully functional single-page web app complying
 
   console.log('🤖 Generating app content...');
   let rawTextResponse = '';
+  let activeModelUsed = GEMINI_MODEL;
 
   if (isMock) {
     console.log('⚡ Mock mode active: Returning simulated mini-app JSON.');
@@ -340,23 +341,70 @@ Generate the complete, beautiful, fully functional single-page web app complying
       summaryMessage: `### ⚡ Reaction Time Tester\n\n- Created \`/reaction-timer/index.html\`\n- Adheres to the Editorial Paper Design System\n- Features high-score tracking and Web Audio API alerts.`
     });
   } else {
-    try {
-      const geminiEndpoint = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
-      const geminiRes = await fetchJson(geminiEndpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(geminiPayload),
-      });
+    // Model fallback sequence strictly: primary model (gemini-3.7-flash) -> gemini-3.6-flash
+    const candidateModels = [
+      GEMINI_MODEL,
+      'gemini-3.6-flash'
+    ].filter((m, idx, self) => self.indexOf(m) === idx);
 
-      rawTextResponse = geminiRes.candidates?.[0]?.content?.parts?.[0]?.text;
-      if (!rawTextResponse) {
-        throw new Error('Empty response from Gemini API: ' + JSON.stringify(geminiRes));
+    let lastError = null;
+    let success = false;
+
+    for (const model of candidateModels) {
+      console.log(`📡 Attempting generation with model: ${model}...`);
+      activeModelUsed = model;
+
+      // Retry up to 3 times per model with exponential backoff on 429/503/500
+      for (let attempt = 1; attempt <= 3; attempt++) {
+        try {
+          const geminiEndpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${GEMINI_API_KEY}`;
+          const geminiRes = await fetchJson(geminiEndpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(geminiPayload),
+          });
+
+          rawTextResponse = geminiRes.candidates?.[0]?.content?.parts?.[0]?.text;
+          if (!rawTextResponse) {
+            throw new Error('Empty response from Gemini API: ' + JSON.stringify(geminiRes));
+          }
+
+          success = true;
+          console.log(`✅ Generation succeeded using model: ${model}`);
+          break;
+        } catch (err) {
+          lastError = err;
+          const isOverloadedOrRateLimited = 
+            err.message.includes('503') ||
+            err.message.includes('429') ||
+            err.message.includes('500') ||
+            err.message.toLowerCase().includes('overloaded') ||
+            err.message.toLowerCase().includes('high demand') ||
+            err.message.toLowerCase().includes('rate limit');
+
+          if (isOverloadedOrRateLimited && attempt < 3) {
+            const delayMs = attempt * 3000 + Math.floor(Math.random() * 1000);
+            console.warn(`⏳ Model ${model} busy/rate-limited (Attempt ${attempt}/3). Retrying in ${delayMs}ms...`);
+            await new Promise(res => setTimeout(res, delayMs));
+          } else {
+            console.warn(`⚠️ Model ${model} attempt ${attempt} failed: ${err.message}`);
+            break;
+          }
+        }
       }
-    } catch (err) {
-      const errorMsg = `❌ Gemini API call failed: ${err.message}`;
+
+      if (success) break;
+      console.warn(`🔄 Falling back to next available model in cascade...`);
+    }
+
+    if (!success) {
+      const errorMsg = `❌ All Gemini models failed or were overloaded: ${lastError?.message}`;
       console.error(errorMsg);
       if (issueNumber) {
-        await postGitHubComment(issueNumber, `⚠️ **Gemini Generation Failed**:\n\`\`\`\n${err.message}\n\`\`\``);
+        await postGitHubComment(
+          issueNumber,
+          `⚠️ **Gemini Generation Failed (High Load / Overloaded)**:\n\`\`\`\n${lastError?.message}\n\`\`\`\n\nYou can reply with \`@gemini retry\` in a moment to try again.`
+        );
       }
       process.exit(1);
     }
@@ -475,11 +523,11 @@ Generate the complete, beautiful, fully functional single-page web app complying
       run(`git commit -m "feat(${slug}): ${title} ${issueNumber ? `(closes #${issueNumber})` : ''}"`);
       run(`git push -u origin ${branchName} --force`);
 
-      const repoOwner = GITHUB_REPOSITORY?.split('/')[0] || '';
-      const repoName = GITHUB_REPOSITORY?.split('/')[1] || '';
-      const previewUrl = `https://${repoOwner}.github.io/${repoName}/${slug}/`;
+      const modelNotice = activeModelUsed !== GEMINI_MODEL 
+        ? `*(Note: Used fallback model \`${activeModelUsed}\` due to high load on \`${GEMINI_MODEL}\`)*` 
+        : `*(Generated with \`${activeModelUsed}\`)*`;
 
-      const prBody = `## 🤖 Gemini IssueOps Generator (${GEMINI_MODEL})\n\n${issueNumber ? `Closes #${issueNumber}\n\n` : ''}${summaryMessage}\n\n---\n🌐 **Live App Preview**: [${title}](${previewUrl})\n\n*Built automatically via mobile IssueOps trigger.*`;
+      const prBody = `## 🤖 Gemini IssueOps Generator (${activeModelUsed})\n\n${issueNumber ? `Closes #${issueNumber}\n\n` : ''}${summaryMessage}\n\n---\n🌐 **Live App Preview**: [${title}](${previewUrl})\n\n${modelNotice}\n\n*Built automatically via mobile IssueOps trigger.*`;
 
       const pr = await createPullRequest(branchName, 'main', `feat(${slug}): ${title}`, prBody, issueNumber);
 
@@ -494,6 +542,7 @@ ${pr?.html_url ? `- 🔀 **Pull Request**: ${pr.html_url}` : ''}
 ${summaryMessage}
 
 ---
+${modelNotice}  
 *Review the code in the PR above and tap **Merge** on your phone when ready!*`;
 
       if (issueNumber) {
