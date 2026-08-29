@@ -7,6 +7,11 @@ A personal collection of tools and web projects built for things that interest m
 ## 📁 Repository Structure
 
 ```
+├── .github/
+│   ├── workflows/
+│   │   └── gemini-issueops.yml # 🤖 Mobile IssueOps workflow trigger
+│   └── scripts/
+│       └── gemini-builder.mjs  # 🧠 Gemini 3.7 Flash autonomous builder
 ├── index.html                 # 🌟 Neal.fun-style Playground homepage & project launcher
 ├── doomsday/                  # 📅 The Doomsday Rule Trainer
 │   └── index.html
@@ -42,9 +47,19 @@ Real-time Sydney bouldering weather forecaster, rock dryness evaluator, and fric
 - **Client-Side & Offline Ready**: Batch API queries via Open-Meteo with 30-minute caching and bundled synthetic fallback dataset.
 - **Automated Tests**: Zero-dependency test runner via `node boulder-buddy/test.js`.
 
+## 📱 Mobile App Creation (IssueOps with Gemini)
+
+You can create new mini-apps on the go directly from the **GitHub Mobile app**:
+
+1. Open a **New Issue** in this repository.
+2. Title it with `build: <App Name>` (e.g. `build: Reaction Time Tester`).
+3. Describe the app requirements in the body.
+4. **Gemini 3.7 Flash** will automatically generate the code, adhere to the Editorial Paper Design System, add the launcher card, and open a Pull Request with a live preview link!
+5. Tap **Merge** on your phone to publish it live.
+
 ---
 
-## 🛠️ How to Add a New Project
+## 🛠️ How to Add a New Project Manually
 
 Adding a new interactive toy or mini-game takes less than 1 minute:
 

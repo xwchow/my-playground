@@ -1,0 +1,61 @@
+name: Gemini IssueOps Builder
+
+on:
+  issues:
+    types: [opened, edited, labeled]
+  issue_comment:
+    types: [created]
+  workflow_dispatch:
+    inputs:
+      prompt:
+        description: 'Mini-app description or build prompt'
+        required: true
+        type: string
+      model:
+        description: 'Gemini model to use'
+        required: false
+        default: 'gemini-3.7-flash'
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  gemini-build:
+    # Trigger if issue has build label/prefix, or if a human comment mentions @gemini or /build
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'issues' && (
+        contains(github.event.issue.labels.*.name, 'build') ||
+        startsWith(github.event.issue.title, 'build:') ||
+        startsWith(github.event.issue.title, 'feat:') ||
+        contains(github.event.issue.body, '@gemini')
+      )) ||
+      (github.event_name == 'issue_comment' &&
+        !github.event.comment.user.login.endsWith('[bot]') && (
+          contains(github.event.comment.body, '@gemini') ||
+          startsWith(github.event.comment.body, '/build') ||
+          startsWith(github.event.comment.body, '/fix')
+        )
+      )
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Run Gemini Builder
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_MODEL: ${{ vars.GEMINI_MODEL || 'gemini-3.7-flash' }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WORKFLOW_INPUT_PROMPT: ${{ github.event.inputs.prompt }}
+          WORKFLOW_INPUT_MODEL: ${{ github.event.inputs.model }}
+        run: node .github/scripts/gemini-builder.mjs
