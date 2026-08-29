@@ -3,348 +3,320 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Theme Studio & Style Comparison</title>
+  <title>Design & Typography Studio | Playground</title>
+  <!-- Google Fonts: Inter, Plus Jakarta Sans, Space Grotesk, JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
-    /* CSS Variables for Dynamic Live Theming */
+    /* Dynamic Theme & Font Variables */
     :root {
-      /* Default Theme A */
-      --bg-page: #f4f0e8;
-      --bg-card: #fcfaf6;
-      --bg-card-subtle: #f5f1e8;
-      --text-main: #26221f;
-      --text-muted: #78716c;
-      --border-color: #e2ddd5;
-      --border-strong: #44403c;
-      --accent-main: #c2410c;
-      --accent-bg: #ffedd5;
-      --accent-text: #7c2d12;
-      --card-shadow: 0 4px 12px rgba(68, 64, 60, 0.06), 0 1px 3px rgba(68, 64, 60, 0.04);
-      --btn-shadow: 0 2px 4px rgba(68, 64, 60, 0.08);
-      --btn-active-shadow: 0 1px 2px rgba(68, 64, 60, 0.04);
-    }
-
-    /* Direction A: Warm Oatmeal & Terracotta */
-    [data-theme="A"] {
-      --bg-page: #f4f0e8;
-      --bg-card: #fcfaf6;
-      --bg-card-subtle: #ede7dc;
-      --text-main: #26221f;
-      --text-muted: #78716c;
-      --border-color: #ded8cd;
-      --border-strong: #57534e;
-      --accent-main: #c2410c;
-      --accent-bg: #ffedd5;
-      --accent-text: #7c2d12;
-      --accent-border: #fed7aa;
-      --badge-accent: #f97316;
-      --card-shadow: 0 4px 14px rgba(87, 83, 78, 0.06), 0 1px 3px rgba(87, 83, 78, 0.04);
-      --btn-shadow: 0 2px 0px #ded8cd;
-    }
-
-    /* Direction B: Sage & Japanese Linen */
-    [data-theme="B"] {
-      --bg-page: #f1ede4;
-      --bg-card: #faf8f5;
-      --bg-card-subtle: #e6e0d4;
-      --text-main: #1f241d;
-      --text-muted: #656d61;
-      --border-color: #d6cfc2;
-      --border-strong: #495444;
-      --accent-main: #3f6212;
-      --accent-bg: #ecfccb;
-      --accent-text: #365314;
-      --accent-border: #bef264;
-      --badge-accent: #65a30d;
-      --card-shadow: 0 4px 14px rgba(73, 84, 68, 0.06), 0 1px 3px rgba(73, 84, 68, 0.04);
-      --btn-shadow: 0 2px 0px #d6cfc2;
-    }
-
-    /* Direction C: Warm Stone & Muted Slate */
-    [data-theme="C"] {
-      --bg-page: #f2f2ef;
+      --bg-canvas: #f7f6f2;
       --bg-card: #ffffff;
-      --bg-card-subtle: #e7e7e3;
+      --bg-card-subtle: #f0eee6;
       --text-main: #18181b;
-      --text-muted: #71717a;
-      --border-color: #e4e4e7;
-      --border-strong: #27272a;
-      --accent-main: #09090b;
-      --accent-bg: #f4f4f5;
-      --accent-text: #18181b;
-      --accent-border: #d4d4d8;
-      --badge-accent: #3f3f46;
-      --card-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 4px 12px rgba(0,0,0,0.03);
-      --btn-shadow: 0 1px 2px rgba(0,0,0,0.06);
+      --text-muted: #52525b;
+      --border-color: #27272a;
+      --border-width: 1.5px;
+      --shadow-val: 2px 2px 0px 0px #27272a;
+      --btn-shadow: 1.5px 1.5px 0px 0px #27272a;
+      --btn-active-shadow: 0px 0px 0px 0px #27272a;
+      --accent-color: #1d4ed8;
+      --accent-bg: #dbeafe;
+      --accent-border: #27272a;
+      --accent-text: #1e40af;
+      --card-radius: 1rem;
+      
+      --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-tag: 'Plus Jakarta Sans', sans-serif;
+      --tag-letter-spacing: 0em;
+      --tag-font-weight: 700;
     }
 
     body {
-      background-color: var(--bg-page);
+      background-color: var(--bg-canvas);
       color: var(--text-main);
-      transition: background-color 0.2s ease, color 0.2s ease;
+      font-family: var(--font-body);
+      transition: background-color 0.15s ease, color 0.15s ease;
     }
 
-    .themed-card {
+    .theme-card {
       background-color: var(--bg-card);
+      border-width: var(--border-width);
       border-color: var(--border-color);
-      box-shadow: var(--card-shadow);
+      border-style: solid;
+      box-shadow: var(--shadow-val);
+      border-radius: var(--card-radius);
+      transition: all 0.15s ease;
+    }
+    .theme-card:hover {
+      transform: translate(-1px, -1px);
     }
 
-    .themed-btn {
+    .theme-btn {
       background-color: var(--bg-card);
+      border-width: var(--border-width);
       border-color: var(--border-color);
+      border-style: solid;
       color: var(--text-main);
       box-shadow: var(--btn-shadow);
+      border-radius: calc(var(--card-radius) * 0.75);
       transition: all 0.1s ease;
     }
-    .themed-btn:hover {
+    .theme-btn:hover {
       background-color: var(--bg-card-subtle);
-      transform: translateY(-1px);
+      transform: translate(-0.5px, -0.5px);
     }
-    .themed-btn:active {
-      transform: translateY(1px);
+    .theme-btn:active {
+      transform: translate(1.5px, 1.5px);
+      box-shadow: var(--btn-active-shadow);
     }
 
-    .themed-accent-pill {
+    .theme-accent-btn {
+      background-color: var(--accent-color);
+      color: #ffffff;
+      border-width: var(--border-width);
+      border-color: var(--border-color);
+      border-style: solid;
+      box-shadow: var(--shadow-val);
+      border-radius: var(--card-radius);
+      transition: all 0.1s ease;
+    }
+    .theme-accent-btn:hover {
+      filter: brightness(1.05);
+      transform: translate(-1px, -1px);
+    }
+    .theme-accent-btn:active {
+      transform: translate(1.5px, 1.5px);
+      box-shadow: var(--btn-active-shadow);
+    }
+
+    .theme-pill {
       background-color: var(--accent-bg);
       color: var(--accent-text);
+      border-width: var(--border-width);
       border-color: var(--accent-border);
+      border-style: solid;
+    }
+
+    .demo-tag {
+      font-family: var(--font-tag);
+      letter-spacing: var(--tag-letter-spacing);
+      font-weight: var(--tag-font-weight);
     }
   </style>
 </head>
-<body data-theme="A" class="min-h-screen flex flex-col font-sans p-4 sm:p-8">
+<body class="min-h-screen flex flex-col p-4 sm:p-8">
 
-  <!-- TOP STICKY THEME CONTROLLER -->
-  <nav class="sticky top-4 z-50 max-w-4xl mx-auto w-full bg-white/90 backdrop-blur-md rounded-2xl border border-stone-300/80 shadow-lg p-3 sm:p-4 mb-8">
-    <div class="flex flex-col sm:flex-row items-center justify-between gap-3">
-      <div class="flex items-center gap-2">
-        <span class="text-lg">🎨</span>
-        <div>
-          <h1 class="text-xs font-black uppercase tracking-wider text-stone-900">Style Studio & Live Preview</h1>
-          <p class="text-[11px] text-stone-500">Switch themes below to see the UI update instantly</p>
+  <!-- TOP STICKY STUDIO CONTROLS -->
+  <nav class="sticky top-4 z-50 max-w-4xl mx-auto w-full bg-white/95 backdrop-blur-md rounded-2xl border-[1.5px] border-zinc-900 shadow-[3px_3px_0px_0px_#18181b] p-4 mb-8">
+    <div class="flex flex-col gap-3">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <span class="text-xl">🔤</span>
+          <div>
+            <h1 class="text-sm font-black uppercase tracking-wider text-zinc-950">Typography & Font Studio</h1>
+            <p class="text-xs text-zinc-500">Compare Tag Fonts & Body Typefaces Live</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="applyChosenFont()" class="px-3.5 py-1.5 rounded-xl bg-blue-700 text-white hover:bg-blue-800 text-xs font-black shadow-[1.5px_1.5px_0px_0px_#18181b] flex items-center gap-1.5">
+            <span>Apply Selected Font</span> &rarr;
+          </button>
         </div>
       </div>
 
-      <!-- Theme Selector Buttons -->
-      <div class="flex items-center gap-2 bg-stone-100 p-1 rounded-xl border border-stone-200" id="theme-pills">
-        <button onclick="setTheme('A')" class="btn-theme-pill px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-stone-900 shadow-sm border border-stone-300 transition" data-target="A">
-          📖 A: Oatmeal & Terracotta
-        </button>
-        <button onclick="setTheme('B')" class="btn-theme-pill px-3 py-1.5 rounded-lg text-xs font-bold text-stone-600 hover:text-stone-900 transition" data-target="B">
-          🍵 B: Sage & Linen
-        </button>
-        <button onclick="setTheme('C')" class="btn-theme-pill px-3 py-1.5 rounded-lg text-xs font-bold text-stone-600 hover:text-stone-900 transition" data-target="C">
-          🏛️ C: Stone & Slate
-        </button>
+      <!-- Quick Font Preset Selector for Tags -->
+      <div class="space-y-1">
+        <span class="text-[10px] uppercase font-black text-zinc-500 block">Select Tag Typography Style:</span>
+        <div class="grid grid-cols-1 sm:grid-cols-4 gap-2">
+          <button onclick="setTagFont('jakarta')" class="btn-tag-preset px-3 py-2 rounded-xl text-xs font-black bg-zinc-900 text-white border-[1.5px] border-zinc-900 shadow-[1.5px_1.5px_0px_0px_#18181b] text-left truncate" data-font="jakarta">
+            ✨ Plus Jakarta Sans (Clean)
+          </button>
+          <button onclick="setTagFont('inter')" class="btn-tag-preset px-3 py-2 rounded-xl text-xs font-bold bg-zinc-100 text-zinc-800 border-[1.5px] border-zinc-900 shadow-[1.5px_1.5px_0px_0px_#18181b] text-left truncate hover:bg-zinc-200" data-font="inter">
+            ⚡ Inter (Balanced Proportional)
+          </button>
+          <button onclick="setTagFont('jetbrains')" class="btn-tag-preset px-3 py-2 rounded-xl text-xs font-bold bg-zinc-100 text-zinc-800 border-[1.5px] border-zinc-900 shadow-[1.5px_1.5px_0px_0px_#18181b] text-left truncate hover:bg-zinc-200" data-font="jetbrains">
+            💻 JetBrains Mono (Wide Tech)
+          </button>
+          <button onclick="setTagFont('system-mono')" class="btn-tag-preset px-3 py-2 rounded-xl text-xs font-bold bg-zinc-100 text-zinc-800 border-[1.5px] border-zinc-900 shadow-[1.5px_1.5px_0px_0px_#18181b] text-left truncate hover:bg-zinc-200" data-font="system-mono">
+            📏 System Mono (Narrow Old)
+          </button>
+        </div>
+      </div>
+
+      <!-- Live Body Font Controls -->
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 pt-2 border-t border-zinc-200 text-xs">
+        <div>
+          <label class="text-[10px] uppercase font-bold text-zinc-500 block mb-1">Global Body Font</label>
+          <select id="sel-body-font" onchange="setBodyFont(this.value)" class="w-full bg-zinc-100 border border-zinc-300 rounded-lg px-2 py-1 font-bold text-zinc-900">
+            <option value="jakarta" selected>Plus Jakarta Sans (Modern Editorial)</option>
+            <option value="inter">Inter (Classic Precision)</option>
+            <option value="space">Space Grotesk (Playful Tech)</option>
+            <option value="system">System Default (San Francisco / Segoe)</option>
+          </select>
+        </div>
+        <div>
+          <label class="text-[10px] uppercase font-bold text-zinc-500 block mb-1">Tag Letter Spacing</label>
+          <select id="sel-tracking" onchange="setTracking(this.value)" class="w-full bg-zinc-100 border border-zinc-300 rounded-lg px-2 py-1 font-bold text-zinc-900">
+            <option value="-0.01em">Tight (-0.01em)</option>
+            <option value="0em" selected>Normal (0em)</option>
+            <option value="0.03em">Wide (0.03em)</option>
+            <option value="0.06em">Extra Wide (0.06em)</option>
+          </select>
+        </div>
+        <div>
+          <label class="text-[10px] uppercase font-bold text-zinc-500 block mb-1">Tag Font Weight</label>
+          <select id="sel-weight" onchange="setWeight(this.value)" class="w-full bg-zinc-100 border border-zinc-300 rounded-lg px-2 py-1 font-bold text-zinc-900">
+            <option value="600">Semi-Bold (600)</option>
+            <option value="700" selected>Bold (700)</option>
+            <option value="800">Extra-Bold (800)</option>
+          </select>
+        </div>
       </div>
     </div>
   </nav>
 
-  <!-- MAIN PREVIEW SHOWCASE CONTAINER -->
-  <div class="max-w-4xl mx-auto w-full space-y-10">
+  <!-- SHOWCASE CONTAINER -->
+  <div class="max-w-4xl mx-auto w-full space-y-8">
 
-    <!-- Theme Title Banner -->
-    <div class="text-center space-y-1">
-      <span class="text-xs font-bold uppercase tracking-widest text-stone-500" id="theme-tagline">Theme A: Cozy Matte Paper</span>
-      <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight" id="theme-heading">Warm Oatmeal & Terracotta</h2>
-      <p class="text-xs sm:text-sm max-w-lg mx-auto text-stone-600" id="theme-desc">
-        Soft matte paper tones, zero screen glare, warm terracotta accent buttons, and calm organic typography.
-      </p>
+    <!-- FONT COMPARISON DIRECT BENCHMARK CARD -->
+    <div class="theme-card p-6 space-y-4">
+      <div class="flex items-center justify-between border-b border-zinc-200 pb-3">
+        <div>
+          <h3 class="text-base font-extrabold text-zinc-950">Side-by-Side Tag Comparison</h3>
+          <p class="text-xs text-zinc-500">Notice the width and character proportion difference</p>
+        </div>
+        <span class="text-xs font-mono font-bold text-blue-700 bg-blue-50 border border-zinc-800 px-2 py-0.5 rounded-md">Live Comparison</span>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+        
+        <!-- 1. Plus Jakarta Sans -->
+        <div class="p-3.5 rounded-xl border-[1.5px] border-zinc-800 bg-white shadow-[1.5px_1.5px_0px_0px_#27272a] space-y-2 cursor-pointer" onclick="setTagFont('jakarta')">
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-zinc-900">1. Plus Jakarta Sans (Recommended)</span>
+            <span class="text-[10px] bg-blue-100 text-blue-900 font-bold px-1.5 py-0.5 rounded">Proportional Sans</span>
+          </div>
+          <div class="flex items-center gap-2 pt-1">
+            <span class="px-2.5 py-1 rounded-md bg-[#f0eee6] border border-zinc-800 text-zinc-900 text-xs font-bold font-['Plus_Jakarta_Sans']">Mental Math</span>
+            <span class="px-2.5 py-1 rounded-md bg-[#f0eee6] border border-zinc-800 text-zinc-900 text-xs font-bold font-['Plus_Jakarta_Sans']">Speed Run</span>
+          </div>
+          <p class="text-[11px] text-zinc-500">Open, spacious, highly legible, clean geometric rhythm.</p>
+        </div>
+
+        <!-- 2. Inter -->
+        <div class="p-3.5 rounded-xl border-[1.5px] border-zinc-800 bg-white shadow-[1.5px_1.5px_0px_0px_#27272a] space-y-2 cursor-pointer" onclick="setTagFont('inter')">
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-zinc-900">2. Inter Sans</span>
+            <span class="text-[10px] bg-zinc-100 text-zinc-800 font-bold px-1.5 py-0.5 rounded">Proportional Sans</span>
+          </div>
+          <div class="flex items-center gap-2 pt-1">
+            <span class="px-2.5 py-1 rounded-md bg-[#f0eee6] border border-zinc-800 text-zinc-900 text-xs font-bold font-['Inter']">Mental Math</span>
+            <span class="px-2.5 py-1 rounded-md bg-[#f0eee6] border border-zinc-800 text-zinc-900 text-xs font-bold font-['Inter']">Speed Run</span>
+          </div>
+          <p class="text-[11px] text-zinc-500">Classic digital standard, razor-sharp on high-DPI screens.</p>
+        </div>
+
+        <!-- 3. JetBrains Mono -->
+        <div class="p-3.5 rounded-xl border-[1.5px] border-zinc-800 bg-white shadow-[1.5px_1.5px_0px_0px_#27272a] space-y-2 cursor-pointer" onclick="setTagFont('jetbrains')">
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-zinc-900">3. JetBrains Mono</span>
+            <span class="text-[10px] bg-purple-100 text-purple-900 font-bold px-1.5 py-0.5 rounded">Wide Tech Mono</span>
+          </div>
+          <div class="flex items-center gap-2 pt-1">
+            <span class="px-2.5 py-1 rounded-md bg-[#f0eee6] border border-zinc-800 text-zinc-900 text-xs font-bold font-['JetBrains_Mono']">Mental Math</span>
+            <span class="px-2.5 py-1 rounded-md bg-[#f0eee6] border border-zinc-800 text-zinc-900 text-xs font-bold font-['JetBrains_Mono']">Speed Run</span>
+          </div>
+          <p class="text-[11px] text-zinc-500">Engineered with wider characters and tall x-height.</p>
+        </div>
+
+        <!-- 4. System Monospace (The old narrow one) -->
+        <div class="p-3.5 rounded-xl border-[1.5px] border-zinc-400 bg-zinc-50/50 space-y-2 opacity-70 cursor-pointer" onclick="setTagFont('system-mono')">
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-zinc-700">4. System Monospace (Old Narrow)</span>
+            <span class="text-[10px] bg-zinc-200 text-zinc-700 font-bold px-1.5 py-0.5 rounded">ui-monospace</span>
+          </div>
+          <div class="flex items-center gap-2 pt-1">
+            <span class="px-2 py-0.5 rounded-md bg-[#f0eee6] border border-zinc-800 text-zinc-900 text-[10px] font-bold font-mono">Mental Math</span>
+            <span class="px-2 py-0.5 rounded-md bg-[#f0eee6] border border-zinc-800 text-zinc-900 text-[10px] font-bold font-mono">Speed Run</span>
+          </div>
+          <p class="text-[11px] text-zinc-500">Condensed characters, squished capital letters.</p>
+        </div>
+
+      </div>
     </div>
 
-    <!-- PREVIEW 1: PLAYGROUND HUB CARD -->
-    <div class="space-y-3">
-      <div class="flex items-center justify-between text-xs font-bold text-stone-500 uppercase tracking-wider">
-        <span>1. Playground Homepage Card Preview</span>
-        <span class="text-[10px] font-mono">Component: ProjectCard</span>
+    <!-- PREVIEW: REAL PLAYGROUND CARD WITH CURRENT ACTIVE FONT -->
+    <div class="space-y-2">
+      <div class="flex items-center justify-between">
+        <span class="text-xs font-black uppercase tracking-wider text-zinc-500">Live Playground Card Preview</span>
+        <span class="text-xs font-bold text-blue-700" id="current-font-label">Active Font: Plus Jakarta Sans</span>
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        
         <!-- Live App Card -->
-        <div class="themed-card rounded-2xl border p-5 flex flex-col justify-between transition hover:-translate-y-1 cursor-pointer">
+        <div class="theme-card p-5 sm:p-6 flex flex-col justify-between cursor-pointer">
           <div>
-            <div class="flex items-center justify-between mb-3">
-              <div class="w-12 h-12 rounded-xl flex items-center justify-center text-2xl border" style="background-color: var(--accent-bg); border-color: var(--accent-border);">
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-12 h-12 rounded-xl bg-blue-50 border-[1.5px] border-zinc-800 flex items-center justify-center text-2xl shadow-[1.5px_1.5px_0px_0px_#27272a]">
                 📅
               </div>
-              <span class="themed-accent-pill px-2.5 py-0.5 rounded-full border text-[11px] font-bold">
-                Playable App
+              <span class="demo-tag px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-900 border-[1.5px] border-zinc-800 text-[11px] font-extrabold flex items-center gap-1.5 shadow-[1.5px_1.5px_0px_0px_#27272a]">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                Playable
               </span>
             </div>
-            <h3 class="text-lg font-bold tracking-tight mb-1">Doomsday Rule Trainer</h3>
-            <p class="text-xs text-stone-600 leading-relaxed mb-4">
-              Master John Conway's mental calculation algorithm to determine the day of the week for any date in history in seconds.
+            <h3 class="text-lg font-extrabold tracking-tight text-zinc-950 mb-1.5">Doomsday Rule Trainer</h3>
+            <p class="text-xs text-zinc-600 leading-relaxed mb-6 font-normal">
+              Master John Conway's mental algorithm to calculate the day of the week for any date in history in seconds. Includes Sprint, Time Attack, and Zen modes.
             </p>
           </div>
-          <div class="flex items-center justify-between pt-3 border-t text-xs font-medium" style="border-color: var(--border-color);">
-            <span class="px-2 py-0.5 rounded-md border text-[10px] font-mono" style="background-color: var(--bg-card-subtle); border-color: var(--border-color);">Mental Math</span>
-            <span class="font-bold flex items-center gap-1" style="color: var(--accent-main);">
+          
+          <!-- Card Footer with Dynamic Tags -->
+          <div class="flex items-center justify-between pt-3.5 border-t-[1.5px] border-zinc-200 text-xs">
+            <div class="flex items-center gap-1.5 flex-wrap">
+              <span class="demo-tag px-2.5 py-1 rounded-md bg-[#f0eee6] border border-zinc-800 text-zinc-900 text-xs">Mental Math</span>
+              <span class="demo-tag px-2.5 py-1 rounded-md bg-[#f0eee6] border border-zinc-800 text-zinc-900 text-xs">Speed Run</span>
+            </div>
+            <span class="font-extrabold text-blue-700 flex items-center gap-1">
               Launch &rarr;
             </span>
           </div>
         </div>
 
-        <!-- Teaser Card -->
-        <div class="themed-card rounded-2xl border p-5 flex flex-col justify-between opacity-85">
-          <div>
-            <div class="flex items-center justify-between mb-3">
-              <div class="w-12 h-12 rounded-xl flex items-center justify-center text-2xl border" style="background-color: var(--bg-card-subtle); border-color: var(--border-color);">
-                ⏳
-              </div>
-              <span class="px-2 py-0.5 rounded-full border text-[10px] font-semibold text-stone-500" style="background-color: var(--bg-card-subtle); border-color: var(--border-color);">
-                Coming Soon
-              </span>
-            </div>
-            <h3 class="text-base font-bold tracking-tight mb-1">Chrono Guesser</h3>
-            <p class="text-xs text-stone-600 leading-relaxed mb-4">
-              Place world events and inventions on an accurate historical timeline.
-            </p>
-          </div>
-          <div class="flex items-center justify-between pt-3 border-t text-xs font-medium text-stone-400" style="border-color: var(--border-color);">
-            <span class="px-2 py-0.5 rounded-md border text-[10px] font-mono" style="background-color: var(--bg-card-subtle); border-color: var(--border-color);">History</span>
-            <span class="text-[11px] italic">In development</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- PREVIEW 2: DOOMSDAY IN-GAME FLASHCARD & CONTROLS -->
-    <div class="space-y-3">
-      <div class="flex items-center justify-between text-xs font-bold text-stone-500 uppercase tracking-wider">
-        <span>2. Doomsday Trainer Game HUD & Flashcard</span>
-        <span class="text-[10px] font-mono">Interactive: Click buttons below</span>
-      </div>
-
-      <div class="themed-card rounded-2xl border p-5 sm:p-7 space-y-6">
-        
-        <!-- HUD -->
-        <div class="flex items-center justify-between pb-4 border-b" style="border-color: var(--border-color);">
-          <div class="flex items-center gap-4">
+        <!-- In-Game HUD Card -->
+        <div class="theme-card p-5 sm:p-6 space-y-4">
+          <div class="flex items-center justify-between pb-3 border-b-[1.5px] border-zinc-200">
             <div>
-              <span class="text-[10px] uppercase font-bold text-stone-500 block">Sprint Mode</span>
-              <span class="text-base font-bold">Question 3 / 10</span>
+              <span class="demo-tag text-[10px] uppercase font-bold text-zinc-500 block">Sprint Mode</span>
+              <span class="text-base font-extrabold text-zinc-950">Question 3 / 10</span>
             </div>
-            <div class="h-6 w-px bg-stone-300"></div>
-            <div>
-              <span class="text-[10px] uppercase font-bold text-stone-500 block">Streak</span>
-              <span class="text-base font-bold text-amber-600">🔥 4</span>
+            <div class="text-right">
+              <span class="demo-tag text-[10px] uppercase font-bold text-zinc-500 block">Timer</span>
+              <span class="font-mono text-xl font-extrabold text-zinc-950">2.45s</span>
             </div>
           </div>
 
-          <div class="text-right">
-            <span class="text-[10px] uppercase font-bold text-stone-500 block">Timer</span>
-            <span class="font-mono text-xl font-bold">2.45s</span>
+          <div class="rounded-xl bg-[#f0eee6] border-[1.5px] border-zinc-800 p-4 text-center">
+            <span class="demo-tag text-[10px] uppercase font-bold text-zinc-500 block mb-1">Target Date</span>
+            <h4 class="text-2xl font-black text-zinc-950 tracking-tight">14 July 1789</h4>
+          </div>
+
+          <div class="flex gap-1.5">
+            <button class="theme-btn flex-1 py-2 font-bold text-xs">Mon</button>
+            <button class="theme-btn flex-1 py-2 font-bold text-xs bg-blue-100 text-blue-900 border-zinc-800">Tue (✓)</button>
+            <button class="theme-btn flex-1 py-2 font-bold text-xs">Wed</button>
+            <button class="theme-btn flex-1 py-2 font-bold text-xs">Thu</button>
           </div>
         </div>
 
-        <!-- Giant Flashcard -->
-        <div class="rounded-xl border p-6 text-center space-y-1" style="background-color: var(--bg-card-subtle); border-color: var(--border-color);">
-          <span class="text-[11px] uppercase tracking-widest font-semibold text-stone-500 block">What day of the week is</span>
-          <h3 class="text-3xl sm:text-4xl font-extrabold tracking-tight">14 July 1789</h3>
-        </div>
-
-        <!-- Interactive 7 Day Buttons -->
-        <div class="space-y-2">
-          <div class="text-center text-[11px] text-stone-500">
-            Click any day to test button feedback:
-          </div>
-          <div class="grid grid-cols-2 sm:grid-cols-7 gap-2">
-            <button onclick="flashBtn(this, false)" class="themed-btn p-3 rounded-xl border font-bold flex flex-col items-center gap-0.5">
-              <span class="text-xs sm:text-sm">Mon</span>
-              <span class="text-[9px] text-stone-400 font-mono">1 / M</span>
-            </button>
-            <button onclick="flashBtn(this, true)" class="themed-btn p-3 rounded-xl border font-bold flex flex-col items-center gap-0.5">
-              <span class="text-xs sm:text-sm">Tue</span>
-              <span class="text-[9px] text-stone-400 font-mono">2 / T</span>
-            </button>
-            <button onclick="flashBtn(this, false)" class="themed-btn p-3 rounded-xl border font-bold flex flex-col items-center gap-0.5">
-              <span class="text-xs sm:text-sm">Wed</span>
-              <span class="text-[9px] text-stone-400 font-mono">3 / W</span>
-            </button>
-            <button onclick="flashBtn(this, false)" class="themed-btn p-3 rounded-xl border font-bold flex flex-col items-center gap-0.5">
-              <span class="text-xs sm:text-sm">Thu</span>
-              <span class="text-[9px] text-stone-400 font-mono">4 / R</span>
-            </button>
-            <button onclick="flashBtn(this, false)" class="themed-btn p-3 rounded-xl border font-bold flex flex-col items-center gap-0.5">
-              <span class="text-xs sm:text-sm">Fri</span>
-              <span class="text-[9px] text-stone-400 font-mono">5 / F</span>
-            </button>
-            <button onclick="flashBtn(this, false)" class="themed-btn p-3 rounded-xl border font-bold flex flex-col items-center gap-0.5">
-              <span class="text-xs sm:text-sm">Sat</span>
-              <span class="text-[9px] text-stone-400 font-mono">6 / S</span>
-            </button>
-            <button onclick="flashBtn(this, false)" class="themed-btn col-span-2 sm:col-span-1 p-3 rounded-xl border font-bold flex flex-col items-center gap-0.5">
-              <span class="text-xs sm:text-sm">Sun</span>
-              <span class="text-[9px] text-stone-400 font-mono">7 / U</span>
-            </button>
-          </div>
-          <div id="btn-feedback-msg" class="text-center text-xs font-bold h-4 text-emerald-700"></div>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- PREVIEW 3: STEP-BY-STEP MATH BREAKDOWN PREVIEW -->
-    <div class="space-y-3">
-      <div class="flex items-center justify-between text-xs font-bold text-stone-500 uppercase tracking-wider">
-        <span>3. Step-by-Step Math Breakdown Modal Style</span>
-        <span class="text-[10px] font-mono">Component: ModalBreakdown</span>
-      </div>
-
-      <div class="themed-card rounded-2xl border p-5 space-y-3">
-        <div class="flex items-center justify-between">
-          <h4 class="text-sm font-bold">Calculation Walkthrough: 14 July 1789</h4>
-          <span class="text-xs font-mono font-bold px-2 py-0.5 rounded border" style="background-color: var(--accent-bg); color: var(--accent-text); border-color: var(--accent-border);">Tuesday</span>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-          <div class="p-3 rounded-xl border space-y-0.5" style="background-color: var(--bg-card-subtle); border-color: var(--border-color);">
-            <div class="font-bold flex justify-between"><span>1. Century Anchor</span><span class="font-mono">Sunday (0)</span></div>
-            <p class="text-stone-600 text-[11px]">Century 1700s has anchor day Sunday.</p>
-          </div>
-          <div class="p-3 rounded-xl border space-y-0.5" style="background-color: var(--bg-card-subtle); border-color: var(--border-color);">
-            <div class="font-bold flex justify-between"><span>2. Year Offset</span><span class="font-mono">Saturday (6)</span></div>
-            <p class="text-stone-600 text-[11px]">89 / 12 = 7 r 5 (+1) = 13 ≡ 6 mod 7.</p>
-          </div>
-          <div class="p-3 rounded-xl border space-y-0.5" style="background-color: var(--bg-card-subtle); border-color: var(--border-color);">
-            <div class="font-bold flex justify-between"><span>3. Month Anchor</span><span class="font-mono">July 11</span></div>
-            <p class="text-stone-600 text-[11px]">July 11 falls on Doomsday ("7-Eleven").</p>
-          </div>
-          <div class="p-3 rounded-xl border space-y-0.5" style="background-color: var(--bg-card-subtle); border-color: var(--border-color);">
-            <div class="font-bold flex justify-between"><span>4. Day Difference</span><span class="font-mono text-emerald-700 font-bold">+3 &rarr; Tuesday</span></div>
-            <p class="text-stone-600 text-[11px]">14 − 11 = +3 days &rarr; Saturday + 3 = Tuesday.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- SIDE-BY-SIDE COLOR PALETTE SUMMARY -->
-    <div class="themed-card rounded-2xl border p-5 space-y-4">
-      <h3 class="text-xs font-bold uppercase tracking-wider text-stone-500">Palette Specs & Comparison</h3>
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-        <div class="p-3 rounded-xl border bg-[#f4f0e8] text-[#26221f] space-y-1.5 cursor-pointer" onclick="setTheme('A')">
-          <div class="font-bold flex items-center justify-between"><span>📖 Option A</span><span class="w-3 h-3 rounded-full bg-[#c2410c]"></span></div>
-          <p class="text-[11px] text-stone-600">Canvas: <code>#f4f0e8</code></p>
-          <p class="text-[11px] text-stone-600">Cards: <code>#fcfaf6</code></p>
-          <p class="text-[11px] text-stone-600">Accent: <code>#c2410c (Terracotta)</code></p>
-        </div>
-
-        <div class="p-3 rounded-xl border bg-[#f1ede4] text-[#1f241d] space-y-1.5 cursor-pointer" onclick="setTheme('B')">
-          <div class="font-bold flex items-center justify-between"><span>🍵 Option B</span><span class="w-3 h-3 rounded-full bg-[#3f6212]"></span></div>
-          <p class="text-[11px] text-stone-600">Canvas: <code>#f1ede4</code></p>
-          <p class="text-[11px] text-stone-600">Cards: <code>#faf8f5</code></p>
-          <p class="text-[11px] text-stone-600">Accent: <code>#3f6212 (Sage)</code></p>
-        </div>
-
-        <div class="p-3 rounded-xl border bg-[#f2f2ef] text-[#18181b] space-y-1.5 cursor-pointer" onclick="setTheme('C')">
-          <div class="font-bold flex items-center justify-between"><span>🏛️ Option C</span><span class="w-3 h-3 rounded-full bg-[#09090b]"></span></div>
-          <p class="text-[11px] text-stone-600">Canvas: <code>#f2f2ef</code></p>
-          <p class="text-[11px] text-stone-600">Cards: <code>#ffffff</code></p>
-          <p class="text-[11px] text-stone-600">Accent: <code>#09090b (Charcoal)</code></p>
-        </div>
       </div>
     </div>
 
@@ -353,56 +325,63 @@
   <script>
     lucide.createIcons();
 
-    const themeDetails = {
-      'A': {
-        heading: "Warm Oatmeal & Terracotta",
-        tagline: "Option A: Cozy Matte Paper",
-        desc: "Warm oat/linen background, zero glare ivory cards, and warm terracotta accents. Designed for comfort and long practice sessions."
+    const fontMap = {
+      'jakarta': {
+        name: 'Plus Jakarta Sans',
+        css: "'Plus Jakarta Sans', sans-serif",
+        desc: "Open, geometric, modern proportional sans"
       },
-      'B': {
-        heading: "Sage & Japanese Linen",
-        tagline: "Option B: Calm & Natural",
-        desc: "Subtle Japanese stationery paper tones, muted warm linen, and botanical sage green accents. Extremely soothing on the eyes."
+      'inter': {
+        name: 'Inter Sans',
+        css: "'Inter', sans-serif",
+        desc: "Precision digital UI standard"
       },
-      'C': {
-        heading: "Warm Stone & Muted Slate",
-        tagline: "Option C: Refined Editorial",
-        desc: "Monochrome warm-stone canvas, crisp off-white cards, and refined deep charcoal accents. Modern, clean, and distraction-free."
+      'jetbrains': {
+        name: 'JetBrains Mono',
+        css: "'JetBrains Mono', monospace",
+        desc: "Wide readable modern code monospace"
+      },
+      'system-mono': {
+        name: 'System Monospace',
+        css: "ui-monospace, SFMono-Regular, Menlo, monospace",
+        desc: "Old condensed monospace"
       }
     };
 
-    function setTheme(theme) {
-      document.body.setAttribute('data-theme', theme);
-      
-      document.querySelectorAll('.btn-theme-pill').forEach(btn => {
-        if (btn.getAttribute('data-target') === theme) {
-          btn.className = "btn-theme-pill px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-stone-900 shadow-sm border border-stone-300 transition";
+    function setTagFont(fontKey) {
+      const f = fontMap[fontKey];
+      document.documentElement.style.setProperty('--font-tag', f.css);
+      document.getElementById('current-font-label').textContent = `Active Tag Font: ${f.name}`;
+
+      document.querySelectorAll('.btn-tag-preset').forEach(btn => {
+        if (btn.getAttribute('data-font') === fontKey) {
+          btn.className = "btn-tag-preset px-3 py-2 rounded-xl text-xs font-black bg-zinc-900 text-white border-[1.5px] border-zinc-900 shadow-[1.5px_1.5px_0px_0px_#18181b] text-left truncate";
         } else {
-          btn.className = "btn-theme-pill px-3 py-1.5 rounded-lg text-xs font-bold text-stone-600 hover:text-stone-900 transition";
+          btn.className = "btn-tag-preset px-3 py-2 rounded-xl text-xs font-bold bg-zinc-100 text-zinc-800 border-[1.5px] border-zinc-900 shadow-[1.5px_1.5px_0px_0px_#18181b] text-left truncate hover:bg-zinc-200";
         }
       });
-
-      const d = themeDetails[theme];
-      document.getElementById('theme-heading').textContent = d.heading;
-      document.getElementById('theme-tagline').textContent = d.tagline;
-      document.getElementById('theme-desc').textContent = d.desc;
     }
 
-    function flashBtn(el, isCorrect) {
-      const msg = document.getElementById('btn-feedback-msg');
-      if (isCorrect) {
-        msg.textContent = "✓ Correct! (Tuesday)";
-        msg.className = "text-center text-xs font-bold h-4 text-emerald-700";
-        el.style.borderColor = "var(--accent-main)";
-        el.style.backgroundColor = "var(--accent-bg)";
-      } else {
-        msg.textContent = "✗ Not this one";
-        msg.className = "text-center text-xs font-bold h-4 text-rose-700";
-      }
-      setTimeout(() => {
-        el.style.borderColor = "var(--border-color)";
-        el.style.backgroundColor = "var(--bg-card)";
-      }, 300);
+    function setBodyFont(val) {
+      const bodyMap = {
+        'jakarta': "'Plus Jakarta Sans', sans-serif",
+        'inter': "'Inter', sans-serif",
+        'space': "'Space Grotesk', sans-serif",
+        'system': "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
+      };
+      document.documentElement.style.setProperty('--font-body', bodyMap[val]);
+    }
+
+    function setTracking(val) {
+      document.documentElement.style.setProperty('--tag-letter-spacing', val);
+    }
+
+    function setWeight(val) {
+      document.documentElement.style.setProperty('--tag-font-weight', val);
+    }
+
+    function applyChosenFont() {
+      alert("Selected font will be applied across index.html and doomsday/index.html!");
     }
   </script>
 </body>
