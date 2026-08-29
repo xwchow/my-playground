@@ -326,7 +326,7 @@
             <button onclick="app.showInGameHint()" class="btn-editorial p-2 rounded-xl bg-cobalt-50 text-cobalt-900" title="Show Hint (H)">
               <i data-lucide="help-circle" class="w-4 h-4"></i>
             </button>
-            <button onclick="app.abortGame()" class="btn-editorial p-2 rounded-xl text-zinc-700 hover:text-rose-700" title="Exit Game (Esc)">
+            <button onclick="app.handleXButton()" class="btn-editorial p-2 rounded-xl text-zinc-700 hover:text-rose-700" title="Pause / End Game (Esc / X)">
               <i data-lucide="x" class="w-4 h-4"></i>
             </button>
           </div>
@@ -641,19 +641,34 @@
         <p class="text-[11px] text-zinc-600 font-medium">Mnemonic: <strong>"We-in-dis-arm-y"</strong> (Wed, in, Fri, Sun, Tue) or remember 2000 is <strong>Tue</strong>sday (Y<strong>2</strong>K).</p>
       </div>
 
-      <!-- 2. Year Doomsday Calculation -->
+      <!-- 2. Year Doomsday Calculation (Odd + 11 Method) -->
       <div class="space-y-2">
         <h4 class="text-sm font-extrabold text-paper-900 flex items-center gap-2">
           <span class="w-5 h-5 rounded-full bg-cobalt-700 text-white flex items-center justify-center text-xs font-bold">2</span>
-          Year Offset Formula (Last 2 Digits \(y\))
+          Year Offset Formula: The "Odd + 11" Method
         </h4>
         <div class="p-4 rounded-xl bg-paper-200 border-[1.5px] border-paper-800 space-y-2 text-xs text-paper-900">
-          <p><strong>Conway's Divide-by-12 Method:</strong> Let \(y\) be the last 2 digits of the year:</p>
-          <div class="bg-white border-[1.5px] border-paper-800 p-2.5 rounded-lg font-mono text-paper-900 text-center font-bold">
-            \(\lfloor y/12 \rfloor + (y \bmod 12) + \lfloor (y \bmod 12)/4 \rfloor \pmod 7\)
+          <p class="font-medium">Let <strong>T</strong> be the last two digits of the year:</p>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+            <div class="p-2.5 bg-white rounded-xl border border-paper-800 font-medium">
+              <span class="font-bold text-cobalt-700 block mb-0.5">1. Check Parity</span>
+              If <strong>T</strong> is odd, add <strong>11</strong> (make it even).
+            </div>
+            <div class="p-2.5 bg-white rounded-xl border border-paper-800 font-medium">
+              <span class="font-bold text-cobalt-700 block mb-0.5">2. Halve It</span>
+              Divide by 2 (<strong>T ÷ 2</strong>).
+            </div>
+            <div class="p-2.5 bg-white rounded-xl border border-paper-800 font-medium">
+              <span class="font-bold text-cobalt-700 block mb-0.5">3. Check Parity Again</span>
+              If the result is odd, add <strong>11</strong>.
+            </div>
+            <div class="p-2.5 bg-white rounded-xl border border-paper-800 font-medium">
+              <span class="font-bold text-cobalt-700 block mb-0.5">4. Distance to 7</span>
+              Subtract from the next multiple of <strong>7</strong> (or 7 − rem).
+            </div>
           </div>
-          <p class="text-[11px] text-zinc-600">
-            <em>Alternative:</em> \((y + \lfloor y/4 \rfloor) \pmod 7\). Add this offset to Century Anchor.
+          <p class="text-[11px] text-zinc-600 font-medium pt-1">
+            <strong>Example for '89:</strong> 89 + 11 = 100 &rarr; 100 ÷ 2 = 50 &rarr; 50 is even &rarr; Next mult of 7 is 56 &rarr; 56 − 50 = <strong>+6 offset</strong>.
           </p>
         </div>
       </div>
@@ -745,6 +760,53 @@
     </div>
   </div>
 
+  <!-- MODAL 4: PAUSE & REVIEW MODAL -->
+  <div id="modal-pause" class="fixed inset-0 z-50 bg-stone-900/40 backdrop-blur-xs hidden flex items-center justify-center p-4">
+    <div class="bg-[#ffffff] border-[1.5px] border-paper-800 rounded-3xl max-w-md w-full p-6 sm:p-8 space-y-5 shadow-editorial-lg relative">
+      <div class="text-center space-y-1.5">
+        <div class="w-12 h-12 rounded-2xl bg-amber-50 border-[1.5px] border-paper-800 flex items-center justify-center text-2xl mx-auto shadow-editorial-sm">
+          ⏸️
+        </div>
+        <h3 class="text-2xl font-extrabold text-paper-900">Game Paused</h3>
+        <p class="text-xs text-zinc-500 font-medium" id="pause-modal-subtitle">
+          Session paused
+        </p>
+      </div>
+
+      <!-- Quick Session Stats so far -->
+      <div class="grid grid-cols-2 gap-2.5 text-center text-xs">
+        <div class="p-3 rounded-xl bg-paper-200 border border-paper-800">
+          <span class="text-zinc-500 font-bold block text-[10px] uppercase">Answered</span>
+          <span class="text-xl font-extrabold font-mono text-paper-900" id="pause-stat-answered">0</span>
+        </div>
+        <div class="p-3 rounded-xl bg-paper-200 border border-paper-800">
+          <span class="text-zinc-500 font-bold block text-[10px] uppercase">Current Streak</span>
+          <span class="text-xl font-extrabold font-mono text-amber-600" id="pause-stat-streak">🔥 0</span>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="space-y-2 pt-1">
+        <!-- Resume Button -->
+        <button onclick="app.resumeGame()" class="btn-editorial w-full py-3.5 rounded-xl bg-cobalt-700 hover:bg-cobalt-800 text-white font-extrabold text-sm border-paper-800 shadow-editorial flex items-center justify-center gap-2">
+          <i data-lucide="play" class="w-4 h-4 fill-current"></i>
+          <span>Resume Game (Space / Enter)</span>
+        </button>
+
+        <!-- End & Review Button (The X action while paused) -->
+        <button onclick="app.endGameAndReview()" id="btn-pause-end-review" class="btn-editorial w-full py-3 rounded-xl text-paper-900 hover:bg-paper-200 font-bold text-xs border-paper-800 flex items-center justify-center gap-2">
+          <i data-lucide="list-checks" class="w-4 h-4 text-cobalt-700"></i>
+          <span id="pause-end-review-text">End Game & Review Answers (Esc / X)</span>
+        </button>
+
+        <!-- Abandon & Return to Menu Button -->
+        <button onclick="app.abortToMenu()" class="w-full py-1.5 text-center text-zinc-500 hover:text-rose-700 font-bold text-xs underline">
+          Discard session & return to menu
+        </button>
+      </div>
+    </div>
+  </div>
+
 
   <!-- JAVASCRIPT APPLICATION CORE -->
   <script>
@@ -776,6 +838,8 @@
         this.soundEnabled = true;
 
         this.isPlaying = false;
+        this.isPaused = false;
+        this.pausedAt = 0;
         this.currentDate = null;
         this.currentBreakdown = null;
         this.questionIndex = 0;
@@ -816,17 +880,51 @@
         };
       }
 
+      calculateOdd11(y2) {
+        let t0 = y2;
+        let isOdd1 = t0 % 2 !== 0;
+        let t1 = isOdd1 ? t0 + 11 : t0;
+        let step1 = isOdd1 
+          ? `<strong>${t0}</strong> is odd &rarr; +11 = <strong>${t1}</strong>`
+          : `<strong>${t0}</strong> is even &rarr; <strong>${t1}</strong>`;
+
+        let t2 = t1 / 2;
+        let step2 = `Halve: ${t1} ÷ 2 = <strong>${t2}</strong>`;
+
+        let isOdd2 = t2 % 2 !== 0;
+        let t3 = isOdd2 ? t2 + 11 : t2;
+        let step3 = isOdd2
+          ? `<strong>${t2}</strong> is odd &rarr; +11 = <strong>${t3}</strong>`
+          : `<strong>${t2}</strong> is even &rarr; <strong>${t3}</strong>`;
+
+        let rem = t3 % 7;
+        let offset = (7 - rem) % 7;
+        let nextMultiple = rem === 0 ? t3 : t3 + (7 - rem);
+        let step4 = rem === 0
+          ? `Multiple of 7: <strong>+0 offset</strong>`
+          : `Next mult of 7 (${nextMultiple}) − ${t3} = <strong>+${offset}</strong>`;
+
+        return {
+          y2,
+          t0,
+          t1,
+          t2,
+          t3,
+          offset,
+          step1,
+          step2,
+          step3,
+          step4
+        };
+      }
+
       calculateDoomsday(year, monthIndex, day) {
         const isLeap = this.isLeapYear(year);
         const centuryInfo = this.getCenturyAnchor(year);
 
         const y2 = year % 100;
-        const a = Math.floor(y2 / 12);
-        const b = y2 % 12;
-        const c = Math.floor(b / 4);
-        const yearOffsetRaw = a + b + c;
-        const yearOffsetMod = yearOffsetRaw % 7;
-        const yearDoomsdayVal = (centuryInfo.anchorValue + yearOffsetMod) % 7;
+        const odd11 = this.calculateOdd11(y2);
+        const yearDoomsdayVal = (centuryInfo.anchorValue + odd11.offset) % 7;
         const yearDoomsdayName = this.dayNames[yearDoomsdayVal];
 
         const monthInfo = this.months[monthIndex];
@@ -845,7 +943,7 @@
           isLeap,
           centuryInfo,
           y2,
-          div12: { a, b, c, sum: yearOffsetRaw, mod: yearOffsetMod },
+          odd11,
           yearDoomsdayVal,
           yearDoomsdayName,
           monthAnchorDay,
@@ -1062,6 +1160,7 @@
       startGame() {
         this.initAudio();
         this.isPlaying = true;
+        this.isPaused = false;
         this.questionIndex = 0;
         this.score = 0;
         this.streak = 0;
@@ -1100,7 +1199,7 @@
         const timerEl = document.getElementById('hud-timer');
 
         this.timerInterval = setInterval(() => {
-          if (!this.isPlaying) return;
+          if (!this.isPlaying || this.isPaused) return;
           const now = performance.now();
           const totalElapsed = (now - this.startTime) / 1000;
 
@@ -1120,6 +1219,70 @@
             timerEl.textContent = totalElapsed.toFixed(2) + 's';
           }
         }, 30);
+      }
+
+      handleXButton() {
+        if (!this.isPlaying) return;
+        if (!this.isPaused) {
+          this.pauseGame();
+        } else {
+          this.endGameAndReview();
+        }
+      }
+
+      pauseGame() {
+        if (!this.isPlaying || this.isPaused) return;
+        this.isPaused = true;
+        this.pausedAt = performance.now();
+
+        const answeredCount = this.roundAnswers.length;
+        document.getElementById('pause-stat-answered').textContent = answeredCount;
+        document.getElementById('pause-stat-streak').textContent = `🔥 ${this.streak}`;
+        
+        const subtitle = document.getElementById('pause-modal-subtitle');
+        const endReviewBtn = document.getElementById('pause-end-review-text');
+
+        if (this.currentMode === 'sprint') {
+          subtitle.textContent = `Answered ${answeredCount} of ${this.sprintCount} dates`;
+        } else if (this.currentMode === 'timeattack') {
+          subtitle.textContent = `Time Attack: ${answeredCount} dates solved`;
+        } else {
+          subtitle.textContent = `Endless Practice: ${answeredCount} dates solved`;
+        }
+
+        if (answeredCount > 0) {
+          endReviewBtn.textContent = `End Game & Review Answers (Esc / X)`;
+        } else {
+          endReviewBtn.textContent = `Exit to Menu (Esc / X)`;
+        }
+
+        this.openModal('modal-pause');
+      }
+
+      resumeGame() {
+        if (!this.isPaused) return;
+        const pauseDuration = performance.now() - this.pausedAt;
+        this.startTime += pauseDuration;
+        this.questionStartTime += pauseDuration;
+        this.isPaused = false;
+        this.closeModal('modal-pause');
+      }
+
+      endGameAndReview() {
+        this.closeModal('modal-pause');
+        if (this.roundAnswers.length > 0) {
+          this.finishGame(true);
+        } else {
+          this.abortToMenu();
+        }
+      }
+
+      abortToMenu() {
+        this.closeModal('modal-pause');
+        this.isPlaying = false;
+        this.isPaused = false;
+        if (this.timerInterval) clearInterval(this.timerInterval);
+        this.showScreen('menu');
       }
 
       nextQuestion() {
@@ -1228,12 +1391,15 @@
 
       abortGame() {
         this.isPlaying = false;
+        this.isPaused = false;
         if (this.timerInterval) clearInterval(this.timerInterval);
       }
 
-      finishGame() {
+      finishGame(isIncomplete = false) {
         this.isPlaying = false;
+        this.isPaused = false;
         if (this.timerInterval) clearInterval(this.timerInterval);
+        this.closeModal('modal-pause');
 
         const totalTime = (performance.now() - this.startTime) / 1000;
         const totalAnswered = this.roundAnswers.length;
@@ -1245,21 +1411,23 @@
         this.stats.totalAttempts += totalAnswered;
         
         let isPB = false;
-        if (this.currentMode === 'sprint' && this.sprintCount === 10 && accuracy === 100) {
-          if (!this.stats.sprint10Best || totalTime < this.stats.sprint10Best) {
-            this.stats.sprint10Best = totalTime;
-            isPB = true;
-          }
-        } else if (this.currentMode === 'timeattack' && this.timeAttackDuration === 60) {
-          if (!this.stats.ta60Best || correctCount > this.stats.ta60Best) {
-            this.stats.ta60Best = correctCount;
-            isPB = true;
+        if (!isIncomplete) {
+          if (this.currentMode === 'sprint' && this.sprintCount === 10 && accuracy === 100) {
+            if (!this.stats.sprint10Best || totalTime < this.stats.sprint10Best) {
+              this.stats.sprint10Best = totalTime;
+              isPB = true;
+            }
+          } else if (this.currentMode === 'timeattack' && this.timeAttackDuration === 60) {
+            if (!this.stats.ta60Best || correctCount > this.stats.ta60Best) {
+              this.stats.ta60Best = correctCount;
+              isPB = true;
+            }
           }
         }
         this.saveStats();
         this.updateStatsUI();
 
-        if (isPB || (accuracy === 100 && totalAnswered >= 10)) {
+        if (isPB || (!isIncomplete && accuracy === 100 && totalAnswered >= 10)) {
           this.playFanfareSound();
         }
 
@@ -1269,12 +1437,20 @@
         document.getElementById('res-max-streak').textContent = this.maxStreak;
 
         const headline = document.getElementById('results-headline');
+        const resultsTitle = document.getElementById('results-title');
+
         if (isPB) {
           headline.textContent = "🏆 New Personal Best!";
+          resultsTitle.textContent = "Performance Summary";
+        } else if (isIncomplete) {
+          headline.textContent = `⏸️ Incomplete Session (${totalAnswered} Answered)`;
+          resultsTitle.textContent = "Incomplete Game Review";
         } else if (accuracy === 100) {
           headline.textContent = "✨ Perfect 100% Accuracy!";
+          resultsTitle.textContent = "Performance Summary";
         } else {
           headline.textContent = "Round Complete!";
+          resultsTitle.textContent = "Performance Summary";
         }
 
         const tbody = document.getElementById('results-table-body');
@@ -1310,6 +1486,11 @@
 
       showInGameHint() {
         if (!this.currentBreakdown) return;
+        if (this.isPlaying && !this.isPaused) {
+          this.isPaused = true;
+          this.pausedAt = performance.now();
+          this._pausedByHint = true;
+        }
         this.showBreakdownModal(this.currentBreakdown);
       }
 
@@ -1319,29 +1500,39 @@
 
         document.getElementById('bd-century-anchor').textContent = `${bd.centuryInfo.anchorName} (${bd.centuryInfo.anchorValue})`;
         document.getElementById('bd-century-detail').innerHTML = `
-          Century <strong>${bd.centuryInfo.century}s</strong>: Anchor is <strong>${bd.centuryInfo.anchorName}</strong> (Code ${bd.centuryInfo.anchorValue}).
-          <span class="text-zinc-500 block text-[10px]">Rule: 1600=Tue, 1700=Sun, 1800=Fri, 1900=Wed (repeats every 400 yrs).</span>
+          Century <strong>${bd.centuryInfo.century}s</strong>: Anchor day is <strong>${bd.centuryInfo.anchorName}</strong> (Code ${bd.centuryInfo.anchorValue}).
+          <span class="text-zinc-500 block text-[10px] pt-0.5">Gregorian Cycle: 1600=Tue (2), 1700=Sun (0), 1800=Fri (5), 1900=Wed (3).</span>
         `;
 
+        const o = bd.odd11;
         document.getElementById('bd-year-doomsday').textContent = `${bd.yearDoomsdayName} (${bd.yearDoomsdayVal})`;
         document.getElementById('bd-year-detail').innerHTML = `
-          For year <strong>'${String(bd.y2).padStart(2, '0')}</strong>: 
-          \\(\\lfloor ${bd.y2}/12 \\rfloor = ${bd.div12.a}\\), remainder \\(${bd.div12.b}\\), and \\(\\lfloor ${bd.div12.b}/4 \\rfloor = ${bd.div12.c}\\).<br>
-          Sum = \\(${bd.div12.a} + ${bd.div12.b} + ${bd.div12.c} = ${bd.div12.sum}\\) &equiv; <strong>${bd.div12.mod}</strong> (mod 7).<br>
-          Year Doomsday = Century (${bd.centuryInfo.anchorValue}) + ${bd.div12.mod} = <strong>${bd.yearDoomsdayName} (${bd.yearDoomsdayVal})</strong>.
+          <div class="font-bold text-xs text-zinc-900 pb-1">
+            Year <strong>'${String(bd.y2).padStart(2, '0')}</strong> via Odd + 11 Method:
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-[11px]">
+            <div class="p-2 bg-white rounded-xl border border-paper-800/40 text-zinc-800">1. ${o.step1}</div>
+            <div class="p-2 bg-white rounded-xl border border-paper-800/40 text-zinc-800">2. ${o.step2}</div>
+            <div class="p-2 bg-white rounded-xl border border-paper-800/40 text-zinc-800">3. ${o.step3}</div>
+            <div class="p-2 bg-white rounded-xl border border-paper-800/40 text-zinc-800">4. ${o.step4}</div>
+          </div>
+          <div class="pt-2 text-xs text-zinc-800 font-medium">
+            Year Doomsday = Century (${bd.centuryInfo.anchorValue}) + Year Offset (${o.offset}) = ${bd.centuryInfo.anchorValue + o.offset} &rarr; <strong>${bd.yearDoomsdayName} (${bd.yearDoomsdayVal})</strong>.
+          </div>
         `;
 
         document.getElementById('bd-month-anchor').textContent = `${bd.monthShort} ${bd.monthAnchorDay}`;
         document.getElementById('bd-month-detail').innerHTML = `
-          In ${bd.monthName} ${bd.isLeap ? '(Leap Year)' : ''}, Doomsday falls on <strong>${bd.monthName} ${bd.monthAnchorDay}</strong>.<br>
-          <span class="text-cobalt-700 text-[11px] font-bold">Mnemonic: ${bd.monthMnemonic}</span>
+          In ${bd.monthName} ${bd.isLeap ? '(Leap Year)' : ''}, Doomsday anchor falls on <strong>${bd.monthName} ${bd.monthAnchorDay}</strong>.<br>
+          <span class="text-cobalt-700 text-xs font-bold">Mnemonic: ${bd.monthMnemonic}</span>
         `;
 
         document.getElementById('bd-final-day').textContent = bd.finalDayName;
         const diffSign = bd.diff >= 0 ? `+${bd.diff}` : `${bd.diff}`;
+        const rawSum = bd.yearDoomsdayVal + bd.diff;
         document.getElementById('bd-final-detail').innerHTML = `
-          Target Day: ${bd.day} &rarr; Difference = ${bd.day} &minus; ${bd.monthAnchorDay} = <strong>${diffSign}</strong> days.<br>
-          Final Day = Doomsday (${bd.yearDoomsdayVal}) ${diffSign} = ${bd.yearDoomsdayVal + bd.diff} &equiv; <strong>${bd.finalDayVal} (${bd.finalDayName})</strong>.
+          Target Day is ${bd.day} &rarr; Difference = ${bd.day} − ${bd.monthAnchorDay} = <strong>${diffSign}</strong> days.<br>
+          Final Day = Year Doomsday (${bd.yearDoomsdayVal}) ${diffSign} = ${rawSum} ≡ <strong>${bd.finalDayVal} (${bd.finalDayName})</strong>.
         `;
 
         this.openModal('modal-breakdown');
@@ -1353,6 +1544,15 @@
 
       closeModal(modalId) {
         document.getElementById(modalId).classList.add('hidden');
+        if (modalId === 'modal-breakdown' && this._pausedByHint) {
+          this._pausedByHint = false;
+          if (this.isPaused) {
+            const pauseDuration = performance.now() - this.pausedAt;
+            this.startTime += pauseDuration;
+            this.questionStartTime += pauseDuration;
+            this.isPaused = false;
+          }
+        }
       }
 
       openCheatSheet() {
@@ -1422,14 +1622,29 @@
 
       bindEvents() {
         window.addEventListener('keydown', (e) => {
-          const openModals = ['modal-breakdown', 'modal-cheatsheet', 'modal-stats'].filter(
+          const pauseModal = document.getElementById('modal-pause');
+          const pauseModalOpen = pauseModal && !pauseModal.classList.contains('hidden');
+          
+          if (pauseModalOpen) {
+            if (e.key === ' ' || e.key === 'Enter') {
+              e.preventDefault();
+              this.resumeGame();
+              return;
+            } else if (e.key === 'Escape' || e.key.toUpperCase() === 'X') {
+              e.preventDefault();
+              this.endGameAndReview();
+              return;
+            }
+          }
+
+          const otherOpenModals = ['modal-breakdown', 'modal-cheatsheet', 'modal-stats'].filter(
             id => !document.getElementById(id).classList.contains('hidden')
           );
 
-          if (openModals.length > 0) {
+          if (otherOpenModals.length > 0) {
             if (e.key === 'Escape' || e.key === ' ' || e.key === 'Enter') {
               e.preventDefault();
-              openModals.forEach(id => this.closeModal(id));
+              otherOpenModals.forEach(id => this.closeModal(id));
               return;
             }
           }
@@ -1452,8 +1667,14 @@
             }
           }
 
-          if (this.isPlaying) {
+          if (this.isPlaying && !this.isPaused) {
             const key = e.key.toUpperCase();
+
+            if (e.key === 'Escape' || key === 'P' || key === 'X') {
+              e.preventDefault();
+              this.pauseGame();
+              return;
+            }
 
             const numKeyMap = {
               '1': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 0, '0': 0
@@ -1472,9 +1693,6 @@
             } else if (key === 'H' || e.key === '?') {
               e.preventDefault();
               this.showInGameHint();
-            } else if (e.key === 'Escape') {
-              e.preventDefault();
-              this.showScreen('menu');
             }
           }
         });

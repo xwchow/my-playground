@@ -79,9 +79,13 @@ Adding a new interactive toy or mini-game takes less than 1 minute:
 - **1800s, 2200s, 2600s**: **Friday (5)**
 - **1900s, 2300s, 2700s**: **Wednesday (3)**
 
-### 3. Year Doomsday Offset
+### 3. Year Doomsday Offset ("Odd + 11" Method)
 For the last 2 digits of the year $y$:
-$$\lfloor y/12 \rfloor + (y \bmod 12) + \lfloor (y \bmod 12)/4 \rfloor \pmod 7$$
+1. If $y$ is odd, add 11 ($y + 11$).
+2. Halve the result ($y / 2$).
+3. If odd, add 11.
+4. Subtract from the next multiple of 7 (or $(7 - (y \bmod 7)) \bmod 7$).
+*(Classic equivalent: $\lfloor y/12 \rfloor + (y \bmod 12) + \lfloor (y \bmod 12)/4 \rfloor \pmod 7$)*
 
 ### 4. Month Anchors (Always Fall on Doomsday)
 - **Even Months**: 4/4, 6/6, 8/8, 10/10, 12/12
