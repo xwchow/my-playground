@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,27 +11,14 @@
       darkMode: 'class',
       theme: {
         extend: {
-          colors: {
-            brand: {
-              50: '#eef2ff',
-              100: '#e0e7ff',
-              200: '#c7d2fe',
-              300: '#a5b4fc',
-              400: '#818cf8',
-              500: '#6366f1',
-              600: '#4f46e5',
-              700: '#4338ca',
-              800: '#3730a3',
-              900: '#312e81',
-              950: '#1e1b4b',
-            }
-          },
           fontFamily: {
             mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace']
           },
-          animation: {
-            'bounce-short': 'bounce 0.5s ease-in-out 1',
-            'pulse-fast': 'pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+          boxShadow: {
+            'brutal-sm': '2px 2px 0px 0px #18181b',
+            'brutal': '4px 4px 0px 0px #18181b',
+            'brutal-lg': '6px 6px 0px 0px #18181b',
+            'brutal-xl': '8px 8px 0px 0px #18181b',
           }
         }
       }
@@ -40,66 +27,62 @@
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
-    /* Custom subtle scrollbars */
-    ::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
+    /* Neo-Brutalist Tactile Controls */
+    .btn-brutal {
+      transition: all 0.1s ease;
     }
-    ::-webkit-scrollbar-track {
-      background: transparent;
+    .btn-brutal:hover {
+      transform: translate(-1px, -1px);
+      box-shadow: 4px 4px 0px 0px #18181b;
     }
-    ::-webkit-scrollbar-thumb {
-      background: rgba(156, 163, 175, 0.5);
-      border-radius: 9999px;
+    .btn-brutal:active {
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px 0px 0px #18181b;
     }
-    ::-webkit-scrollbar-thumb:hover {
-      background: rgba(156, 163, 175, 0.8);
-    }
-    .key-badge {
-      box-shadow: 0 1px 2px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.2);
+    .card-brutal {
+      transition: all 0.15s ease;
     }
   </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans transition-colors duration-200 selection:bg-indigo-500 selection:text-white">
+<body class="bg-[#fafaf9] text-zinc-900 min-h-screen flex flex-col font-sans transition-colors duration-150 selection:bg-yellow-300 selection:text-zinc-950">
 
   <!-- TOP NAVIGATION HEADER -->
-  <header class="border-b border-slate-800/80 bg-slate-900/60 backdrop-blur-md sticky top-0 z-30 px-4 py-3 sm:px-8">
+  <header class="border-b-2 border-zinc-900 bg-white sticky top-0 z-30 px-4 py-3 sm:px-8">
     <div class="max-w-6xl mx-auto flex items-center justify-between">
       <div class="flex items-center gap-3">
         <!-- Back to Hub Link -->
-        <a href="../" class="p-2 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-400 hover:text-white border border-slate-700/60 transition flex items-center gap-1.5 text-xs font-medium" title="Back to Playground Hub">
-          <i data-lucide="arrow-left" class="w-4 h-4"></i>
-          <span class="hidden sm:inline">Hub</span>
+        <a href="../" class="btn-brutal px-2.5 py-1.5 rounded-xl bg-white hover:bg-zinc-100 text-zinc-800 border-2 border-zinc-900 shadow-brutal-sm flex items-center gap-1.5 text-xs font-bold" title="Back to Playground Hub">
+          <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>
+          <span class="hidden sm:inline">Playground</span>
         </a>
 
         <div class="flex items-center gap-2.5 cursor-pointer" onclick="app.showScreen('menu')">
-          <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/20 text-white font-bold text-base">
-            <i data-lucide="calendar" class="w-5 h-5"></i>
+          <div class="w-9 h-9 rounded-xl bg-yellow-300 border-2 border-zinc-900 shadow-brutal-sm flex items-center justify-center text-lg font-black">
+            📅
           </div>
           <div>
-            <h1 class="text-base sm:text-lg font-bold tracking-tight bg-gradient-to-r from-white via-slate-200 to-indigo-200 bg-clip-text text-transparent flex items-center gap-2">
+            <h1 class="text-base sm:text-lg font-black tracking-tight text-zinc-950">
               Doomsday Rule Trainer
-              <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">Pro</span>
             </h1>
-            <p class="text-xs text-slate-400 hidden sm:block">Mental Day-of-the-Week Calculation</p>
+            <p class="text-[11px] text-zinc-500 font-medium hidden sm:block">Mental Day-of-the-Week Calculation</p>
           </div>
         </div>
       </div>
 
       <!-- Header Controls -->
       <div class="flex items-center gap-2">
-        <button id="btn-sound-toggle" onclick="app.toggleSound()" class="p-2 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white transition border border-slate-700/60" title="Toggle Sound">
-          <i id="icon-sound" data-lucide="volume-2" class="w-5 h-5"></i>
+        <button id="btn-sound-toggle" onclick="app.toggleSound()" class="btn-brutal p-2 rounded-xl bg-white hover:bg-zinc-100 text-zinc-800 border-2 border-zinc-900 shadow-brutal-sm" title="Toggle Sound">
+          <i id="icon-sound" data-lucide="volume-2" class="w-4 h-4"></i>
         </button>
-        <button onclick="app.openCheatSheet()" class="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 border border-indigo-500/40 text-xs sm:text-sm font-medium transition" title="View Doomsday Rule Guide">
-          <i data-lucide="book-open" class="w-4 h-4"></i>
+        <button onclick="app.openCheatSheet()" class="btn-brutal flex items-center gap-1.5 px-3 py-2 rounded-xl bg-yellow-200 hover:bg-yellow-300 text-zinc-950 border-2 border-zinc-900 shadow-brutal-sm text-xs sm:text-sm font-bold" title="View Doomsday Rule Guide">
+          <i data-lucide="book-open" class="w-3.5 h-3.5"></i>
           <span>Guide & Cheat Sheet</span>
         </button>
-        <button onclick="app.openStatsModal()" class="p-2 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white transition border border-slate-700/60" title="Lifetime Stats">
-          <i data-lucide="trophy" class="w-5 h-5 text-amber-400"></i>
+        <button onclick="app.openStatsModal()" class="btn-brutal p-2 rounded-xl bg-white hover:bg-zinc-100 text-zinc-800 border-2 border-zinc-900 shadow-brutal-sm" title="Lifetime Stats">
+          <i data-lucide="trophy" class="w-4 h-4 text-amber-500"></i>
         </button>
-        <button id="btn-theme-toggle" onclick="app.toggleTheme()" class="p-2 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white transition border border-slate-700/60" title="Toggle Light/Dark Theme">
-          <i id="icon-theme" data-lucide="sun" class="w-5 h-5"></i>
+        <button id="btn-theme-toggle" onclick="app.toggleTheme()" class="btn-brutal p-2 rounded-xl bg-white hover:bg-zinc-100 text-zinc-800 border-2 border-zinc-900 shadow-brutal-sm" title="Toggle Light/Dark Theme">
+          <i id="icon-theme" data-lucide="moon" class="w-4 h-4"></i>
         </button>
       </div>
     </div>
@@ -109,139 +92,139 @@
   <main class="flex-1 max-w-5xl w-full mx-auto p-4 sm:p-6 flex flex-col justify-center">
 
     <!-- SCREEN 1: MAIN MENU / CONFIGURATION -->
-    <section id="screen-menu" class="space-y-8 py-4">
+    <section id="screen-menu" class="space-y-6 py-2">
       <!-- Hero Intro -->
-      <div class="text-center space-y-3 max-w-2xl mx-auto">
-        <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white">
-          Master the <span class="bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">Doomsday Rule</span>
+      <div class="text-center space-y-2 max-w-2xl mx-auto">
+        <h2 class="text-3xl sm:text-4xl font-black tracking-tight text-zinc-950">
+          Master the <span class="bg-yellow-300 px-2 py-0.5 rounded-lg border-2 border-zinc-900 shadow-brutal-sm inline-block rotate-[-1deg]">Doomsday Rule</span>
         </h2>
-        <p class="text-slate-400 text-sm sm:text-base leading-relaxed">
-          Train your mental calculation speed to determine the day of the week for any date in history in seconds using John Conway's algorithm.
+        <p class="text-zinc-600 text-xs sm:text-sm leading-relaxed max-w-lg mx-auto">
+          Calculate the day of the week for any date in history in seconds using John Conway's algorithm.
         </p>
       </div>
 
       <!-- Mode Selection Grid -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <!-- Sprint Mode Card -->
-        <div onclick="app.selectMode('sprint')" id="mode-card-sprint" class="cursor-pointer group relative rounded-2xl bg-slate-900/90 border-2 border-indigo-500/80 p-5 hover:border-indigo-400 transition-all duration-200 hover:shadow-xl hover:shadow-indigo-500/10 flex flex-col justify-between">
+        <div onclick="app.selectMode('sprint')" id="mode-card-sprint" class="cursor-pointer card-brutal relative rounded-2xl bg-yellow-100 border-2 border-zinc-900 shadow-brutal p-5 flex flex-col justify-between">
           <div>
-            <div class="w-12 h-12 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center mb-4 group-hover:scale-110 transition duration-200 border border-indigo-500/30">
-              <i data-lucide="zap" class="w-6 h-6"></i>
+            <div class="w-11 h-11 rounded-xl bg-yellow-300 border-2 border-zinc-900 shadow-brutal-sm flex items-center justify-center text-xl mb-3 font-black">
+              ⚡
             </div>
-            <h3 class="text-lg font-bold text-white mb-1 flex items-center justify-between">
+            <h3 class="text-base font-black text-zinc-950 mb-1 flex items-center justify-between">
               Sprint Mode
-              <span class="text-xs bg-indigo-500/20 text-indigo-300 px-2 py-0.5 rounded-full font-medium">Standard</span>
+              <span class="text-[10px] bg-zinc-900 text-white px-2 py-0.5 rounded-md font-bold">Benchmark</span>
             </h3>
-            <p class="text-xs text-slate-400 leading-relaxed mb-4">
-              Solve a fixed number of dates as fast and accurately as possible. Best for benchmark tests.
+            <p class="text-xs text-zinc-600 leading-relaxed mb-4">
+              Solve a fixed number of dates as fast and accurately as possible.
             </p>
           </div>
           <!-- Sprint Config Sub-options -->
-          <div class="flex items-center gap-2 pt-2 border-t border-slate-800">
-            <span class="text-xs text-slate-400">Questions:</span>
+          <div class="flex items-center gap-2 pt-2 border-t-2 border-zinc-900/20">
+            <span class="text-xs font-bold text-zinc-700">Dates:</span>
             <div class="flex gap-1.5" onclick="event.stopPropagation()">
-              <button onclick="app.setSprintCount(10)" class="btn-sprint-count px-2.5 py-1 text-xs rounded-md bg-indigo-600 text-white font-semibold" data-count="10">10</button>
-              <button onclick="app.setSprintCount(25)" class="btn-sprint-count px-2.5 py-1 text-xs rounded-md bg-slate-800 text-slate-300 hover:bg-slate-700" data-count="25">25</button>
-              <button onclick="app.setSprintCount(50)" class="btn-sprint-count px-2.5 py-1 text-xs rounded-md bg-slate-800 text-slate-300 hover:bg-slate-700" data-count="50">50</button>
+              <button onclick="app.setSprintCount(10)" class="btn-sprint-count btn-brutal px-2.5 py-1 text-xs rounded-lg bg-zinc-900 text-white font-bold border-2 border-zinc-900 shadow-brutal-sm" data-count="10">10</button>
+              <button onclick="app.setSprintCount(25)" class="btn-sprint-count btn-brutal px-2.5 py-1 text-xs rounded-lg bg-white text-zinc-800 font-bold border-2 border-zinc-900 shadow-brutal-sm" data-count="25">25</button>
+              <button onclick="app.setSprintCount(50)" class="btn-sprint-count btn-brutal px-2.5 py-1 text-xs rounded-lg bg-white text-zinc-800 font-bold border-2 border-zinc-900 shadow-brutal-sm" data-count="50">50</button>
             </div>
           </div>
         </div>
 
         <!-- Time Attack Card -->
-        <div onclick="app.selectMode('timeattack')" id="mode-card-timeattack" class="cursor-pointer group relative rounded-2xl bg-slate-900/90 border-2 border-slate-800 p-5 hover:border-indigo-500/60 transition-all duration-200 hover:shadow-xl hover:shadow-indigo-500/10 flex flex-col justify-between">
+        <div onclick="app.selectMode('timeattack')" id="mode-card-timeattack" class="cursor-pointer card-brutal relative rounded-2xl bg-white border-2 border-zinc-900 shadow-brutal p-5 flex flex-col justify-between">
           <div>
-            <div class="w-12 h-12 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center mb-4 group-hover:scale-110 transition duration-200 border border-amber-500/30">
-              <i data-lucide="timer" class="w-6 h-6"></i>
+            <div class="w-11 h-11 rounded-xl bg-orange-200 border-2 border-zinc-900 shadow-brutal-sm flex items-center justify-center text-xl mb-3 font-black">
+              ⏱️
             </div>
-            <h3 class="text-lg font-bold text-white mb-1 flex items-center justify-between">
+            <h3 class="text-base font-black text-zinc-950 mb-1 flex items-center justify-between">
               Time Attack
-              <span class="text-xs bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded-full font-medium">Speed</span>
+              <span class="text-[10px] bg-orange-200 border border-zinc-900 text-zinc-900 px-2 py-0.5 rounded-md font-bold">Speed</span>
             </h3>
-            <p class="text-xs text-slate-400 leading-relaxed mb-4">
-              Race against the countdown clock. Build streaks to maximize your score before time runs out.
+            <p class="text-xs text-zinc-600 leading-relaxed mb-4">
+              Race against the clock. Build streaks to maximize your score before time runs out.
             </p>
           </div>
           <!-- Time Attack Config Sub-options -->
-          <div class="flex items-center gap-2 pt-2 border-t border-slate-800">
-            <span class="text-xs text-slate-400">Duration:</span>
+          <div class="flex items-center gap-2 pt-2 border-t-2 border-zinc-900/20">
+            <span class="text-xs font-bold text-zinc-700">Time:</span>
             <div class="flex gap-1.5" onclick="event.stopPropagation()">
-              <button onclick="app.setTimeAttackDuration(60)" class="btn-ta-dur px-2.5 py-1 text-xs rounded-md bg-indigo-600 text-white font-semibold" data-dur="60">60s</button>
-              <button onclick="app.setTimeAttackDuration(120)" class="btn-ta-dur px-2.5 py-1 text-xs rounded-md bg-slate-800 text-slate-300 hover:bg-slate-700" data-dur="120">120s</button>
+              <button onclick="app.setTimeAttackDuration(60)" class="btn-ta-dur btn-brutal px-2.5 py-1 text-xs rounded-lg bg-zinc-900 text-white font-bold border-2 border-zinc-900 shadow-brutal-sm" data-dur="60">60s</button>
+              <button onclick="app.setTimeAttackDuration(120)" class="btn-ta-dur btn-brutal px-2.5 py-1 text-xs rounded-lg bg-white text-zinc-800 font-bold border-2 border-zinc-900 shadow-brutal-sm" data-dur="120">120s</button>
             </div>
           </div>
         </div>
 
         <!-- Endless / Zen Card -->
-        <div onclick="app.selectMode('endless')" id="mode-card-endless" class="cursor-pointer group relative rounded-2xl bg-slate-900/90 border-2 border-slate-800 p-5 hover:border-indigo-500/60 transition-all duration-200 hover:shadow-xl hover:shadow-indigo-500/10 flex flex-col justify-between">
+        <div onclick="app.selectMode('endless')" id="mode-card-endless" class="cursor-pointer card-brutal relative rounded-2xl bg-white border-2 border-zinc-900 shadow-brutal p-5 flex flex-col justify-between">
           <div>
-            <div class="w-12 h-12 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center mb-4 group-hover:scale-110 transition duration-200 border border-emerald-500/30">
-              <i data-lucide="infinity" class="w-6 h-6"></i>
+            <div class="w-11 h-11 rounded-xl bg-emerald-200 border-2 border-zinc-900 shadow-brutal-sm flex items-center justify-center text-xl mb-3 font-black">
+              🌱
             </div>
-            <h3 class="text-lg font-bold text-white mb-1 flex items-center justify-between">
-              Endless Practice
-              <span class="text-xs bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full font-medium">Zen</span>
+            <h3 class="text-base font-black text-zinc-950 mb-1 flex items-center justify-between">
+              Endless Zen
+              <span class="text-[10px] bg-emerald-200 border border-zinc-900 text-zinc-900 px-2 py-0.5 rounded-md font-bold">Relaxed</span>
             </h3>
-            <p class="text-xs text-slate-400 leading-relaxed mb-4">
-              Stress-free practice without a countdown. Instant step-by-step breakdown available on demand.
+            <p class="text-xs text-zinc-600 leading-relaxed mb-4">
+              Practice at your own pace without pressure. Step-by-step math hints on demand.
             </p>
           </div>
-          <div class="flex items-center justify-between pt-2 border-t border-slate-800 text-xs text-slate-400">
-            <span>Untimed / Live clock</span>
-            <span class="text-emerald-400 font-medium">Self-Paced</span>
+          <div class="flex items-center justify-between pt-2 border-t-2 border-zinc-900/20 text-xs font-bold text-zinc-600">
+            <span>Untimed</span>
+            <span class="text-emerald-700">Self-Paced</span>
           </div>
         </div>
       </div>
 
       <!-- Settings & Date Range Section -->
-      <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 sm:p-6 space-y-5">
-        <h3 class="text-sm font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-2">
-          <i data-lucide="sliders-horizontal" class="w-4 h-4 text-indigo-400"></i>
+      <div class="bg-white border-2 border-zinc-900 rounded-2xl shadow-brutal p-5 sm:p-6 space-y-4">
+        <h3 class="text-xs font-black uppercase tracking-wider text-zinc-950 flex items-center gap-1.5">
+          <i data-lucide="sliders-horizontal" class="w-3.5 h-3.5"></i>
           Practice Settings & Date Range
         </h3>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
           <!-- Date Range Selector -->
           <div class="space-y-2">
-            <label class="text-xs font-medium text-slate-300">Target Year Range</label>
+            <label class="text-xs font-bold text-zinc-800">Target Year Range</label>
             <div class="grid grid-cols-2 sm:grid-cols-3 gap-2" id="range-presets">
-              <button onclick="app.setDatePreset('current')" class="btn-range px-3 py-2 text-xs rounded-xl bg-slate-800 text-slate-300 hover:bg-slate-700 border border-slate-700/60 font-medium text-left truncate" data-preset="current">
-                Current Year (2026)
+              <button onclick="app.setDatePreset('current')" class="btn-range btn-brutal px-2.5 py-2 text-xs rounded-xl bg-white text-zinc-800 border-2 border-zinc-900 shadow-brutal-sm font-bold text-left truncate" data-preset="current">
+                Current (2026)
               </button>
-              <button onclick="app.setDatePreset('2000-2099')" class="btn-range px-3 py-2 text-xs rounded-xl bg-indigo-600 text-white border border-indigo-500 font-semibold text-left truncate" data-preset="2000-2099">
+              <button onclick="app.setDatePreset('2000-2099')" class="btn-range btn-brutal px-2.5 py-2 text-xs rounded-xl bg-yellow-300 text-zinc-950 border-2 border-zinc-900 shadow-brutal-sm font-black text-left truncate" data-preset="2000-2099">
                 2000 – 2099 (21st C.)
               </button>
-              <button onclick="app.setDatePreset('1900-1999')" class="btn-range px-3 py-2 text-xs rounded-xl bg-slate-800 text-slate-300 hover:bg-slate-700 border border-slate-700/60 font-medium text-left truncate" data-preset="1900-1999">
+              <button onclick="app.setDatePreset('1900-1999')" class="btn-range btn-brutal px-2.5 py-2 text-xs rounded-xl bg-white text-zinc-800 border-2 border-zinc-900 shadow-brutal-sm font-bold text-left truncate" data-preset="1900-1999">
                 1900 – 1999 (20th C.)
               </button>
-              <button onclick="app.setDatePreset('1900-2099')" class="btn-range px-3 py-2 text-xs rounded-xl bg-slate-800 text-slate-300 hover:bg-slate-700 border border-slate-700/60 font-medium text-left truncate" data-preset="1900-2099">
+              <button onclick="app.setDatePreset('1900-2099')" class="btn-range btn-brutal px-2.5 py-2 text-xs rounded-xl bg-white text-zinc-800 border-2 border-zinc-900 shadow-brutal-sm font-bold text-left truncate" data-preset="1900-2099">
                 1900 – 2099 (200 yrs)
               </button>
-              <button onclick="app.setDatePreset('1600-2399')" class="btn-range px-3 py-2 text-xs rounded-xl bg-slate-800 text-slate-300 hover:bg-slate-700 border border-slate-700/60 font-medium text-left truncate" data-preset="1600-2399">
+              <button onclick="app.setDatePreset('1600-2399')" class="btn-range btn-brutal px-2.5 py-2 text-xs rounded-xl bg-white text-zinc-800 border-2 border-zinc-900 shadow-brutal-sm font-bold text-left truncate" data-preset="1600-2399">
                 1600 – 2399 (All C.)
               </button>
-              <button onclick="app.setDatePreset('custom')" class="btn-range px-3 py-2 text-xs rounded-xl bg-slate-800 text-slate-300 hover:bg-slate-700 border border-slate-700/60 font-medium text-left truncate" data-preset="custom">
-                Custom Range...
+              <button onclick="app.setDatePreset('custom')" class="btn-range btn-brutal px-2.5 py-2 text-xs rounded-xl bg-white text-zinc-800 border-2 border-zinc-900 shadow-brutal-sm font-bold text-left truncate" data-preset="custom">
+                Custom...
               </button>
             </div>
-            <!-- Custom Range Input Fields (Hidden by default) -->
-            <div id="custom-range-inputs" class="hidden flex items-center gap-3 pt-2">
+            <!-- Custom Range Input Fields -->
+            <div id="custom-range-inputs" class="hidden flex items-center gap-2 pt-1">
               <div class="flex-1">
-                <label class="text-[10px] text-slate-400 block mb-1">From Year</label>
-                <input type="number" id="custom-year-min" min="1600" max="2999" value="1900" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-indigo-500">
+                <label class="text-[10px] text-zinc-500 font-bold block mb-0.5">From Year</label>
+                <input type="number" id="custom-year-min" min="1600" max="2999" value="1900" class="w-full bg-white border-2 border-zinc-900 rounded-lg px-2.5 py-1 text-xs font-bold text-zinc-900 focus:outline-none">
               </div>
-              <span class="text-slate-500 pt-4">—</span>
+              <span class="text-zinc-500 pt-3 font-bold">—</span>
               <div class="flex-1">
-                <label class="text-[10px] text-slate-400 block mb-1">To Year</label>
-                <input type="number" id="custom-year-max" min="1600" max="2999" value="2099" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-indigo-500">
+                <label class="text-[10px] text-zinc-500 font-bold block mb-0.5">To Year</label>
+                <input type="number" id="custom-year-max" min="1600" max="2999" value="2099" class="w-full bg-white border-2 border-zinc-900 rounded-lg px-2.5 py-1 text-xs font-bold text-zinc-900 focus:outline-none">
               </div>
             </div>
           </div>
 
           <!-- Date Display Format & Preferences -->
-          <div class="space-y-4">
-            <div class="space-y-2">
-              <label class="text-xs font-medium text-slate-300">Date Display Format</label>
-              <select id="select-date-format" onchange="app.setDateFormat(this.value)" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500">
+          <div class="space-y-3">
+            <div class="space-y-1.5">
+              <label class="text-xs font-bold text-zinc-800">Date Display Format</label>
+              <select id="select-date-format" onchange="app.setDateFormat(this.value)" class="w-full bg-white border-2 border-zinc-900 rounded-xl px-3 py-2 text-xs font-bold text-zinc-900 focus:outline-none shadow-brutal-sm">
                 <option value="DMY">14 July 1789 (Day Month Year)</option>
                 <option value="MDY">July 14, 1789 (Month Day, Year)</option>
                 <option value="ISO">1789-07-14 (ISO 8601)</option>
@@ -249,11 +232,11 @@
               </select>
             </div>
 
-            <!-- Instant Explanation Checkbox for Endless -->
-            <div class="flex items-center gap-2.5 pt-1">
-              <input type="checkbox" id="check-auto-breakdown" class="w-4 h-4 rounded text-indigo-600 bg-slate-950 border-slate-700 focus:ring-indigo-500">
-              <label for="check-auto-breakdown" class="text-xs text-slate-300 cursor-pointer">
-                Auto-show Doomsday breakdown whenever I answer incorrectly
+            <!-- Instant Explanation Checkbox -->
+            <div class="flex items-center gap-2 pt-1">
+              <input type="checkbox" id="check-auto-breakdown" class="w-4 h-4 rounded border-2 border-zinc-900 text-zinc-900 focus:ring-0">
+              <label for="check-auto-breakdown" class="text-xs text-zinc-700 font-medium cursor-pointer">
+                Auto-show math breakdown on mistake (Endless mode)
               </label>
             </div>
           </div>
@@ -261,152 +244,148 @@
       </div>
 
       <!-- Big Start Button -->
-      <div class="flex flex-col items-center gap-2">
-        <button onclick="app.startGame()" class="w-full sm:w-80 py-4 rounded-2xl bg-gradient-to-r from-indigo-500 via-indigo-600 to-purple-600 hover:from-indigo-400 hover:via-indigo-500 hover:to-purple-500 text-white font-bold text-lg shadow-xl shadow-indigo-600/30 hover:shadow-indigo-600/50 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 group">
-          <i data-lucide="play" class="w-5 h-5 fill-current group-hover:translate-x-0.5 transition-transform"></i>
+      <div class="flex flex-col items-center gap-2 pt-2">
+        <button onclick="app.startGame()" class="btn-brutal w-full sm:w-80 py-4 rounded-2xl bg-yellow-400 hover:bg-yellow-300 text-zinc-950 font-black text-lg border-2 border-zinc-900 shadow-brutal flex items-center justify-center gap-2 group">
+          <i data-lucide="play" class="w-5 h-5 fill-current"></i>
           <span>Start Training</span>
         </button>
-        <span class="text-xs text-slate-500">Press <kbd class="px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 text-slate-300 font-mono text-[10px]">Space</kbd> or <kbd class="px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 text-slate-300 font-mono text-[10px]">Enter</kbd> to start</span>
+        <span class="text-xs text-zinc-500 font-medium">Press <kbd class="px-1.5 py-0.5 rounded bg-zinc-100 border border-zinc-300 text-zinc-800 font-mono text-[10px] font-bold">Space</kbd> or <kbd class="px-1.5 py-0.5 rounded bg-zinc-100 border border-zinc-300 text-zinc-800 font-mono text-[10px] font-bold">Enter</kbd></span>
       </div>
     </section>
 
     <!-- SCREEN 2: ACTIVE GAME PLAY -->
-    <section id="screen-game" class="hidden space-y-6 max-w-2xl mx-auto w-full py-2">
+    <section id="screen-game" class="hidden space-y-5 max-w-2xl mx-auto w-full py-2">
       <!-- Game HUD -->
-      <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 flex items-center justify-between shadow-lg">
+      <div class="bg-white border-2 border-zinc-900 rounded-2xl p-4 flex items-center justify-between shadow-brutal">
         <!-- Mode & Question / Streak Indicator -->
         <div class="flex items-center gap-4">
           <div class="flex flex-col">
-            <span class="text-[10px] uppercase font-bold tracking-wider text-slate-400" id="hud-mode-title">Sprint</span>
-            <div class="flex items-center gap-1.5 text-lg font-bold text-white">
+            <span class="text-[10px] uppercase font-black tracking-wider text-zinc-500" id="hud-mode-title">Sprint</span>
+            <div class="flex items-center gap-1.5 text-lg font-black text-zinc-950">
               <span id="hud-progress">1 / 10</span>
             </div>
           </div>
 
-          <div class="h-8 w-px bg-slate-800"></div>
+          <div class="h-8 w-0.5 bg-zinc-200"></div>
 
           <!-- Streak Badge -->
           <div class="flex flex-col">
-            <span class="text-[10px] uppercase font-bold tracking-wider text-slate-400">Streak</span>
-            <div class="flex items-center gap-1 text-lg font-bold text-amber-400">
-              <i data-lucide="flame" class="w-4 h-4 fill-amber-500 text-amber-500"></i>
+            <span class="text-[10px] uppercase font-black tracking-wider text-zinc-500">Streak</span>
+            <div class="flex items-center gap-1 text-lg font-black text-amber-600">
+              <span class="text-base">🔥</span>
               <span id="hud-streak">0</span>
             </div>
           </div>
         </div>
 
         <!-- Timer / Countdown -->
-        <div class="flex items-center gap-4">
+        <div class="flex items-center gap-3">
           <div class="text-right flex flex-col items-end">
-            <span class="text-[10px] uppercase font-bold tracking-wider text-slate-400" id="hud-timer-label">Time</span>
-            <div class="font-mono text-2xl font-black tracking-tight text-indigo-400" id="hud-timer">0.00s</div>
+            <span class="text-[10px] uppercase font-black tracking-wider text-zinc-500" id="hud-timer-label">Time</span>
+            <div class="font-mono text-2xl font-black tracking-tight text-zinc-950" id="hud-timer">0.00s</div>
           </div>
 
           <!-- Action buttons -->
           <div class="flex items-center gap-1">
-            <button onclick="app.showInGameHint()" class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-indigo-400 border border-slate-700/60 transition" title="Show Hint (H)">
-              <i data-lucide="help-circle" class="w-5 h-5"></i>
+            <button onclick="app.showInGameHint()" class="btn-brutal p-2 rounded-xl bg-yellow-200 text-zinc-900 border-2 border-zinc-900 shadow-brutal-sm" title="Show Hint (H)">
+              <i data-lucide="help-circle" class="w-4 h-4"></i>
             </button>
-            <button onclick="app.abortGame()" class="p-2 rounded-xl bg-slate-800 hover:bg-rose-950 text-slate-400 hover:text-rose-400 border border-slate-700/60 transition" title="Exit Game (Esc)">
-              <i data-lucide="x" class="w-5 h-5"></i>
+            <button onclick="app.abortGame()" class="btn-brutal p-2 rounded-xl bg-white hover:bg-rose-100 text-zinc-700 hover:text-rose-600 border-2 border-zinc-900 shadow-brutal-sm" title="Exit Game (Esc)">
+              <i data-lucide="x" class="w-4 h-4"></i>
             </button>
           </div>
         </div>
       </div>
 
       <!-- Sprint Progress Bar (if Sprint) -->
-      <div id="hud-progressbar-container" class="w-full bg-slate-800/60 h-2 rounded-full overflow-hidden">
-        <div id="hud-progressbar" class="bg-gradient-to-r from-indigo-500 to-purple-500 h-full w-0 transition-all duration-300 rounded-full"></div>
+      <div id="hud-progressbar-container" class="w-full bg-zinc-200 border-2 border-zinc-900 h-3 rounded-full overflow-hidden shadow-brutal-sm">
+        <div id="hud-progressbar" class="bg-yellow-400 h-full w-0 transition-all duration-200 border-r-2 border-zinc-900"></div>
       </div>
 
       <!-- Date Flashcard Area -->
-      <div id="date-card" class="relative rounded-3xl bg-gradient-to-b from-slate-900 to-slate-950 border-2 border-indigo-500/30 p-8 sm:p-12 text-center shadow-2xl transition-all duration-200 overflow-hidden">
-        <!-- Background decorative ambient blur -->
-        <div class="absolute -top-24 -left-24 w-48 h-48 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
-        <div class="absolute -bottom-24 -right-24 w-48 h-48 bg-purple-500/10 rounded-full blur-3xl pointer-events-none"></div>
-
-        <span class="text-xs uppercase tracking-widest font-semibold text-indigo-400 mb-2 block">What day of the week is</span>
+      <div id="date-card" class="relative rounded-3xl bg-white border-2 border-zinc-900 p-8 sm:p-12 text-center shadow-brutal-lg transition-all duration-150 overflow-hidden">
+        <span class="text-xs uppercase tracking-widest font-black text-zinc-500 mb-2 block">What day of the week is</span>
         
         <!-- The Giant Date Display -->
-        <h2 id="target-date-display" class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight py-4 drop-shadow-md">
+        <h2 id="target-date-display" class="text-3xl sm:text-5xl font-black text-zinc-950 tracking-tight py-4">
           14 July 1789
         </h2>
 
         <!-- Flash Feedback Overlay -->
-        <div id="feedback-overlay" class="opacity-0 transition-opacity duration-150 absolute inset-0 flex items-center justify-center font-bold text-3xl sm:text-4xl pointer-events-none backdrop-blur-xs rounded-3xl">
-          <div id="feedback-text" class="flex items-center gap-2 px-6 py-3 rounded-2xl shadow-2xl">
-            <!-- Icon and text populated dynamically -->
+        <div id="feedback-overlay" class="opacity-0 transition-opacity duration-150 absolute inset-0 flex items-center justify-center font-black text-2xl sm:text-3xl pointer-events-none rounded-3xl">
+          <div id="feedback-text" class="flex items-center gap-2 px-6 py-3 rounded-2xl shadow-brutal-lg border-2 border-zinc-900">
+            <!-- Populated dynamically -->
           </div>
         </div>
       </div>
 
       <!-- 7 Day Selection Buttons -->
       <div class="space-y-3">
-        <div class="text-center text-xs text-slate-400 flex items-center justify-center gap-4">
-          <span>Choose the day below or press <kbd class="px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 text-slate-300 font-mono text-[10px]">1-7</kbd> / <kbd class="px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 text-slate-300 font-mono text-[10px]">M T W R F S U</kbd></span>
+        <div class="text-center text-xs text-zinc-500 font-medium flex items-center justify-center gap-3">
+          <span>Press <kbd class="px-1.5 py-0.5 rounded bg-zinc-100 border border-zinc-300 text-zinc-800 font-mono text-[10px] font-bold">1-7</kbd> / <kbd class="px-1.5 py-0.5 rounded bg-zinc-100 border border-zinc-300 text-zinc-800 font-mono text-[10px] font-bold">M T W R F S U</kbd></span>
         </div>
 
-        <div class="grid grid-cols-2 sm:grid-cols-7 gap-2 sm:gap-2">
+        <div class="grid grid-cols-2 sm:grid-cols-7 gap-2">
           <!-- Mon -->
-          <button onclick="app.submitAnswer(1)" id="btn-day-1" class="btn-day group relative p-3 sm:p-4 rounded-2xl bg-slate-900 hover:bg-indigo-900/40 border-2 border-slate-800 hover:border-indigo-500 text-white font-bold transition-all duration-100 flex flex-col items-center justify-center gap-1 active:scale-95 shadow-md">
+          <button onclick="app.submitAnswer(1)" id="btn-day-1" class="btn-brutal group p-3 sm:p-4 rounded-2xl bg-white hover:bg-yellow-100 border-2 border-zinc-900 shadow-brutal text-zinc-950 font-black flex flex-col items-center justify-center gap-1">
             <span class="text-sm sm:text-base">Mon</span>
-            <div class="flex items-center gap-1 opacity-70 group-hover:opacity-100 transition">
-              <span class="key-badge text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 text-indigo-300">1</span>
-              <span class="key-badge text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 text-slate-400">M</span>
+            <div class="flex items-center gap-1">
+              <span class="text-[10px] font-mono px-1.5 py-0.2 bg-zinc-100 border border-zinc-300 rounded text-zinc-700 font-bold">1</span>
+              <span class="text-[10px] font-mono px-1.5 py-0.2 bg-zinc-100 border border-zinc-300 rounded text-zinc-700 font-bold">M</span>
             </div>
           </button>
 
           <!-- Tue -->
-          <button onclick="app.submitAnswer(2)" id="btn-day-2" class="btn-day group relative p-3 sm:p-4 rounded-2xl bg-slate-900 hover:bg-indigo-900/40 border-2 border-slate-800 hover:border-indigo-500 text-white font-bold transition-all duration-100 flex flex-col items-center justify-center gap-1 active:scale-95 shadow-md">
+          <button onclick="app.submitAnswer(2)" id="btn-day-2" class="btn-brutal group p-3 sm:p-4 rounded-2xl bg-white hover:bg-yellow-100 border-2 border-zinc-900 shadow-brutal text-zinc-950 font-black flex flex-col items-center justify-center gap-1">
             <span class="text-sm sm:text-base">Tue</span>
-            <div class="flex items-center gap-1 opacity-70 group-hover:opacity-100 transition">
-              <span class="key-badge text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 text-indigo-300">2</span>
-              <span class="key-badge text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 text-slate-400">T</span>
+            <div class="flex items-center gap-1">
+              <span class="text-[10px] font-mono px-1.5 py-0.2 bg-zinc-100 border border-zinc-300 rounded text-zinc-700 font-bold">2</span>
+              <span class="text-[10px] font-mono px-1.5 py-0.2 bg-zinc-100 border border-zinc-300 rounded text-zinc-700 font-bold">T</span>
             </div>
           </button>
 
           <!-- Wed -->
-          <button onclick="app.submitAnswer(3)" id="btn-day-3" class="btn-day group relative p-3 sm:p-4 rounded-2xl bg-slate-900 hover:bg-indigo-900/40 border-2 border-slate-800 hover:border-indigo-500 text-white font-bold transition-all duration-100 flex flex-col items-center justify-center gap-1 active:scale-95 shadow-md">
+          <button onclick="app.submitAnswer(3)" id="btn-day-3" class="btn-brutal group p-3 sm:p-4 rounded-2xl bg-white hover:bg-yellow-100 border-2 border-zinc-900 shadow-brutal text-zinc-950 font-black flex flex-col items-center justify-center gap-1">
             <span class="text-sm sm:text-base">Wed</span>
-            <div class="flex items-center gap-1 opacity-70 group-hover:opacity-100 transition">
-              <span class="key-badge text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 text-indigo-300">3</span>
-              <span class="key-badge text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 text-slate-400">W</span>
+            <div class="flex items-center gap-1">
+              <span class="text-[10px] font-mono px-1.5 py-0.2 bg-zinc-100 border border-zinc-300 rounded text-zinc-700 font-bold">3</span>
+              <span class="text-[10px] font-mono px-1.5 py-0.2 bg-zinc-100 border border-zinc-300 rounded text-zinc-700 font-bold">W</span>
             </div>
           </button>
 
           <!-- Thu -->
-          <button onclick="app.submitAnswer(4)" id="btn-day-4" class="btn-day group relative p-3 sm:p-4 rounded-2xl bg-slate-900 hover:bg-indigo-900/40 border-2 border-slate-800 hover:border-indigo-500 text-white font-bold transition-all duration-100 flex flex-col items-center justify-center gap-1 active:scale-95 shadow-md">
+          <button onclick="app.submitAnswer(4)" id="btn-day-4" class="btn-brutal group p-3 sm:p-4 rounded-2xl bg-white hover:bg-yellow-100 border-2 border-zinc-900 shadow-brutal text-zinc-950 font-black flex flex-col items-center justify-center gap-1">
             <span class="text-sm sm:text-base">Thu</span>
-            <div class="flex items-center gap-1 opacity-70 group-hover:opacity-100 transition">
-              <span class="key-badge text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 text-indigo-300">4</span>
-              <span class="key-badge text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 text-slate-400">R</span>
+            <div class="flex items-center gap-1">
+              <span class="text-[10px] font-mono px-1.5 py-0.2 bg-zinc-100 border border-zinc-300 rounded text-zinc-700 font-bold">4</span>
+              <span class="text-[10px] font-mono px-1.5 py-0.2 bg-zinc-100 border border-zinc-300 rounded text-zinc-700 font-bold">R</span>
             </div>
           </button>
 
           <!-- Fri -->
-          <button onclick="app.submitAnswer(5)" id="btn-day-5" class="btn-day group relative p-3 sm:p-4 rounded-2xl bg-slate-900 hover:bg-indigo-900/40 border-2 border-slate-800 hover:border-indigo-500 text-white font-bold transition-all duration-100 flex flex-col items-center justify-center gap-1 active:scale-95 shadow-md">
+          <button onclick="app.submitAnswer(5)" id="btn-day-5" class="btn-brutal group p-3 sm:p-4 rounded-2xl bg-white hover:bg-yellow-100 border-2 border-zinc-900 shadow-brutal text-zinc-950 font-black flex flex-col items-center justify-center gap-1">
             <span class="text-sm sm:text-base">Fri</span>
-            <div class="flex items-center gap-1 opacity-70 group-hover:opacity-100 transition">
-              <span class="key-badge text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 text-indigo-300">5</span>
-              <span class="key-badge text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 text-slate-400">F</span>
+            <div class="flex items-center gap-1">
+              <span class="text-[10px] font-mono px-1.5 py-0.2 bg-zinc-100 border border-zinc-300 rounded text-zinc-700 font-bold">5</span>
+              <span class="text-[10px] font-mono px-1.5 py-0.2 bg-zinc-100 border border-zinc-300 rounded text-zinc-700 font-bold">F</span>
             </div>
           </button>
 
           <!-- Sat -->
-          <button onclick="app.submitAnswer(6)" id="btn-day-6" class="btn-day group relative p-3 sm:p-4 rounded-2xl bg-slate-900 hover:bg-indigo-900/40 border-2 border-slate-800 hover:border-indigo-500 text-white font-bold transition-all duration-100 flex flex-col items-center justify-center gap-1 active:scale-95 shadow-md">
+          <button onclick="app.submitAnswer(6)" id="btn-day-6" class="btn-brutal group p-3 sm:p-4 rounded-2xl bg-white hover:bg-yellow-100 border-2 border-zinc-900 shadow-brutal text-zinc-950 font-black flex flex-col items-center justify-center gap-1">
             <span class="text-sm sm:text-base">Sat</span>
-            <div class="flex items-center gap-1 opacity-70 group-hover:opacity-100 transition">
-              <span class="key-badge text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 text-indigo-300">6</span>
-              <span class="key-badge text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 text-slate-400">S</span>
+            <div class="flex items-center gap-1">
+              <span class="text-[10px] font-mono px-1.5 py-0.2 bg-zinc-100 border border-zinc-300 rounded text-zinc-700 font-bold">6</span>
+              <span class="text-[10px] font-mono px-1.5 py-0.2 bg-zinc-100 border border-zinc-300 rounded text-zinc-700 font-bold">S</span>
             </div>
           </button>
 
           <!-- Sun -->
-          <button onclick="app.submitAnswer(0)" id="btn-day-0" class="btn-day col-span-2 sm:col-span-1 group relative p-3 sm:p-4 rounded-2xl bg-slate-900 hover:bg-indigo-900/40 border-2 border-slate-800 hover:border-indigo-500 text-white font-bold transition-all duration-100 flex flex-col items-center justify-center gap-1 active:scale-95 shadow-md">
+          <button onclick="app.submitAnswer(0)" id="btn-day-0" class="btn-brutal col-span-2 sm:col-span-1 group p-3 sm:p-4 rounded-2xl bg-white hover:bg-yellow-100 border-2 border-zinc-900 shadow-brutal text-zinc-950 font-black flex flex-col items-center justify-center gap-1">
             <span class="text-sm sm:text-base">Sun</span>
-            <div class="flex items-center gap-1 opacity-70 group-hover:opacity-100 transition">
-              <span class="key-badge text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 text-indigo-300">7/0</span>
-              <span class="key-badge text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 text-slate-400">U</span>
+            <div class="flex items-center gap-1">
+              <span class="text-[10px] font-mono px-1.5 py-0.2 bg-zinc-100 border border-zinc-300 rounded text-zinc-700 font-bold">7/0</span>
+              <span class="text-[10px] font-mono px-1.5 py-0.2 bg-zinc-100 border border-zinc-300 rounded text-zinc-700 font-bold">U</span>
             </div>
           </button>
         </div>
@@ -414,58 +393,57 @@
     </section>
 
     <!-- SCREEN 3: RESULTS & POST-GAME REVIEW -->
-    <section id="screen-results" class="hidden space-y-6 max-w-3xl mx-auto w-full py-4">
+    <section id="screen-results" class="hidden space-y-5 max-w-3xl mx-auto w-full py-4">
       <div class="text-center space-y-2">
-        <div id="results-badge-container" class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 text-sm font-semibold">
-          <i data-lucide="award" class="w-4 h-4 text-amber-400"></i>
+        <div id="results-badge-container" class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-yellow-300 text-zinc-950 border-2 border-zinc-900 shadow-brutal-sm text-sm font-black">
           <span id="results-headline">Round Complete!</span>
         </div>
-        <h2 class="text-3xl sm:text-4xl font-extrabold text-white" id="results-title">Performance Summary</h2>
+        <h2 class="text-3xl sm:text-4xl font-black text-zinc-950" id="results-title">Performance Summary</h2>
       </div>
 
       <!-- Stat Cards Summary -->
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 text-center">
-          <span class="text-xs text-slate-400 block mb-1">Total Time</span>
-          <span class="text-2xl font-black font-mono text-white" id="res-total-time">0.00s</span>
+        <div class="bg-white border-2 border-zinc-900 rounded-2xl p-4 text-center shadow-brutal">
+          <span class="text-xs text-zinc-500 font-bold block mb-1">Total Time</span>
+          <span class="text-2xl font-black font-mono text-zinc-950" id="res-total-time">0.00s</span>
         </div>
-        <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 text-center">
-          <span class="text-xs text-slate-400 block mb-1">Avg Speed</span>
-          <span class="text-2xl font-black font-mono text-indigo-400" id="res-avg-time">0.00s</span>
+        <div class="bg-white border-2 border-zinc-900 rounded-2xl p-4 text-center shadow-brutal">
+          <span class="text-xs text-zinc-500 font-bold block mb-1">Avg Speed</span>
+          <span class="text-2xl font-black font-mono text-indigo-600" id="res-avg-time">0.00s</span>
         </div>
-        <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 text-center">
-          <span class="text-xs text-slate-400 block mb-1">Accuracy</span>
-          <span class="text-2xl font-black font-mono text-emerald-400" id="res-accuracy">100%</span>
+        <div class="bg-white border-2 border-zinc-900 rounded-2xl p-4 text-center shadow-brutal">
+          <span class="text-xs text-zinc-500 font-bold block mb-1">Accuracy</span>
+          <span class="text-2xl font-black font-mono text-emerald-600" id="res-accuracy">100%</span>
         </div>
-        <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 text-center">
-          <span class="text-xs text-slate-400 block mb-1">Best Streak</span>
-          <span class="text-2xl font-black font-mono text-amber-400" id="res-max-streak">0</span>
+        <div class="bg-white border-2 border-zinc-900 rounded-2xl p-4 text-center shadow-brutal">
+          <span class="text-xs text-zinc-500 font-bold block mb-1">Best Streak</span>
+          <span class="text-2xl font-black font-mono text-amber-500" id="res-max-streak">0</span>
         </div>
       </div>
 
       <!-- Detailed Round Log Table -->
-      <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 space-y-4">
+      <div class="bg-white border-2 border-zinc-900 rounded-2xl p-5 space-y-4 shadow-brutal">
         <div class="flex items-center justify-between">
-          <h3 class="text-sm font-bold text-white flex items-center gap-2">
-            <i data-lucide="list-checks" class="w-4 h-4 text-indigo-400"></i>
-            Date Review & Doomsday Breakdown
+          <h3 class="text-sm font-black text-zinc-950 flex items-center gap-2">
+            <i data-lucide="list-checks" class="w-4 h-4"></i>
+            Date Review & Math Breakdown
           </h3>
-          <span class="text-xs text-slate-400">Click any row to view math</span>
+          <span class="text-xs text-zinc-500 font-medium">Click any row to inspect math</span>
         </div>
 
-        <div class="max-h-72 overflow-y-auto rounded-xl border border-slate-800">
-          <table class="w-full text-left text-xs text-slate-300">
-            <thead class="bg-slate-950/80 sticky top-0 text-slate-400 font-semibold border-b border-slate-800">
+        <div class="max-h-72 overflow-y-auto rounded-xl border-2 border-zinc-900">
+          <table class="w-full text-left text-xs text-zinc-800">
+            <thead class="bg-zinc-100 sticky top-0 text-zinc-600 font-black border-b-2 border-zinc-900">
               <tr>
                 <th class="p-3">#</th>
                 <th class="p-3">Target Date</th>
                 <th class="p-3">Your Answer</th>
                 <th class="p-3">Correct Day</th>
                 <th class="p-3">Time</th>
-                <th class="p-3 text-right">Breakdown</th>
+                <th class="p-3 text-right">Action</th>
               </tr>
             </thead>
-            <tbody id="results-table-body" class="divide-y divide-slate-800/60 font-mono">
+            <tbody id="results-table-body" class="divide-y border-zinc-200 font-mono">
               <!-- Dynamically populated rows -->
             </tbody>
           </table>
@@ -474,11 +452,11 @@
 
       <!-- Action Buttons -->
       <div class="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
-        <button onclick="app.startGame()" class="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-sm shadow-lg shadow-indigo-600/30 transition flex items-center justify-center gap-2">
+        <button onclick="app.startGame()" class="btn-brutal w-full sm:w-auto px-6 py-3.5 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-zinc-950 font-black text-sm border-2 border-zinc-900 shadow-brutal flex items-center justify-center gap-2">
           <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
           <span>Play Again (Space)</span>
         </button>
-        <button onclick="app.showScreen('menu')" class="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-sm border border-slate-700/60 transition flex items-center justify-center gap-2">
+        <button onclick="app.showScreen('menu')" class="btn-brutal w-full sm:w-auto px-6 py-3.5 rounded-xl bg-white hover:bg-zinc-100 text-zinc-800 font-bold text-sm border-2 border-zinc-900 shadow-brutal flex items-center justify-center gap-2">
           <i data-lucide="home" class="w-4 h-4"></i>
           <span>Change Mode / Settings</span>
         </button>
@@ -488,13 +466,13 @@
   </main>
 
   <!-- FOOTER -->
-  <footer class="border-t border-slate-900 bg-slate-950/80 text-center py-4 text-xs text-slate-500">
-    <div class="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+  <footer class="border-t-2 border-zinc-900 bg-white text-center py-5 text-xs text-zinc-500">
+    <div class="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2 font-medium">
       <p>Built for mental math enthusiasts & speed day calculators.</p>
-      <div class="flex items-center gap-4 text-slate-400">
-        <span class="hover:text-slate-300 cursor-pointer" onclick="app.openCheatSheet()">Doomsday Cheat Sheet</span>
+      <div class="flex items-center gap-4 text-zinc-800 font-bold">
+        <span class="hover:underline cursor-pointer" onclick="app.openCheatSheet()">Doomsday Cheat Sheet</span>
         <span>•</span>
-        <span class="hover:text-slate-300 cursor-pointer" onclick="app.openStatsModal()">Lifetime Stats</span>
+        <span class="hover:underline cursor-pointer" onclick="app.openStatsModal()">Lifetime Stats</span>
       </div>
     </div>
   </footer>
@@ -502,62 +480,62 @@
   <!-- ================= MODALS ================= -->
 
   <!-- MODAL 1: STEP-BY-STEP DOOMSDAY BREAKDOWN MODAL -->
-  <div id="modal-breakdown" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
-    <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-xl w-full p-6 sm:p-8 space-y-6 shadow-2xl relative animate-in fade-in zoom-in-95 duration-200">
-      <button onclick="app.closeModal('modal-breakdown')" class="absolute top-5 right-5 p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition">
-        <i data-lucide="x" class="w-5 h-5"></i>
+  <div id="modal-breakdown" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs hidden flex items-center justify-center p-4">
+    <div class="bg-white border-2 border-zinc-900 rounded-3xl max-w-xl w-full p-6 sm:p-8 space-y-6 shadow-brutal-xl relative">
+      <button onclick="app.closeModal('modal-breakdown')" class="btn-brutal absolute top-5 right-5 p-2 rounded-xl bg-white hover:bg-zinc-100 text-zinc-800 border-2 border-zinc-900 shadow-brutal-sm">
+        <i data-lucide="x" class="w-4 h-4"></i>
       </button>
 
       <div class="space-y-1">
-        <span class="text-xs uppercase tracking-wider font-semibold text-indigo-400">Step-by-Step Explanation</span>
-        <h3 class="text-2xl font-bold text-white" id="modal-breakdown-date">14 July 1789</h3>
-        <p class="text-xs text-slate-400">Calculated using John Conway's Doomsday Rule</p>
+        <span class="text-xs uppercase tracking-wider font-black text-indigo-600">Step-by-Step Explanation</span>
+        <h3 class="text-2xl font-black text-zinc-950" id="modal-breakdown-date">14 July 1789</h3>
+        <p class="text-xs text-zinc-500 font-medium">Calculated using John Conway's Doomsday Rule</p>
       </div>
 
       <!-- 4-Step Walkthrough Flow -->
-      <div class="space-y-4 text-xs sm:text-sm">
+      <div class="space-y-3 text-xs sm:text-sm">
         
         <!-- Step 1: Century Anchor -->
-        <div class="p-4 rounded-2xl bg-slate-950/80 border border-slate-800 space-y-1.5">
-          <div class="flex items-center justify-between text-indigo-300 font-semibold">
-            <span class="flex items-center gap-1.5"><span class="w-5 h-5 rounded-full bg-indigo-500/20 text-indigo-400 flex items-center justify-center text-[10px]">1</span> Century Anchor</span>
-            <span id="bd-century-anchor" class="font-mono text-white font-bold bg-indigo-950 px-2 py-0.5 rounded border border-indigo-800">Sunday (0)</span>
+        <div class="p-3.5 rounded-2xl bg-zinc-50 border-2 border-zinc-900 space-y-1">
+          <div class="flex items-center justify-between font-bold text-zinc-900">
+            <span class="flex items-center gap-1.5"><span class="w-5 h-5 rounded-full bg-zinc-900 text-white flex items-center justify-center text-[10px]">1</span> Century Anchor</span>
+            <span id="bd-century-anchor" class="font-mono text-zinc-950 font-black bg-yellow-200 px-2 py-0.5 rounded border border-zinc-900">Sunday (0)</span>
           </div>
-          <p class="text-slate-400 text-xs" id="bd-century-detail">
+          <p class="text-zinc-600 text-xs" id="bd-century-detail">
             Century 1700s has anchor day <strong>Sunday</strong>.
           </p>
         </div>
 
         <!-- Step 2: Year Doomsday Offset -->
-        <div class="p-4 rounded-2xl bg-slate-950/80 border border-slate-800 space-y-1.5">
-          <div class="flex items-center justify-between text-indigo-300 font-semibold">
-            <span class="flex items-center gap-1.5"><span class="w-5 h-5 rounded-full bg-indigo-500/20 text-indigo-400 flex items-center justify-center text-[10px]">2</span> Year Doomsday</span>
-            <span id="bd-year-doomsday" class="font-mono text-white font-bold bg-indigo-950 px-2 py-0.5 rounded border border-indigo-800">Wednesday (3)</span>
+        <div class="p-3.5 rounded-2xl bg-zinc-50 border-2 border-zinc-900 space-y-1">
+          <div class="flex items-center justify-between font-bold text-zinc-900">
+            <span class="flex items-center gap-1.5"><span class="w-5 h-5 rounded-full bg-zinc-900 text-white flex items-center justify-center text-[10px]">2</span> Year Doomsday</span>
+            <span id="bd-year-doomsday" class="font-mono text-zinc-950 font-black bg-yellow-200 px-2 py-0.5 rounded border border-zinc-900">Wednesday (3)</span>
           </div>
-          <p class="text-slate-400 text-xs" id="bd-year-detail">
+          <p class="text-zinc-600 text-xs" id="bd-year-detail">
             For year 89: 89 / 12 = 7 (rem 5) + 5/4 (1) = 7 + 5 + 1 = 13 ≡ 6 mod 7.
             Century (0) + 6 = 6 (Saturday).
           </p>
         </div>
 
         <!-- Step 3: Month Anchor -->
-        <div class="p-4 rounded-2xl bg-slate-950/80 border border-slate-800 space-y-1.5">
-          <div class="flex items-center justify-between text-indigo-300 font-semibold">
-            <span class="flex items-center gap-1.5"><span class="w-5 h-5 rounded-full bg-indigo-500/20 text-indigo-400 flex items-center justify-center text-[10px]">3</span> Month Anchor</span>
-            <span id="bd-month-anchor" class="font-mono text-white font-bold bg-indigo-950 px-2 py-0.5 rounded border border-indigo-800">July 11 (7/11)</span>
+        <div class="p-3.5 rounded-2xl bg-zinc-50 border-2 border-zinc-900 space-y-1">
+          <div class="flex items-center justify-between font-bold text-zinc-900">
+            <span class="flex items-center gap-1.5"><span class="w-5 h-5 rounded-full bg-zinc-900 text-white flex items-center justify-center text-[10px]">3</span> Month Anchor</span>
+            <span id="bd-month-anchor" class="font-mono text-zinc-950 font-black bg-yellow-200 px-2 py-0.5 rounded border border-zinc-900">July 11 (7/11)</span>
           </div>
-          <p class="text-slate-400 text-xs" id="bd-month-detail">
+          <p class="text-zinc-600 text-xs" id="bd-month-detail">
             In July, the Doomsday anchor is <strong>July 11</strong> (mnemonic: "7-Eleven").
           </p>
         </div>
 
         <!-- Step 4: Day Difference & Final Result -->
-        <div class="p-4 rounded-2xl bg-gradient-to-br from-indigo-950/60 to-purple-950/40 border border-indigo-500/40 space-y-2">
-          <div class="flex items-center justify-between text-indigo-200 font-bold">
-            <span class="flex items-center gap-1.5"><span class="w-5 h-5 rounded-full bg-indigo-500 text-white flex items-center justify-center text-[10px]">4</span> Final Day Calculation</span>
-            <span id="bd-final-day" class="font-mono text-emerald-300 font-extrabold text-base bg-emerald-950/80 px-2.5 py-0.5 rounded border border-emerald-500/40">Tuesday</span>
+        <div class="p-4 rounded-2xl bg-emerald-100 border-2 border-zinc-900 space-y-1.5">
+          <div class="flex items-center justify-between font-black text-zinc-950">
+            <span class="flex items-center gap-1.5"><span class="w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[10px]">4</span> Final Day Result</span>
+            <span id="bd-final-day" class="font-mono text-emerald-950 font-black text-base bg-emerald-300 px-2.5 py-0.5 rounded border border-zinc-900">Tuesday</span>
           </div>
-          <p class="text-slate-300 text-xs" id="bd-final-detail">
+          <p class="text-zinc-800 text-xs font-medium" id="bd-final-detail">
             Target is July 14: 14 − 11 = +3 days from Doomsday.
             Saturday (6) + 3 = 9 ≡ 2 mod 7 = <strong>Tuesday</strong>.
           </p>
@@ -565,114 +543,113 @@
 
       </div>
 
-      <button onclick="app.closeModal('modal-breakdown')" class="w-full py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-semibold text-sm transition">
+      <button onclick="app.closeModal('modal-breakdown')" class="btn-brutal w-full py-3 rounded-xl bg-zinc-900 text-white font-black text-sm border-2 border-zinc-900 shadow-brutal">
         Got it, Continue (Space / Esc)
       </button>
     </div>
   </div>
 
   <!-- MODAL 2: COMPREHENSIVE DOOMSDAY CHEAT SHEET & GUIDE -->
-  <div id="modal-cheatsheet" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
-    <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-2xl w-full p-6 sm:p-8 space-y-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
-      <button onclick="app.closeModal('modal-cheatsheet')" class="absolute top-5 right-5 p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition">
-        <i data-lucide="x" class="w-5 h-5"></i>
+  <div id="modal-cheatsheet" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs hidden flex items-center justify-center p-4">
+    <div class="bg-white border-2 border-zinc-900 rounded-3xl max-w-2xl w-full p-6 sm:p-8 space-y-6 shadow-brutal-xl relative max-h-[90vh] overflow-y-auto">
+      <button onclick="app.closeModal('modal-cheatsheet')" class="btn-brutal absolute top-5 right-5 p-2 rounded-xl bg-white hover:bg-zinc-100 text-zinc-800 border-2 border-zinc-900 shadow-brutal-sm">
+        <i data-lucide="x" class="w-4 h-4"></i>
       </button>
 
       <div class="space-y-1">
-        <div class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 text-xs font-semibold">
-          <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+        <div class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-yellow-200 text-zinc-950 border border-zinc-900 text-xs font-black">
           <span>Algorithm Reference</span>
         </div>
-        <h3 class="text-2xl font-bold text-white">The Doomsday Rule Cheat Sheet</h3>
-        <p class="text-xs text-slate-400">Invented by mathematician John Horton Conway in 1970</p>
+        <h3 class="text-2xl font-black text-zinc-950">The Doomsday Rule Cheat Sheet</h3>
+        <p class="text-xs text-zinc-500 font-medium">Invented by mathematician John Horton Conway in 1970</p>
       </div>
 
       <!-- Quick Day Code Reference -->
-      <div class="bg-slate-950/80 rounded-2xl p-4 border border-slate-800">
-        <h4 class="text-xs font-bold uppercase tracking-wider text-indigo-400 mb-2">Day of Week Number Codes</h4>
+      <div class="bg-zinc-50 rounded-2xl p-4 border-2 border-zinc-900">
+        <h4 class="text-xs font-black uppercase tracking-wider text-zinc-950 mb-2">Day of Week Number Codes</h4>
         <div class="grid grid-cols-7 gap-1 text-center font-mono text-xs">
-          <div class="p-2 rounded bg-slate-900 border border-slate-800"><div class="text-slate-400 text-[10px]">Sun</div><div class="font-bold text-white">0 / 7</div></div>
-          <div class="p-2 rounded bg-slate-900 border border-slate-800"><div class="text-slate-400 text-[10px]">Mon</div><div class="font-bold text-white">1</div></div>
-          <div class="p-2 rounded bg-slate-900 border border-slate-800"><div class="text-slate-400 text-[10px]">Tue</div><div class="font-bold text-white">2</div></div>
-          <div class="p-2 rounded bg-slate-900 border border-slate-800"><div class="text-slate-400 text-[10px]">Wed</div><div class="font-bold text-white">3</div></div>
-          <div class="p-2 rounded bg-slate-900 border border-slate-800"><div class="text-slate-400 text-[10px]">Thu</div><div class="font-bold text-white">4</div></div>
-          <div class="p-2 rounded bg-slate-900 border border-slate-800"><div class="text-slate-400 text-[10px]">Fri</div><div class="font-bold text-white">5</div></div>
-          <div class="p-2 rounded bg-slate-900 border border-slate-800"><div class="text-slate-400 text-[10px]">Sat</div><div class="font-bold text-white">6</div></div>
+          <div class="p-2 rounded-lg bg-white border border-zinc-300"><div class="text-zinc-500 text-[10px] font-sans font-bold">Sun</div><div class="font-black text-zinc-950">0 / 7</div></div>
+          <div class="p-2 rounded-lg bg-white border border-zinc-300"><div class="text-zinc-500 text-[10px] font-sans font-bold">Mon</div><div class="font-black text-zinc-950">1</div></div>
+          <div class="p-2 rounded-lg bg-white border border-zinc-300"><div class="text-zinc-500 text-[10px] font-sans font-bold">Tue</div><div class="font-black text-zinc-950">2</div></div>
+          <div class="p-2 rounded-lg bg-white border border-zinc-300"><div class="text-zinc-500 text-[10px] font-sans font-bold">Wed</div><div class="font-black text-zinc-950">3</div></div>
+          <div class="p-2 rounded-lg bg-white border border-zinc-300"><div class="text-zinc-500 text-[10px] font-sans font-bold">Thu</div><div class="font-black text-zinc-950">4</div></div>
+          <div class="p-2 rounded-lg bg-white border border-zinc-300"><div class="text-zinc-500 text-[10px] font-sans font-bold">Fri</div><div class="font-black text-zinc-950">5</div></div>
+          <div class="p-2 rounded-lg bg-white border border-zinc-300"><div class="text-zinc-500 text-[10px] font-sans font-bold">Sat</div><div class="font-black text-zinc-950">6</div></div>
         </div>
       </div>
 
       <!-- 1. Century Anchors -->
       <div class="space-y-2">
-        <h4 class="text-sm font-bold text-white flex items-center gap-2">
-          <span class="w-5 h-5 rounded-full bg-indigo-500/20 text-indigo-400 flex items-center justify-center text-xs font-bold">1</span>
+        <h4 class="text-sm font-black text-zinc-950 flex items-center gap-2">
+          <span class="w-5 h-5 rounded-full bg-zinc-900 text-white flex items-center justify-center text-xs font-bold">1</span>
           Century Anchors (400-Year Gregorian Cycle)
         </h4>
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
-          <div class="p-3 rounded-xl bg-slate-950 border border-slate-800">
-            <div class="text-slate-400 font-mono">1600, 2000, 2400</div>
-            <div class="text-indigo-400 font-bold text-sm">Tuesday (2)</div>
+          <div class="p-3 rounded-xl bg-zinc-50 border-2 border-zinc-900">
+            <div class="text-zinc-500 font-mono text-[11px]">1600, 2000, 2400</div>
+            <div class="text-zinc-950 font-black text-sm">Tuesday (2)</div>
           </div>
-          <div class="p-3 rounded-xl bg-slate-950 border border-slate-800">
-            <div class="text-slate-400 font-mono">1700, 2100, 2500</div>
-            <div class="text-indigo-400 font-bold text-sm">Sunday (0)</div>
+          <div class="p-3 rounded-xl bg-zinc-50 border-2 border-zinc-900">
+            <div class="text-zinc-500 font-mono text-[11px]">1700, 2100, 2500</div>
+            <div class="text-zinc-950 font-black text-sm">Sunday (0)</div>
           </div>
-          <div class="p-3 rounded-xl bg-slate-950 border border-slate-800">
-            <div class="text-slate-400 font-mono">1800, 2200, 2600</div>
-            <div class="text-indigo-400 font-bold text-sm">Friday (5)</div>
+          <div class="p-3 rounded-xl bg-zinc-50 border-2 border-zinc-900">
+            <div class="text-zinc-500 font-mono text-[11px]">1800, 2200, 2600</div>
+            <div class="text-zinc-950 font-black text-sm">Friday (5)</div>
           </div>
-          <div class="p-3 rounded-xl bg-slate-950 border border-slate-800">
-            <div class="text-slate-400 font-mono">1900, 2300, 2700</div>
-            <div class="text-indigo-400 font-bold text-sm">Wednesday (3)</div>
+          <div class="p-3 rounded-xl bg-zinc-50 border-2 border-zinc-900">
+            <div class="text-zinc-500 font-mono text-[11px]">1900, 2300, 2700</div>
+            <div class="text-zinc-950 font-black text-sm">Wednesday (3)</div>
           </div>
         </div>
-        <p class="text-[11px] text-slate-400 italic">Mnemonic: <strong>"We-in-dis-arm-y"</strong> (Wed, in, Fri, Sun, Tue) or remember 2000 is <strong>Tue</strong>sday (Y<strong>2</strong>K).</p>
+        <p class="text-[11px] text-zinc-600 font-medium">Mnemonic: <strong>"We-in-dis-arm-y"</strong> (Wed, in, Fri, Sun, Tue) or remember 2000 is <strong>Tue</strong>sday (Y<strong>2</strong>K).</p>
       </div>
 
       <!-- 2. Year Doomsday Calculation -->
       <div class="space-y-2">
-        <h4 class="text-sm font-bold text-white flex items-center gap-2">
-          <span class="w-5 h-5 rounded-full bg-indigo-500/20 text-indigo-400 flex items-center justify-center text-xs font-bold">2</span>
+        <h4 class="text-sm font-black text-zinc-950 flex items-center gap-2">
+          <span class="w-5 h-5 rounded-full bg-zinc-900 text-white flex items-center justify-center text-xs font-bold">2</span>
           Year Offset Formula (Last 2 Digits \(y\))
         </h4>
-        <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-2 text-xs text-slate-300">
+        <div class="p-4 rounded-xl bg-zinc-50 border-2 border-zinc-900 space-y-2 text-xs text-zinc-800">
           <p><strong>Conway's Divide-by-12 Method:</strong> Let \(y\) be the last 2 digits of the year:</p>
-          <div class="bg-slate-900 p-2.5 rounded-lg font-mono text-indigo-300 text-center font-bold">
+          <div class="bg-white border-2 border-zinc-900 p-2.5 rounded-lg font-mono text-zinc-950 text-center font-bold">
             \(\lfloor y/12 \rfloor + (y \bmod 12) + \lfloor (y \bmod 12)/4 \rfloor \pmod 7\)
           </div>
-          <p class="text-[11px] text-slate-400">
-            <em>Alternative (Direct):</em> \((y + \lfloor y/4 \rfloor) \pmod 7\). Add this to the Century Anchor to get the year's Doomsday.
+          <p class="text-[11px] text-zinc-600">
+            <em>Alternative:</em> \((y + \lfloor y/4 \rfloor) \pmod 7\). Add this offset to Century Anchor.
           </p>
         </div>
       </div>
 
       <!-- 3. Month Anchor Mnemonics -->
       <div class="space-y-2">
-        <h4 class="text-sm font-bold text-white flex items-center gap-2">
-          <span class="w-5 h-5 rounded-full bg-indigo-500/20 text-indigo-400 flex items-center justify-center text-xs font-bold">3</span>
+        <h4 class="text-sm font-black text-zinc-950 flex items-center gap-2">
+          <span class="w-5 h-5 rounded-full bg-zinc-900 text-white flex items-center justify-center text-xs font-bold">3</span>
           Month Anchors (Always Fall on Doomsday!)
         </h4>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-          <div class="p-3 rounded-xl bg-slate-950 border border-slate-800 space-y-1">
-            <span class="text-amber-400 font-bold">Even Months (Match their number):</span>
-            <ul class="text-slate-300 space-y-0.5 font-mono text-[11px]">
+          <div class="p-3 rounded-xl bg-zinc-50 border-2 border-zinc-900 space-y-1">
+            <span class="text-amber-800 font-bold">Even Months (Match their number):</span>
+            <ul class="text-zinc-700 space-y-0.5 font-mono text-[11px]">
               <li><strong>4/4</strong> (Apr 4), <strong>6/6</strong> (Jun 6)</li>
               <li><strong>8/8</strong> (Aug 8), <strong>10/10</strong> (Oct 10), <strong>12/12</strong> (Dec 12)</li>
             </ul>
           </div>
-          <div class="p-3 rounded-xl bg-slate-950 border border-slate-800 space-y-1">
-            <span class="text-indigo-400 font-bold">Odd Months (9-to-5 at 7-11):</span>
-            <ul class="text-slate-300 space-y-0.5 font-mono text-[11px]">
+          <div class="p-3 rounded-xl bg-zinc-50 border-2 border-zinc-900 space-y-1">
+            <span class="text-indigo-800 font-bold">Odd Months (9-to-5 at 7-11):</span>
+            <ul class="text-zinc-700 space-y-0.5 font-mono text-[11px]">
               <li><strong>5/9</strong> (May 9) &amp; <strong>9/5</strong> (Sep 5) &rarr; "9 to 5"</li>
               <li><strong>7/11</strong> (Jul 11) &amp; <strong>11/7</strong> (Nov 7) &rarr; "7-Eleven"</li>
             </ul>
           </div>
-          <div class="p-3 rounded-xl bg-slate-950 border border-slate-800 space-y-1">
-            <span class="text-emerald-400 font-bold">March &amp; Pi Day:</span>
-            <p class="text-slate-300 text-[11px]"><strong>March 14</strong> ("Pi Day" 3.14) or <strong>March 0</strong> (last day of Feb).</p>
+          <div class="p-3 rounded-xl bg-zinc-50 border-2 border-zinc-900 space-y-1">
+            <span class="text-emerald-800 font-bold">March &amp; Pi Day:</span>
+            <p class="text-zinc-700 text-[11px]"><strong>March 14</strong> ("Pi Day" 3.14) or <strong>March 0</strong> (last day of Feb).</p>
           </div>
-          <div class="p-3 rounded-xl bg-slate-950 border border-slate-800 space-y-1">
-            <span class="text-purple-400 font-bold">Jan &amp; Feb (Leap Year Shift):</span>
-            <p class="text-slate-300 text-[11px]">
+          <div class="p-3 rounded-xl bg-zinc-50 border-2 border-zinc-900 space-y-1">
+            <span class="text-purple-800 font-bold">Jan &amp; Feb (Leap Year Shift):</span>
+            <p class="text-zinc-700 text-[11px]">
               Common: <strong>Jan 3</strong> / <strong>Feb 28</strong><br>
               Leap Year: <strong>Jan 4</strong> / <strong>Feb 29</strong>
             </p>
@@ -681,51 +658,51 @@
       </div>
 
       <!-- Calendar Switch Note -->
-      <div class="p-3.5 rounded-xl bg-indigo-950/40 border border-indigo-800/40 text-[11px] text-indigo-200 leading-relaxed">
-        <strong>Historical Calendar Note:</strong> Conway's Doomsday Rule applies to the <strong>Gregorian Calendar</strong> (introduced in 1582 with leap centuries divisible by 400). Standard mental calculation competitions evaluate all modern dates using standard Gregorian rules.
+      <div class="p-3.5 rounded-xl bg-yellow-100 border-2 border-zinc-900 text-[11px] text-zinc-900 leading-relaxed font-medium">
+        <strong>Calendar Note:</strong> Conway's Doomsday Rule applies to the <strong>Gregorian Calendar</strong> (introduced in 1582 with leap centuries divisible by 400). Standard mental calculation tests evaluate all modern dates using standard Gregorian rules.
       </div>
 
-      <button onclick="app.closeModal('modal-cheatsheet')" class="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm transition">
+      <button onclick="app.closeModal('modal-cheatsheet')" class="btn-brutal w-full py-3 rounded-xl bg-zinc-900 text-white font-black text-sm border-2 border-zinc-900 shadow-brutal">
         Close Guide
       </button>
     </div>
   </div>
 
   <!-- MODAL 3: LIFETIME STATS MODAL -->
-  <div id="modal-stats" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
-    <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-lg w-full p-6 sm:p-8 space-y-6 shadow-2xl relative">
-      <button onclick="app.closeModal('modal-stats')" class="absolute top-5 right-5 p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition">
-        <i data-lucide="x" class="w-5 h-5"></i>
+  <div id="modal-stats" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs hidden flex items-center justify-center p-4">
+    <div class="bg-white border-2 border-zinc-900 rounded-3xl max-w-lg w-full p-6 sm:p-8 space-y-6 shadow-brutal-xl relative">
+      <button onclick="app.closeModal('modal-stats')" class="btn-brutal absolute top-5 right-5 p-2 rounded-xl bg-white hover:bg-zinc-100 text-zinc-800 border-2 border-zinc-900 shadow-brutal-sm">
+        <i data-lucide="x" class="w-4 h-4"></i>
       </button>
 
       <div class="space-y-1">
-        <span class="text-xs uppercase tracking-wider font-semibold text-amber-400">Personal Records</span>
-        <h3 class="text-2xl font-bold text-white">Lifetime Statistics</h3>
+        <span class="text-xs uppercase tracking-wider font-black text-amber-600">Personal Records</span>
+        <h3 class="text-2xl font-black text-zinc-950">Lifetime Statistics</h3>
       </div>
 
       <!-- Stats Grid -->
       <div class="grid grid-cols-2 gap-3">
-        <div class="p-4 rounded-2xl bg-slate-950 border border-slate-800 text-center">
-          <span class="text-xs text-slate-400 block mb-1">Total Dates Solved</span>
-          <span class="text-2xl font-black font-mono text-white" id="stat-total-solved">0</span>
+        <div class="p-4 rounded-2xl bg-zinc-50 border-2 border-zinc-900 text-center">
+          <span class="text-xs text-zinc-500 font-bold block mb-1">Total Solved</span>
+          <span class="text-2xl font-black font-mono text-zinc-950" id="stat-total-solved">0</span>
         </div>
-        <div class="p-4 rounded-2xl bg-slate-950 border border-slate-800 text-center">
-          <span class="text-xs text-slate-400 block mb-1">All-Time Accuracy</span>
-          <span class="text-2xl font-black font-mono text-emerald-400" id="stat-alltime-acc">0%</span>
+        <div class="p-4 rounded-2xl bg-zinc-50 border-2 border-zinc-900 text-center">
+          <span class="text-xs text-zinc-500 font-bold block mb-1">Accuracy</span>
+          <span class="text-2xl font-black font-mono text-emerald-600" id="stat-alltime-acc">0%</span>
         </div>
-        <div class="p-4 rounded-2xl bg-slate-950 border border-slate-800 text-center">
-          <span class="text-xs text-slate-400 block mb-1">Sprint (10) Best</span>
-          <span class="text-xl font-black font-mono text-indigo-400" id="stat-sprint10-best">--</span>
+        <div class="p-4 rounded-2xl bg-zinc-50 border-2 border-zinc-900 text-center">
+          <span class="text-xs text-zinc-500 font-bold block mb-1">Sprint (10) Best</span>
+          <span class="text-xl font-black font-mono text-indigo-600" id="stat-sprint10-best">--</span>
         </div>
-        <div class="p-4 rounded-2xl bg-slate-950 border border-slate-800 text-center">
-          <span class="text-xs text-slate-400 block mb-1">Time Attack (60s) Best</span>
-          <span class="text-xl font-black font-mono text-amber-400" id="stat-ta60-best">--</span>
+        <div class="p-4 rounded-2xl bg-zinc-50 border-2 border-zinc-900 text-center">
+          <span class="text-xs text-zinc-500 font-bold block mb-1">Time Attack (60s) Best</span>
+          <span class="text-xl font-black font-mono text-amber-600" id="stat-ta60-best">--</span>
         </div>
       </div>
 
       <div class="flex items-center justify-between pt-2">
-        <button onclick="app.resetStats()" class="text-xs text-rose-400 hover:text-rose-300 underline">Reset all statistics</button>
-        <button onclick="app.closeModal('modal-stats')" class="px-5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-semibold text-xs transition">
+        <button onclick="app.resetStats()" class="text-xs text-rose-600 hover:text-rose-700 font-bold underline">Reset stats</button>
+        <button onclick="app.closeModal('modal-stats')" class="btn-brutal px-5 py-2 rounded-xl bg-zinc-900 text-white font-bold text-xs border-2 border-zinc-900 shadow-brutal-sm">
           Close
         </button>
       </div>
@@ -740,7 +717,6 @@
      */
     class DoomsdayTrainer {
       constructor() {
-        // Month Names & Anchors (0-indexed: Jan=0...Dec=11)
         this.months = [
           { name: "January", short: "Jan", days: 31, baseAnchor: 3, leapAnchor: 4, mnemonic: "Jan 3 (Jan 4 in leap years)" },
           { name: "February", short: "Feb", days: 28, baseAnchor: 28, leapAnchor: 29, mnemonic: "Feb 28 (Feb 29 in leap years)" },
@@ -760,13 +736,13 @@
         this.dayAbbr = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
         // State variables
-        this.currentMode = 'sprint'; // 'sprint' | 'timeattack' | 'endless'
+        this.currentMode = 'sprint';
         this.sprintCount = 10;
         this.timeAttackDuration = 60;
         this.datePreset = '2000-2099';
         this.dateFormat = 'DMY';
         this.soundEnabled = true;
-        this.isDark = true;
+        this.isDark = false; // Default light mode
 
         // Active Session State
         this.isPlaying = false;
@@ -779,17 +755,11 @@
         this.startTime = 0;
         this.questionStartTime = 0;
         this.timerInterval = null;
-        this.elapsedSeconds = 0;
-        this.timeAttackRemaining = 60;
         this.roundAnswers = [];
 
-        // Audio Context (Synthesizer)
         this.audioCtx = null;
-
-        // Local Storage Cache
         this.stats = this.loadStats();
 
-        // Initialize App
         this.init();
       }
 
@@ -808,7 +778,6 @@
 
       getCenturyAnchor(year) {
         const century = Math.floor(year / 100);
-        // 1600 -> 2 (Tue), 1700 -> 0 (Sun), 1800 -> 5 (Fri), 1900 -> 3 (Wed)
         const rem = ((century % 4) + 4) % 4;
         const anchors = { 0: 2, 1: 0, 2: 5, 3: 3 };
         const anchorValue = anchors[rem];
@@ -959,24 +928,22 @@
       playCorrectSound() {
         if (!this.soundEnabled) return;
         this.initAudio();
-        // Harmonious high double chime (C5 -> G5)
-        this.playTone(523.25, 'triangle', 0.12, 0.12);
-        setTimeout(() => this.playTone(783.99, 'triangle', 0.2, 0.15), 80);
+        this.playTone(523.25, 'triangle', 0.1, 0.12);
+        setTimeout(() => this.playTone(783.99, 'triangle', 0.18, 0.15), 70);
       }
 
       playWrongSound() {
         if (!this.soundEnabled) return;
         this.initAudio();
-        // Low buzzy downward tone
-        this.playTone(220, 'sawtooth', 0.25, 0.1);
-        setTimeout(() => this.playTone(174.61, 'sawtooth', 0.3, 0.1), 70);
+        this.playTone(220, 'sawtooth', 0.22, 0.1);
+        setTimeout(() => this.playTone(174.61, 'sawtooth', 0.25, 0.1), 60);
       }
 
       playFanfareSound() {
         if (!this.soundEnabled) return;
         const notes = [523.25, 659.25, 783.99, 1046.50];
         notes.forEach((note, idx) => {
-          setTimeout(() => this.playTone(note, 'triangle', 0.25, 0.15), idx * 90);
+          setTimeout(() => this.playTone(note, 'triangle', 0.2, 0.15), idx * 80);
         });
       }
 
@@ -986,11 +953,11 @@
         const btn = document.getElementById('btn-sound-toggle');
         if (this.soundEnabled) {
           icon.setAttribute('data-lucide', 'volume-2');
-          btn.classList.remove('text-rose-400');
+          btn.classList.remove('bg-rose-100', 'text-rose-600');
           this.playTone(600, 'sine', 0.1);
         } else {
           icon.setAttribute('data-lucide', 'volume-x');
-          btn.classList.add('text-rose-400');
+          btn.classList.add('bg-rose-100', 'text-rose-600');
         }
         lucide.createIcons();
         localStorage.setItem('dwt_sound', this.soundEnabled ? '1' : '0');
@@ -1012,11 +979,9 @@
         ['sprint', 'timeattack', 'endless'].forEach(m => {
           const card = document.getElementById(`mode-card-${m}`);
           if (m === mode) {
-            card.classList.remove('border-slate-800');
-            card.classList.add('border-indigo-500/80', 'ring-2', 'ring-indigo-500/30');
+            card.className = "cursor-pointer card-brutal relative rounded-2xl bg-yellow-100 border-2 border-zinc-900 shadow-brutal p-5 flex flex-col justify-between";
           } else {
-            card.classList.remove('border-indigo-500/80', 'ring-2', 'ring-indigo-500/30');
-            card.classList.add('border-slate-800');
+            card.className = "cursor-pointer card-brutal relative rounded-2xl bg-white border-2 border-zinc-900 shadow-brutal p-5 flex flex-col justify-between";
           }
         });
       }
@@ -1025,9 +990,9 @@
         this.sprintCount = count;
         document.querySelectorAll('.btn-sprint-count').forEach(btn => {
           if (parseInt(btn.getAttribute('data-count')) === count) {
-            btn.className = "btn-sprint-count px-2.5 py-1 text-xs rounded-md bg-indigo-600 text-white font-semibold";
+            btn.className = "btn-sprint-count btn-brutal px-2.5 py-1 text-xs rounded-lg bg-zinc-900 text-white font-bold border-2 border-zinc-900 shadow-brutal-sm";
           } else {
-            btn.className = "btn-sprint-count px-2.5 py-1 text-xs rounded-md bg-slate-800 text-slate-300 hover:bg-slate-700";
+            btn.className = "btn-sprint-count btn-brutal px-2.5 py-1 text-xs rounded-lg bg-white text-zinc-800 font-bold border-2 border-zinc-900 shadow-brutal-sm";
           }
         });
         this.selectMode('sprint');
@@ -1037,9 +1002,9 @@
         this.timeAttackDuration = seconds;
         document.querySelectorAll('.btn-ta-dur').forEach(btn => {
           if (parseInt(btn.getAttribute('data-dur')) === seconds) {
-            btn.className = "btn-ta-dur px-2.5 py-1 text-xs rounded-md bg-indigo-600 text-white font-semibold";
+            btn.className = "btn-ta-dur btn-brutal px-2.5 py-1 text-xs rounded-lg bg-zinc-900 text-white font-bold border-2 border-zinc-900 shadow-brutal-sm";
           } else {
-            btn.className = "btn-ta-dur px-2.5 py-1 text-xs rounded-md bg-slate-800 text-slate-300 hover:bg-slate-700";
+            btn.className = "btn-ta-dur btn-brutal px-2.5 py-1 text-xs rounded-lg bg-white text-zinc-800 font-bold border-2 border-zinc-900 shadow-brutal-sm";
           }
         });
         this.selectMode('timeattack');
@@ -1050,9 +1015,9 @@
         document.querySelectorAll('.btn-range').forEach(btn => {
           if (btn.getAttribute('data-preset')) {
             if (btn.getAttribute('data-preset') === preset) {
-              btn.className = "btn-range px-3 py-2 text-xs rounded-xl bg-indigo-600 text-white border border-indigo-500 font-semibold text-left truncate";
+              btn.className = "btn-range btn-brutal px-2.5 py-2 text-xs rounded-xl bg-yellow-300 text-zinc-950 border-2 border-zinc-900 shadow-brutal-sm font-black text-left truncate";
             } else {
-              btn.className = "btn-range px-3 py-2 text-xs rounded-xl bg-slate-800 text-slate-300 hover:bg-slate-700 border border-slate-700/60 font-medium text-left truncate";
+              btn.className = "btn-range btn-brutal px-2.5 py-2 text-xs rounded-xl bg-white text-zinc-800 border-2 border-zinc-900 shadow-brutal-sm font-bold text-left truncate";
             }
           }
         });
@@ -1092,7 +1057,6 @@
 
         this.showScreen('game');
 
-        // Setup HUD for Mode
         const modeTitle = document.getElementById('hud-mode-title');
         const progressBarContainer = document.getElementById('hud-progressbar-container');
         const timerLabel = document.getElementById('hud-timer-label');
@@ -1129,9 +1093,9 @@
             const remaining = Math.max(0, this.timeAttackDuration - totalElapsed);
             timerEl.textContent = remaining.toFixed(1) + 's';
             if (remaining <= 10) {
-              timerEl.classList.add('text-rose-400', 'animate-pulse');
+              timerEl.classList.add('text-rose-600');
             } else {
-              timerEl.classList.remove('text-rose-400', 'animate-pulse');
+              timerEl.classList.remove('text-rose-600');
             }
 
             if (remaining <= 0) {
@@ -1146,7 +1110,6 @@
       nextQuestion() {
         if (!this.isPlaying) return;
 
-        // Check Sprint End Condition
         if (this.currentMode === 'sprint' && this.questionIndex >= this.sprintCount) {
           this.finishGame();
           return;
@@ -1160,14 +1123,9 @@
         this.currentBreakdown = this.calculateDoomsday(randDate.year, randDate.monthIndex, randDate.day);
         this.questionStartTime = performance.now();
 
-        // Render target date string
         const dateStr = this.formatDateString(randDate.year, randDate.monthIndex, randDate.day);
         const displayEl = document.getElementById('target-date-display');
         displayEl.textContent = dateStr;
-
-        // Reset visual card state
-        const dateCard = document.getElementById('date-card');
-        dateCard.className = "relative rounded-3xl bg-gradient-to-b from-slate-900 to-slate-950 border-2 border-indigo-500/30 p-8 sm:p-12 text-center shadow-2xl transition-all duration-150 overflow-hidden";
       }
 
       updateHUD() {
@@ -1190,15 +1148,13 @@
         const timeTaken = (performance.now() - this.questionStartTime) / 1000;
         const isCorrect = selectedDay === this.currentBreakdown.finalDayVal;
 
-        // Visual flash & animation on pressed button
         const btnId = `btn-day-${selectedDay}`;
         const btn = document.getElementById(btnId);
         if (btn) {
-          btn.classList.add('ring-2', isCorrect ? 'ring-emerald-400' : 'ring-rose-400');
-          setTimeout(() => btn.classList.remove('ring-2', 'ring-emerald-400', 'ring-rose-400'), 250);
+          btn.classList.add(isCorrect ? 'bg-emerald-200' : 'bg-rose-200');
+          setTimeout(() => btn.classList.remove('bg-emerald-200', 'bg-rose-200'), 250);
         }
 
-        // Record Answer Detail
         const answerRecord = {
           index: this.questionIndex,
           dateStr: this.formatDateString(this.currentDate.year, this.currentDate.monthIndex, this.currentDate.day),
@@ -1213,7 +1169,6 @@
         };
         this.roundAnswers.push(answerRecord);
 
-        // Flash feedback overlay
         this.showFlashFeedback(isCorrect, answerRecord.correctDayName);
 
         if (isCorrect) {
@@ -1225,7 +1180,6 @@
           this.streak = 0;
           this.playWrongSound();
 
-          // Auto-show breakdown if checkbox checked
           const autoBreakdown = document.getElementById('check-auto-breakdown').checked;
           if (autoBreakdown && this.currentMode === 'endless') {
             this.showBreakdownModal(this.currentBreakdown);
@@ -1234,7 +1188,6 @@
 
         this.updateHUD();
 
-        // Advance to next question after brief visual delay
         setTimeout(() => {
           this.nextQuestion();
         }, isCorrect ? 180 : 350);
@@ -1245,13 +1198,12 @@
         const text = document.getElementById('feedback-text');
 
         if (isCorrect) {
-          text.className = "flex items-center gap-2 px-6 py-3 rounded-2xl shadow-2xl bg-emerald-950/90 text-emerald-300 border border-emerald-500/50";
-          text.innerHTML = `<i data-lucide="check-circle" class="w-7 h-7 text-emerald-400"></i> Correct!`;
+          text.className = "flex items-center gap-2 px-6 py-3 rounded-2xl shadow-brutal-lg bg-emerald-200 text-emerald-950 border-2 border-zinc-900 font-black";
+          text.innerHTML = `✓ Correct!`;
         } else {
-          text.className = "flex items-center gap-2 px-6 py-3 rounded-2xl shadow-2xl bg-rose-950/95 text-rose-300 border border-rose-500/50";
-          text.innerHTML = `<i data-lucide="x-circle" class="w-7 h-7 text-rose-400"></i> It's ${correctName}`;
+          text.className = "flex items-center gap-2 px-6 py-3 rounded-2xl shadow-brutal-lg bg-rose-200 text-rose-950 border-2 border-zinc-900 font-black";
+          text.innerHTML = `✗ It's ${correctName}`;
         }
-        lucide.createIcons();
 
         overlay.style.opacity = '1';
         setTimeout(() => {
@@ -1274,7 +1226,6 @@
         const accuracy = totalAnswered > 0 ? Math.round((correctCount / totalAnswered) * 100) : 0;
         const avgTime = totalAnswered > 0 ? (totalTime / totalAnswered).toFixed(2) : '0.00';
 
-        // Update Lifetime Stats
         this.stats.totalSolved += correctCount;
         this.stats.totalAttempts += totalAnswered;
         
@@ -1297,7 +1248,6 @@
           this.playFanfareSound();
         }
 
-        // Render Results Screen
         document.getElementById('res-total-time').textContent = totalTime.toFixed(2) + 's';
         document.getElementById('res-avg-time').textContent = avgTime + 's';
         document.getElementById('res-accuracy').textContent = accuracy + '%';
@@ -1312,28 +1262,27 @@
           headline.textContent = "Round Complete!";
         }
 
-        // Populate Table Rows
         const tbody = document.getElementById('results-table-body');
         tbody.innerHTML = '';
 
         this.roundAnswers.forEach((ans, i) => {
           const tr = document.createElement('tr');
-          tr.className = "hover:bg-slate-800/50 cursor-pointer transition";
+          tr.className = "hover:bg-yellow-50 cursor-pointer transition";
           tr.onclick = () => this.showBreakdownModal(ans.breakdown);
 
           const statusIcon = ans.isCorrect 
-            ? `<span class="text-emerald-400 font-bold inline-flex items-center gap-1"><i data-lucide="check" class="w-3.5 h-3.5"></i> ${ans.selectedDayName}</span>`
-            : `<span class="text-rose-400 font-bold inline-flex items-center gap-1"><i data-lucide="x" class="w-3.5 h-3.5"></i> ${ans.selectedDayName}</span>`;
+            ? `<span class="text-emerald-700 font-black">✓ ${ans.selectedDayName}</span>`
+            : `<span class="text-rose-700 font-black">✗ ${ans.selectedDayName}</span>`;
 
           tr.innerHTML = `
-            <td class="p-3 text-slate-500 font-sans">${i + 1}</td>
-            <td class="p-3 font-semibold text-white font-sans">${ans.dateStr}</td>
+            <td class="p-3 text-zinc-500 font-sans font-bold">${i + 1}</td>
+            <td class="p-3 font-black text-zinc-950 font-sans">${ans.dateStr}</td>
             <td class="p-3">${statusIcon}</td>
-            <td class="p-3 text-slate-300">${ans.correctDayName}</td>
-            <td class="p-3 text-slate-400">${ans.timeTaken.toFixed(2)}s</td>
+            <td class="p-3 text-zinc-700 font-bold">${ans.correctDayName}</td>
+            <td class="p-3 text-zinc-600 font-bold">${ans.timeTaken.toFixed(2)}s</td>
             <td class="p-3 text-right">
-              <button class="px-2 py-1 rounded bg-indigo-600/20 text-indigo-300 border border-indigo-500/30 hover:bg-indigo-600/40 text-[11px] font-sans font-medium">
-                Math breakdown &rarr;
+              <button class="btn-brutal px-2.5 py-1 rounded-lg bg-zinc-100 text-zinc-900 border border-zinc-900 shadow-brutal-sm text-[11px] font-sans font-black">
+                Breakdown &rarr;
               </button>
             </td>
           `;
@@ -1355,14 +1304,12 @@
         if (!bd) return;
         document.getElementById('modal-breakdown-date').textContent = this.formatDateString(bd.year, bd.monthIndex, bd.day, 'DMY');
 
-        // Step 1 Century
         document.getElementById('bd-century-anchor').textContent = `${bd.centuryInfo.anchorName} (${bd.centuryInfo.anchorValue})`;
         document.getElementById('bd-century-detail').innerHTML = `
           Century <strong>${bd.centuryInfo.century}s</strong>: Anchor is <strong>${bd.centuryInfo.anchorName}</strong> (Code ${bd.centuryInfo.anchorValue}).
-          <span class="text-slate-500 block text-[10px]">Rule: 1600=Tue, 1700=Sun, 1800=Fri, 1900=Wed (repeats every 400 yrs).</span>
+          <span class="text-zinc-500 block text-[10px]">Rule: 1600=Tue, 1700=Sun, 1800=Fri, 1900=Wed (repeats every 400 yrs).</span>
         `;
 
-        // Step 2 Year
         document.getElementById('bd-year-doomsday').textContent = `${bd.yearDoomsdayName} (${bd.yearDoomsdayVal})`;
         document.getElementById('bd-year-detail').innerHTML = `
           For year <strong>'${String(bd.y2).padStart(2, '0')}</strong>: 
@@ -1371,14 +1318,12 @@
           Year Doomsday = Century (${bd.centuryInfo.anchorValue}) + ${bd.div12.mod} = <strong>${bd.yearDoomsdayName} (${bd.yearDoomsdayVal})</strong>.
         `;
 
-        // Step 3 Month
         document.getElementById('bd-month-anchor').textContent = `${bd.monthShort} ${bd.monthAnchorDay}`;
         document.getElementById('bd-month-detail').innerHTML = `
           In ${bd.monthName} ${bd.isLeap ? '(Leap Year)' : ''}, Doomsday falls on <strong>${bd.monthName} ${bd.monthAnchorDay}</strong>.<br>
-          <span class="text-indigo-300 text-[11px]">Mnemonic: ${bd.monthMnemonic}</span>
+          <span class="text-indigo-700 text-[11px] font-bold">Mnemonic: ${bd.monthMnemonic}</span>
         `;
 
-        // Step 4 Day calculation
         document.getElementById('bd-final-day').textContent = bd.finalDayName;
         const diffSign = bd.diff >= 0 ? `+${bd.diff}` : `${bd.diff}`;
         document.getElementById('bd-final-detail').innerHTML = `
@@ -1433,15 +1378,15 @@
           const btn = document.getElementById('btn-sound-toggle');
           if (!this.soundEnabled) {
             icon.setAttribute('data-lucide', 'volume-x');
-            btn.classList.add('text-rose-400');
+            btn.classList.add('bg-rose-100', 'text-rose-600');
           }
         }
 
         const theme = localStorage.getItem('dwt_theme');
-        if (theme === 'light') {
-          this.isDark = false;
-          document.documentElement.classList.remove('dark');
-          document.getElementById('icon-theme').setAttribute('data-lucide', 'moon');
+        if (theme === 'dark') {
+          this.isDark = true;
+          document.documentElement.classList.add('dark');
+          document.getElementById('icon-theme').setAttribute('data-lucide', 'sun');
         }
 
         const dateFmt = localStorage.getItem('dwt_date_format');
@@ -1474,9 +1419,7 @@
       // ================= KEYBOARD & EVENT LISTENERS =================
 
       bindEvents() {
-        // Global Keyboard Handler
         window.addEventListener('keydown', (e) => {
-          // If any modal is open, Space / Enter / Escape closes it
           const openModals = ['modal-breakdown', 'modal-cheatsheet', 'modal-stats'].filter(
             id => !document.getElementById(id).classList.contains('hidden')
           );
@@ -1489,7 +1432,6 @@
             }
           }
 
-          // If on Menu Screen
           const menuVisible = !document.getElementById('screen-menu').classList.contains('hidden');
           if (menuVisible) {
             if (e.key === ' ' || e.key === 'Enter') {
@@ -1499,7 +1441,6 @@
             }
           }
 
-          // If on Results Screen
           const resultsVisible = !document.getElementById('screen-results').classList.contains('hidden');
           if (resultsVisible) {
             if (e.key === ' ' || e.key === 'Enter') {
@@ -1509,16 +1450,13 @@
             }
           }
 
-          // If in active Game
           if (this.isPlaying) {
             const key = e.key.toUpperCase();
 
-            // Number hotkeys: 1=Mon, 2=Tue, 3=Wed, 4=Thu, 5=Fri, 6=Sat, 7=Sun, 0=Sun
             const numKeyMap = {
               '1': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 0, '0': 0
             };
 
-            // Letter hotkeys: M=Mon, T=Tue, W=Wed, R=Thu, F=Fri, S=Sat, U=Sun
             const letterKeyMap = {
               'M': 1, 'T': 2, 'W': 3, 'R': 4, 'F': 5, 'S': 6, 'U': 0
             };
@@ -1541,7 +1479,6 @@
       }
     }
 
-    // Initialize global app instance
     const app = new DoomsdayTrainer();
   </script>
 </body>
