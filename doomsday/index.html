@@ -47,7 +47,7 @@
           boxShadow: {
             'editorial-sm': '1.5px 1.5px 0px 0px #27272a',
             'editorial': '2px 2px 0px 0px #27272a',
-            'editorial-lg': '4px 4px 0px 0px #27272a',
+            'editorial-lg': '3px 3px 0px 0px #27272a',
           }
         }
       }
@@ -80,6 +80,22 @@
     .btn-editorial:active {
       transform: translate(1.5px, 1.5px);
       box-shadow: 0px 0px 0px 0px #27272a;
+    }
+
+    /* Custom Paper Scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f0eee6;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #ccc7b6;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #27272a;
     }
   </style>
 </head>
@@ -213,7 +229,7 @@
 
       <!-- Settings & Date Range Section -->
       <div class="card-editorial rounded-2xl p-5 sm:p-6 space-y-4">
-        <h3 class="text-xs font-black uppercase tracking-wider text-paper-900 flex items-center gap-1.5">
+        <h3 class="text-xs font-extrabold uppercase font-mono tracking-wider text-paper-900 flex items-center gap-1.5">
           <i data-lucide="sliders-horizontal" class="w-3.5 h-3.5"></i>
           Practice Settings & Date Range
         </h3>
@@ -516,8 +532,8 @@
   <!-- ================= MODALS ================= -->
 
   <!-- MODAL 1: STEP-BY-STEP DOOMSDAY BREAKDOWN MODAL -->
-  <div id="modal-breakdown" class="fixed inset-0 z-50 bg-stone-900/40 backdrop-blur-xs hidden flex items-center justify-center p-4">
-    <div class="bg-[#ffffff] border-[1.5px] border-paper-800 rounded-3xl max-w-xl w-full p-6 sm:p-8 space-y-6 shadow-editorial-lg relative">
+  <div id="modal-breakdown" onclick="app.closeModal('modal-breakdown')" class="fixed inset-0 z-50 bg-paper-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-[#ffffff] border-[1.5px] border-paper-800 rounded-2xl max-w-xl w-full p-6 sm:p-8 space-y-6 shadow-editorial-lg relative" onclick="event.stopPropagation()">
       <button onclick="app.closeModal('modal-breakdown')" class="btn-editorial absolute top-5 right-5 p-2 rounded-xl text-paper-900">
         <i data-lucide="x" class="w-4 h-4"></i>
       </button>
@@ -586,131 +602,132 @@
   </div>
 
   <!-- MODAL 2: COMPREHENSIVE DOOMSDAY CHEAT SHEET & GUIDE -->
-  <div id="modal-cheatsheet" class="fixed inset-0 z-50 bg-stone-900/40 backdrop-blur-xs hidden flex items-center justify-center p-4">
-    <div class="bg-[#ffffff] border-[1.5px] border-paper-800 rounded-3xl max-w-2xl w-full p-6 sm:p-8 space-y-6 shadow-editorial-lg relative max-h-[90vh] overflow-y-auto">
+  <div id="modal-cheatsheet" onclick="app.closeModal('modal-cheatsheet')" class="fixed inset-0 z-50 bg-paper-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-[#ffffff] border-[1.5px] border-paper-800 rounded-2xl max-w-2xl w-full p-6 sm:p-8 space-y-6 shadow-editorial-lg relative max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
       <button onclick="app.closeModal('modal-cheatsheet')" class="btn-editorial absolute top-5 right-5 p-2 rounded-xl text-paper-900">
         <i data-lucide="x" class="w-4 h-4"></i>
       </button>
 
       <div class="space-y-1">
-        <div class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-cobalt-50 text-cobalt-900 border-[1.5px] border-paper-800 text-xs font-bold shadow-editorial-sm">
-          <span>Algorithm Reference</span>
-        </div>
-        <h3 class="text-2xl font-extrabold text-paper-900">The Doomsday Rule Cheat Sheet</h3>
-        <p class="text-xs text-zinc-500 font-medium">Invented by mathematician John Horton Conway in 1970</p>
+        <span class="text-xs uppercase tracking-wider font-bold text-cobalt-700">Rules Reference & Cheatsheet</span>
+        <h3 class="text-2xl font-extrabold text-paper-900">John Conway's Doomsday Rule</h3>
+        <p class="text-xs text-zinc-500 font-medium">A complete 4-step framework for calculating any day of the week mentally.</p>
       </div>
 
-      <!-- Quick Day Code Reference -->
-      <div class="bg-paper-200 rounded-2xl p-4 border-[1.5px] border-paper-800">
-        <h4 class="text-xs font-bold uppercase tracking-wider text-paper-900 mb-2">Day of Week Number Codes</h4>
-        <div class="grid grid-cols-7 gap-1 text-center font-mono text-xs">
-          <div class="p-2 rounded-lg bg-white border border-paper-800"><div class="text-zinc-500 text-[10px] font-sans font-medium">Sun</div><div class="font-bold text-paper-900">0 / 7</div></div>
-          <div class="p-2 rounded-lg bg-white border border-paper-800"><div class="text-zinc-500 text-[10px] font-sans font-medium">Mon</div><div class="font-bold text-paper-900">1</div></div>
-          <div class="p-2 rounded-lg bg-white border border-paper-800"><div class="text-zinc-500 text-[10px] font-sans font-medium">Tue</div><div class="font-bold text-paper-900">2</div></div>
-          <div class="p-2 rounded-lg bg-white border border-paper-800"><div class="text-zinc-500 text-[10px] font-sans font-medium">Wed</div><div class="font-bold text-paper-900">3</div></div>
-          <div class="p-2 rounded-lg bg-white border border-paper-800"><div class="text-zinc-500 text-[10px] font-sans font-medium">Thu</div><div class="font-bold text-paper-900">4</div></div>
-          <div class="p-2 rounded-lg bg-white border border-paper-800"><div class="text-zinc-500 text-[10px] font-sans font-medium">Fri</div><div class="font-bold text-paper-900">5</div></div>
-          <div class="p-2 rounded-lg bg-white border border-paper-800"><div class="text-zinc-500 text-[10px] font-sans font-medium">Sat</div><div class="font-bold text-paper-900">6</div></div>
-        </div>
-      </div>
-
-      <!-- 1. Century Anchors -->
+      <!-- Step 1: Day of Week Codes -->
       <div class="space-y-2">
-        <h4 class="text-sm font-extrabold text-paper-900 flex items-center gap-2">
-          <span class="w-5 h-5 rounded-full bg-cobalt-700 text-white flex items-center justify-center text-xs font-bold">1</span>
-          Century Anchors (400-Year Gregorian Cycle)
+        <h4 class="text-xs font-extrabold text-paper-900 uppercase tracking-wider flex items-center gap-1.5">
+          <span class="w-4 h-4 rounded-full bg-cobalt-700 text-white flex items-center justify-center text-[10px]">0</span>
+          Day of Week Values (mod 7)
         </h4>
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
-          <div class="p-3 rounded-xl bg-paper-200 border-[1.5px] border-paper-800">
-            <div class="text-zinc-500 font-mono text-[11px]">1600, 2000, 2400</div>
-            <div class="text-paper-900 font-bold text-sm">Tuesday (2)</div>
+        <div class="grid grid-cols-7 gap-1.5 text-center text-xs">
+          <div class="p-2 rounded-xl bg-paper-200 border border-paper-800 font-bold">
+            <span class="block text-[10px] text-zinc-500">SUN</span>
+            <span class="font-mono text-cobalt-700 text-sm font-extrabold">0 / 7</span>
           </div>
-          <div class="p-3 rounded-xl bg-paper-200 border-[1.5px] border-paper-800">
-            <div class="text-zinc-500 font-mono text-[11px]">1700, 2100, 2500</div>
-            <div class="text-paper-900 font-bold text-sm">Sunday (0)</div>
+          <div class="p-2 rounded-xl bg-paper-200 border border-paper-800 font-bold">
+            <span class="block text-[10px] text-zinc-500">MON</span>
+            <span class="font-mono text-cobalt-700 text-sm font-extrabold">1</span>
           </div>
-          <div class="p-3 rounded-xl bg-paper-200 border-[1.5px] border-paper-800">
-            <div class="text-zinc-500 font-mono text-[11px]">1800, 2200, 2600</div>
-            <div class="text-paper-900 font-bold text-sm">Friday (5)</div>
+          <div class="p-2 rounded-xl bg-paper-200 border border-paper-800 font-bold">
+            <span class="block text-[10px] text-zinc-500">TUE</span>
+            <span class="font-mono text-cobalt-700 text-sm font-extrabold">2</span>
           </div>
-          <div class="p-3 rounded-xl bg-paper-200 border-[1.5px] border-paper-800">
-            <div class="text-zinc-500 font-mono text-[11px]">1900, 2300, 2700</div>
-            <div class="text-paper-900 font-bold text-sm">Wednesday (3)</div>
+          <div class="p-2 rounded-xl bg-paper-200 border border-paper-800 font-bold">
+            <span class="block text-[10px] text-zinc-500">WED</span>
+            <span class="font-mono text-cobalt-700 text-sm font-extrabold">3</span>
           </div>
-        </div>
-        <p class="text-[11px] text-zinc-600 font-medium">Mnemonic: <strong>"We-in-dis-arm-y"</strong> (Wed, in, Fri, Sun, Tue) or remember 2000 is <strong>Tue</strong>sday (Y<strong>2</strong>K).</p>
-      </div>
-
-      <!-- 2. Year Doomsday Calculation (Odd + 11 Method) -->
-      <div class="space-y-2">
-        <h4 class="text-sm font-extrabold text-paper-900 flex items-center gap-2">
-          <span class="w-5 h-5 rounded-full bg-cobalt-700 text-white flex items-center justify-center text-xs font-bold">2</span>
-          Year Offset Formula: The "Odd + 11" Method
-        </h4>
-        <div class="p-4 rounded-xl bg-paper-200 border-[1.5px] border-paper-800 space-y-2 text-xs text-paper-900">
-          <p class="font-medium">Let <strong>T</strong> be the last two digits of the year:</p>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-            <div class="p-2.5 bg-white rounded-xl border border-paper-800 font-medium">
-              <span class="font-bold text-cobalt-700 block mb-0.5">1. Check Parity</span>
-              If <strong>T</strong> is odd, add <strong>11</strong> (make it even).
-            </div>
-            <div class="p-2.5 bg-white rounded-xl border border-paper-800 font-medium">
-              <span class="font-bold text-cobalt-700 block mb-0.5">2. Halve It</span>
-              Divide by 2 (<strong>T ÷ 2</strong>).
-            </div>
-            <div class="p-2.5 bg-white rounded-xl border border-paper-800 font-medium">
-              <span class="font-bold text-cobalt-700 block mb-0.5">3. Check Parity Again</span>
-              If the result is odd, add <strong>11</strong>.
-            </div>
-            <div class="p-2.5 bg-white rounded-xl border border-paper-800 font-medium">
-              <span class="font-bold text-cobalt-700 block mb-0.5">4. Distance to 7</span>
-              Subtract from the next multiple of <strong>7</strong> (or 7 − rem).
-            </div>
+          <div class="p-2 rounded-xl bg-paper-200 border border-paper-800 font-bold">
+            <span class="block text-[10px] text-zinc-500">THU</span>
+            <span class="font-mono text-cobalt-700 text-sm font-extrabold">4</span>
           </div>
-          <p class="text-[11px] text-zinc-600 font-medium pt-1">
-            <strong>Example for '89:</strong> 89 + 11 = 100 &rarr; 100 ÷ 2 = 50 &rarr; 50 is even &rarr; Next mult of 7 is 56 &rarr; 56 − 50 = <strong>+6 offset</strong>.
-          </p>
+          <div class="p-2 rounded-xl bg-paper-200 border border-paper-800 font-bold">
+            <span class="block text-[10px] text-zinc-500">FRI</span>
+            <span class="font-mono text-cobalt-700 text-sm font-extrabold">5</span>
+          </div>
+          <div class="p-2 rounded-xl bg-paper-200 border border-paper-800 font-bold">
+            <span class="block text-[10px] text-zinc-500">SAT</span>
+            <span class="font-mono text-cobalt-700 text-sm font-extrabold">6</span>
+          </div>
         </div>
       </div>
 
-      <!-- 3. Month Anchor Mnemonics -->
+      <!-- Step 2: Century Anchors (400-year cycle) -->
       <div class="space-y-2">
-        <h4 class="text-sm font-extrabold text-paper-900 flex items-center gap-2">
-          <span class="w-5 h-5 rounded-full bg-cobalt-700 text-white flex items-center justify-center text-xs font-bold">3</span>
-          Month Anchors (Always Fall on Doomsday!)
+        <h4 class="text-xs font-extrabold text-paper-900 uppercase tracking-wider flex items-center gap-1.5">
+          <span class="w-4 h-4 rounded-full bg-cobalt-700 text-white flex items-center justify-center text-[10px]">1</span>
+          Century Anchors (400-Year Repeating Cycle)
         </h4>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-          <div class="p-3 rounded-xl bg-paper-200 border-[1.5px] border-paper-800 space-y-1">
-            <span class="text-amber-800 font-bold">Even Months (Match their number):</span>
-            <ul class="text-zinc-700 space-y-0.5 font-mono text-[11px]">
-              <li><strong>4/4</strong> (Apr 4), <strong>6/6</strong> (Jun 6)</li>
-              <li><strong>8/8</strong> (Aug 8), <strong>10/10</strong> (Oct 10), <strong>12/12</strong> (Dec 12)</li>
-            </ul>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center text-xs">
+          <div class="p-2.5 rounded-xl bg-paper-200 border border-paper-800 font-bold">
+            <span class="block text-[10px] text-zinc-500">1600s / 2000s</span>
+            <span class="block text-paper-900 font-extrabold">Tuesday</span>
+            <span class="font-mono text-cobalt-700 text-xs font-extrabold">Code 2</span>
           </div>
-          <div class="p-3 rounded-xl bg-paper-200 border-[1.5px] border-paper-800 space-y-1">
-            <span class="text-cobalt-800 font-bold">Odd Months (9-to-5 at 7-11):</span>
-            <ul class="text-zinc-700 space-y-0.5 font-mono text-[11px]">
-              <li><strong>5/9</strong> (May 9) &amp; <strong>9/5</strong> (Sep 5) &rarr; "9 to 5"</li>
-              <li><strong>7/11</strong> (Jul 11) &amp; <strong>11/7</strong> (Nov 7) &rarr; "7-Eleven"</li>
-            </ul>
+          <div class="p-2.5 rounded-xl bg-paper-200 border border-paper-800 font-bold">
+            <span class="block text-[10px] text-zinc-500">1700s / 2100s</span>
+            <span class="block text-paper-900 font-extrabold">Sunday</span>
+            <span class="font-mono text-cobalt-700 text-xs font-extrabold">Code 0</span>
           </div>
-          <div class="p-3 rounded-xl bg-paper-200 border-[1.5px] border-paper-800 space-y-1">
-            <span class="text-emerald-800 font-bold">March &amp; Pi Day:</span>
-            <p class="text-zinc-700 text-[11px]"><strong>March 14</strong> ("Pi Day" 3.14) or <strong>March 0</strong> (last day of Feb).</p>
+          <div class="p-2.5 rounded-xl bg-paper-200 border border-paper-800 font-bold">
+            <span class="block text-[10px] text-zinc-500">1800s / 2200s</span>
+            <span class="block text-paper-900 font-extrabold">Friday</span>
+            <span class="font-mono text-cobalt-700 text-xs font-extrabold">Code 5</span>
           </div>
-          <div class="p-3 rounded-xl bg-paper-200 border-[1.5px] border-paper-800 space-y-1">
-            <span class="text-purple-800 font-bold">Jan &amp; Feb (Leap Year Shift):</span>
-            <p class="text-zinc-700 text-[11px]">
+          <div class="p-2.5 rounded-xl bg-paper-200 border border-paper-800 font-bold">
+            <span class="block text-[10px] text-zinc-500">1900s / 2300s</span>
+            <span class="block text-paper-900 font-extrabold">Wednesday</span>
+            <span class="font-mono text-cobalt-700 text-xs font-extrabold">Code 3</span>
+          </div>
+        </div>
+        <p class="text-[11px] text-zinc-500 italic">Mnemonic: "2-0-5-3" (or Tuesday, Non-day, Five-day, Wednesday).</p>
+      </div>
+
+      <!-- Step 3: Year Calculation -->
+      <div class="space-y-2">
+        <h4 class="text-xs font-extrabold text-paper-900 uppercase tracking-wider flex items-center gap-1.5">
+          <span class="w-4 h-4 rounded-full bg-cobalt-700 text-white flex items-center justify-center text-[10px]">2</span>
+          Year Offset (The "Odd + 11" Rule)
+        </h4>
+        <div class="p-3.5 rounded-2xl bg-paper-200 border-[1.5px] border-paper-800 text-xs space-y-1.5 text-zinc-700">
+          <p class="font-bold text-paper-900">For two-digit year Y:</p>
+          <ol class="list-decimal list-inside space-y-1 pl-1">
+            <li>If Y is odd, add 11: <span class="font-mono bg-paper-100 px-1 py-0.5 rounded border border-paper-800 text-paper-900 font-bold">T = Y + 11</span> (if even, <span class="font-mono bg-paper-100 px-1 py-0.5 rounded border border-paper-800 text-paper-900 font-bold">T = Y</span>)</li>
+            <li>Divide by 2: <span class="font-mono bg-paper-100 px-1 py-0.5 rounded border border-paper-800 text-paper-900 font-bold">T = T / 2</span></li>
+            <li>If result is odd, add 11: <span class="font-mono bg-paper-100 px-1 py-0.5 rounded border border-paper-800 text-paper-900 font-bold">T = T + 11</span></li>
+            <li>Find remainder modulo 7: <span class="font-mono bg-paper-100 px-1 py-0.5 rounded border border-paper-800 text-paper-900 font-bold">Offset = (7 − (T mod 7)) mod 7</span></li>
+            <li><span class="font-bold text-cobalt-900">Year Doomsday = (Century Anchor + Offset) mod 7</span></li>
+          </ol>
+        </div>
+      </div>
+
+      <!-- Step 4: Month Doomsday Anchors -->
+      <div class="space-y-2">
+        <h4 class="text-xs font-extrabold text-paper-900 uppercase tracking-wider flex items-center gap-1.5">
+          <span class="w-4 h-4 rounded-full bg-cobalt-700 text-white flex items-center justify-center text-[10px]">3</span>
+          Memorable Month Anchors
+        </h4>
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
+          <div class="p-2.5 rounded-xl bg-paper-200 border border-paper-800">
+            <span class="font-bold text-paper-900 block">Even Months:</span>
+            <span class="text-[11px] text-zinc-600">4/4, 6/6, 8/8, 10/10, 12/12</span>
+          </div>
+          <div class="p-2.5 rounded-xl bg-paper-200 border border-paper-800">
+            <span class="font-bold text-paper-900 block">9-to-5 & 7-Eleven:</span>
+            <span class="text-[11px] text-zinc-600">5/9, 9/5, 7/11, 11/7</span>
+          </div>
+          <div class="p-2.5 rounded-xl bg-paper-200 border border-paper-800">
+            <span class="font-bold text-paper-900 block">March:</span>
+            <span class="text-[11px] text-zinc-600">Always <strong>March 14 (Pi Day)</strong> or <strong>March 0</strong></span>
+          </div>
+          <div class="p-2.5 rounded-xl bg-paper-200 border border-paper-800 col-span-2 sm:grid-cols-3">
+            <span class="font-bold text-paper-900 block">Jan & Feb (Leap Year vs Common):</span>
+            <p class="text-[11px] text-zinc-600 mt-0.5">
               Common: <strong>Jan 3</strong> / <strong>Feb 28</strong><br>
               Leap Year: <strong>Jan 4</strong> / <strong>Feb 29</strong>
             </p>
           </div>
         </div>
-      </div>
-
-      <!-- Calendar Switch Note -->
-      <div class="p-3.5 rounded-xl bg-cobalt-50 border-[1.5px] border-paper-800 text-[11px] text-cobalt-900 leading-relaxed font-medium">
-        <strong>Calendar Note:</strong> Conway's Doomsday Rule applies to the <strong>Gregorian Calendar</strong> (introduced in 1582 with leap centuries divisible by 400). Standard mental calculation tests evaluate all modern dates using standard Gregorian rules.
       </div>
 
       <button onclick="app.closeModal('modal-cheatsheet')" class="btn-editorial w-full py-3 rounded-xl bg-cobalt-700 hover:bg-cobalt-800 text-white font-bold text-sm border-paper-800 shadow-editorial">
@@ -720,8 +737,8 @@
   </div>
 
   <!-- MODAL 3: LIFETIME STATS MODAL -->
-  <div id="modal-stats" class="fixed inset-0 z-50 bg-stone-900/40 backdrop-blur-xs hidden flex items-center justify-center p-4">
-    <div class="bg-[#ffffff] border-[1.5px] border-paper-800 rounded-3xl max-w-lg w-full p-6 sm:p-8 space-y-6 shadow-editorial-lg relative">
+  <div id="modal-stats" onclick="app.closeModal('modal-stats')" class="fixed inset-0 z-50 bg-paper-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-[#ffffff] border-[1.5px] border-paper-800 rounded-2xl max-w-lg w-full p-6 sm:p-8 space-y-6 shadow-editorial-lg relative" onclick="event.stopPropagation()">
       <button onclick="app.closeModal('modal-stats')" class="btn-editorial absolute top-5 right-5 p-2 rounded-xl text-paper-900">
         <i data-lucide="x" class="w-4 h-4"></i>
       </button>
@@ -761,8 +778,8 @@
   </div>
 
   <!-- MODAL 4: PAUSE & REVIEW MODAL -->
-  <div id="modal-pause" class="fixed inset-0 z-50 bg-stone-900/40 backdrop-blur-xs hidden flex items-center justify-center p-4">
-    <div class="bg-[#ffffff] border-[1.5px] border-paper-800 rounded-3xl max-w-md w-full p-6 sm:p-8 space-y-5 shadow-editorial-lg relative">
+  <div id="modal-pause" class="fixed inset-0 z-50 bg-paper-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-[#ffffff] border-[1.5px] border-paper-800 rounded-2xl max-w-md w-full p-6 sm:p-8 space-y-5 shadow-editorial-lg relative">
       <div class="text-center space-y-1.5">
         <div class="w-12 h-12 rounded-2xl bg-amber-50 border-[1.5px] border-paper-800 flex items-center justify-center text-2xl mx-auto shadow-editorial-sm">
           ⏸️
@@ -1159,6 +1176,12 @@
 
       startGame() {
         this.initAudio();
+        if (this.transitionTimeout) clearTimeout(this.transitionTimeout);
+        this.transitionTimeout = null;
+        this.isTransitioning = false;
+        this._advanceOnModalClose = false;
+        this._pausedByHint = false;
+
         this.isPlaying = true;
         this.isPaused = false;
         this.questionIndex = 0;
@@ -1234,6 +1257,10 @@
         if (!this.isPlaying || this.isPaused) return;
         this.isPaused = true;
         this.pausedAt = performance.now();
+        if (this.transitionTimeout) {
+          clearTimeout(this.transitionTimeout);
+          this.transitionTimeout = null;
+        }
 
         const answeredCount = this.roundAnswers.length;
         document.getElementById('pause-stat-answered').textContent = answeredCount;
@@ -1266,6 +1293,9 @@
         this.questionStartTime += pauseDuration;
         this.isPaused = false;
         this.closeModal('modal-pause');
+        if (this.isTransitioning) {
+          this.nextQuestion();
+        }
       }
 
       endGameAndReview() {
@@ -1279,14 +1309,17 @@
 
       abortToMenu() {
         this.closeModal('modal-pause');
-        this.isPlaying = false;
-        this.isPaused = false;
-        if (this.timerInterval) clearInterval(this.timerInterval);
+        this.abortGame();
         this.showScreen('menu');
       }
 
       nextQuestion() {
-        if (!this.isPlaying) return;
+        if (!this.isPlaying || this.isPaused) return;
+        if (this.transitionTimeout) {
+          clearTimeout(this.transitionTimeout);
+          this.transitionTimeout = null;
+        }
+        this.isTransitioning = false;
 
         if (this.currentMode === 'sprint' && this.questionIndex >= this.sprintCount) {
           this.finishGame();
@@ -1321,7 +1354,8 @@
       }
 
       submitAnswer(selectedDay) {
-        if (!this.isPlaying || !this.currentBreakdown) return;
+        if (!this.isPlaying || this.isPaused || this.isTransitioning || !this.currentBreakdown) return;
+        this.isTransitioning = true;
 
         const timeTaken = (performance.now() - this.questionStartTime) / 1000;
         const isCorrect = selectedDay === this.currentBreakdown.finalDayVal;
@@ -1360,13 +1394,19 @@
 
           const autoBreakdown = document.getElementById('check-auto-breakdown').checked;
           if (autoBreakdown && this.currentMode === 'endless') {
+            this.isPaused = true;
+            this.pausedAt = performance.now();
+            this._advanceOnModalClose = true;
             this.showBreakdownModal(this.currentBreakdown);
+            this.updateHUD();
+            return;
           }
         }
 
         this.updateHUD();
 
-        setTimeout(() => {
+        if (this.transitionTimeout) clearTimeout(this.transitionTimeout);
+        this.transitionTimeout = setTimeout(() => {
           this.nextQuestion();
         }, isCorrect ? 180 : 350);
       }
@@ -1392,16 +1432,27 @@
       abortGame() {
         this.isPlaying = false;
         this.isPaused = false;
+        this.isTransitioning = false;
+        this._advanceOnModalClose = false;
+        this._pausedByHint = false;
         if (this.timerInterval) clearInterval(this.timerInterval);
+        if (this.transitionTimeout) clearTimeout(this.transitionTimeout);
+        this.transitionTimeout = null;
       }
 
       finishGame(isIncomplete = false) {
+        const endTime = this.isPaused ? this.pausedAt : performance.now();
         this.isPlaying = false;
         this.isPaused = false;
+        this.isTransitioning = false;
+        this._advanceOnModalClose = false;
+        this._pausedByHint = false;
         if (this.timerInterval) clearInterval(this.timerInterval);
+        if (this.transitionTimeout) clearTimeout(this.transitionTimeout);
+        this.transitionTimeout = null;
         this.closeModal('modal-pause');
 
-        const totalTime = (performance.now() - this.startTime) / 1000;
+        const totalTime = Math.max(0, (endTime - this.startTime) / 1000);
         const totalAnswered = this.roundAnswers.length;
         const correctCount = this.roundAnswers.filter(a => a.isCorrect).length;
         const accuracy = totalAnswered > 0 ? Math.round((correctCount / totalAnswered) * 100) : 0;
@@ -1485,7 +1536,7 @@
       }
 
       showInGameHint() {
-        if (!this.currentBreakdown) return;
+        if (!this.currentBreakdown || this.isTransitioning) return;
         if (this.isPlaying && !this.isPaused) {
           this.isPaused = true;
           this.pausedAt = performance.now();
@@ -1544,13 +1595,24 @@
 
       closeModal(modalId) {
         document.getElementById(modalId).classList.add('hidden');
-        if (modalId === 'modal-breakdown' && this._pausedByHint) {
-          this._pausedByHint = false;
-          if (this.isPaused) {
-            const pauseDuration = performance.now() - this.pausedAt;
-            this.startTime += pauseDuration;
-            this.questionStartTime += pauseDuration;
+        if (modalId === 'modal-breakdown') {
+          if (this._advanceOnModalClose) {
+            this._advanceOnModalClose = false;
             this.isPaused = false;
+            this.nextQuestion();
+            return;
+          }
+          if (this._pausedByHint) {
+            this._pausedByHint = false;
+            if (this.isPaused) {
+              const pauseDuration = performance.now() - this.pausedAt;
+              this.startTime += pauseDuration;
+              this.questionStartTime += pauseDuration;
+              this.isPaused = false;
+            }
+          }
+          if (this.isTransitioning) {
+            this.nextQuestion();
           }
         }
       }
@@ -1645,8 +1707,8 @@
             if (e.key === 'Escape' || e.key === ' ' || e.key === 'Enter') {
               e.preventDefault();
               otherOpenModals.forEach(id => this.closeModal(id));
-              return;
             }
+            return;
           }
 
           const menuVisible = !document.getElementById('screen-menu').classList.contains('hidden');

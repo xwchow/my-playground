@@ -1,0 +1,1888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sydney Boulder Buddy | Sandstone Dryness & Friction Forecaster</title>
+  <meta name="description" content="Real-time Sydney bouldering conditions, sandstone dryness decay, and 7-day friction forecast across 18 crags in Greater Sydney, Blue Mountains & Central Coast.">
+
+  <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            paper: {
+              50: '#ffffff',
+              100: '#f7f6f2',
+              200: '#f0eee6',
+              300: '#e5e2d6',
+              400: '#ccc7b6',
+              800: '#27272a',
+              900: '#18181b',
+            },
+            cobalt: {
+              50: '#eff6ff',
+              100: '#dbeafe',
+              200: '#bfdbfe',
+              300: '#93c5fd',
+              400: '#60a5fa',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+              800: '#1e40af',
+              900: '#1e3a8a',
+            },
+            stonebrand: {
+              sandstone: '#d97706',
+              iron: '#b45309',
+            }
+          },
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace']
+          },
+          boxShadow: {
+            'editorial-sm': '1.5px 1.5px 0px 0px #27272a',
+            'editorial': '2px 2px 0px 0px #27272a',
+            'editorial-lg': '3px 3px 0px 0px #27272a',
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Leaflet CSS & JS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+  <style>
+    body {
+      background-color: #f7f6f2;
+      color: #18181b;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    .card-editorial {
+      background-color: #ffffff;
+      border: 1.5px solid #27272a;
+      box-shadow: 2px 2px 0px 0px #27272a;
+      transition: all 0.15s ease;
+    }
+    .card-editorial:hover {
+      transform: translate(-1px, -1px);
+      box-shadow: 3px 3px 0px 0px #27272a;
+    }
+    .btn-editorial {
+      background-color: #ffffff;
+      border: 1.5px solid #27272a;
+      box-shadow: 1.5px 1.5px 0px 0px #27272a;
+      transition: all 0.1s ease;
+    }
+    .btn-editorial:hover {
+      background-color: #f0eee6;
+      transform: translate(-0.5px, -0.5px);
+    }
+    .btn-editorial:active {
+      transform: translate(1.5px, 1.5px);
+      box-shadow: 0px 0px 0px 0px #27272a;
+    }
+
+    /* Custom Leaflet Marker Styles */
+    .custom-crag-marker {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s ease;
+    }
+    .custom-crag-marker:hover {
+      transform: scale(1.18);
+      z-index: 1000 !important;
+    }
+    .marker-pin {
+      width: 32px;
+      height: 32px;
+      border-radius: 50% 50% 50% 0;
+      transform: rotate(-45deg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid #27272a;
+      box-shadow: 1.5px 1.5px 0px 0px #27272a;
+    }
+    .marker-pin-inner {
+      transform: rotate(45deg);
+      font-size: 13px;
+      font-weight: 800;
+      color: #18181b;
+    }
+
+    /* Leaflet Popup Styling */
+    .leaflet-popup-content-wrapper {
+      background: #ffffff;
+      border: 1.5px solid #27272a;
+      border-radius: 12px;
+      box-shadow: 3px 3px 0px 0px #27272a;
+      padding: 0;
+      overflow: hidden;
+    }
+    .leaflet-popup-content {
+      margin: 12px 14px;
+      line-height: 1.4;
+    }
+    .leaflet-popup-tip {
+      background: #ffffff;
+      border: 1.5px solid #27272a;
+    }
+
+    /* Custom scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f0eee6;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #ccc7b6;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #27272a;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col transition-colors duration-150 selection:bg-cobalt-100 selection:text-cobalt-900">
+
+  <!-- TOP HEADER -->
+  <header class="border-b-[1.5px] border-paper-800 bg-[#ffffff]/95 backdrop-blur-sm sticky top-0 z-30 px-3 py-2.5 sm:px-6">
+    <div class="max-w-[1680px] mx-auto flex items-center justify-between gap-2">
+      <div class="flex items-center gap-3">
+        <a href="../" class="btn-editorial px-2.5 py-1.5 rounded-xl text-paper-900 flex items-center gap-1.5 text-xs font-bold shrink-0" title="Back to Playground Hub">
+          <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>
+          <span class="hidden sm:inline">Playground</span>
+        </a>
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-xl bg-amber-100 border-[1.5px] border-paper-800 shadow-editorial-sm flex items-center justify-center text-lg font-bold text-amber-900">
+            🧗
+          </div>
+          <div>
+            <h1 class="text-sm sm:text-base font-extrabold tracking-tight text-paper-900 flex items-center gap-1.5">
+              Sydney Boulder Buddy
+              <span class="hidden md:inline-block text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-cobalt-100 text-cobalt-900 border border-paper-800">Sandstone Safety</span>
+            </h1>
+            <p class="text-[10px] sm:text-[11px] text-zinc-500 font-medium hidden sm:block">Rock Dryness & Friction Index Forecaster</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Weather Cache & Status Indicator -->
+      <div class="flex items-center gap-2">
+        <div id="weather-status-badge" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-paper-100 border border-paper-800 text-[11px] font-mono font-bold text-zinc-700">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" id="weather-status-dot"></span>
+          <span id="weather-status-text">Fetching weather...</span>
+        </div>
+        <button onclick="UIController.refreshWeatherData(true)" class="btn-editorial p-1.5 rounded-xl text-zinc-700 hover:text-paper-900" title="Refresh Live Forecast">
+          <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- OFFLINE / FALLBACK BANNER -->
+  <div id="offline-banner" class="hidden bg-amber-100 border-b-[1.5px] border-paper-800 px-4 py-1.5 text-center text-xs font-bold text-amber-950 flex items-center justify-center gap-2">
+    <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-700"></i>
+    <span>Offline Mode: Showing baseline synthetic weather data. Real-time conditions unavailable.</span>
+  </div>
+
+  <!-- MAIN APP CONTAINER (SPLIT VIEW) -->
+  <main class="flex-1 max-w-[1680px] w-full mx-auto p-3 sm:p-5 flex flex-col gap-4">
+
+    <!-- TOP CONTROL STRIP: Day Timeline & Quick Filters -->
+    <div class="card-editorial rounded-2xl p-3 sm:p-4 space-y-3">
+      
+      <!-- Row 1: 7-Day Global Forecast Day Selector -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-extrabold uppercase font-mono tracking-wider text-zinc-500 flex items-center gap-1">
+            <i data-lucide="calendar" class="w-3.5 h-3.5 text-paper-900"></i>
+            Forecast Day:
+          </span>
+          <span id="selected-day-label" class="text-xs font-bold text-cobalt-700">Today</span>
+        </div>
+
+        <!-- 7-Day Timeline Buttons Strip -->
+        <div class="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0" id="global-timeline-container">
+          <!-- Populated by UIController -->
+        </div>
+      </div>
+
+      <hr class="border-paper-200">
+
+      <!-- Row 2: Search, Region Filter, Grade Filter, Condition Filter -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-2.5 items-center">
+        
+        <!-- Search Input (4 cols) -->
+        <div class="relative lg:col-span-4">
+          <i data-lucide="search" class="w-4 h-4 text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+          <input type="text" id="crag-search" oninput="UIController.handleSearch(this.value)" placeholder="Search crags, style, region..." class="w-full bg-paper-100 border-[1.5px] border-paper-800 rounded-xl pl-9 pr-8 py-1.5 text-xs text-paper-900 placeholder-zinc-400 focus:outline-none focus:bg-white focus:ring-1 focus:ring-cobalt-500 font-medium">
+          <kbd class="hidden sm:inline-block absolute right-2.5 top-1/2 -translate-y-1/2 px-1.5 py-0.5 rounded bg-paper-200 border border-paper-800 text-zinc-600 font-mono text-[10px] font-bold shadow-editorial-sm pointer-events-none">
+            /
+          </kbd>
+        </div>
+
+        <!-- Region Dropdown / Pill (3 cols) -->
+        <div class="lg:col-span-3">
+          <select id="region-filter" onchange="UIController.handleRegionChange(this.value)" class="w-full bg-paper-100 border-[1.5px] border-paper-800 rounded-xl px-2.5 py-1.5 text-xs text-paper-900 font-bold focus:outline-none focus:bg-white">
+            <option value="all">📍 All 6 Regions (18 Crags)</option>
+            <option value="sydney-east">Sydney East (3 crags)</option>
+            <option value="sydney-north">Sydney North Shore & Beaches (6 crags)</option>
+            <option value="sydney-inner-west">Sydney Inner West (2 crags)</option>
+            <option value="sydney-south">Sydney South & Shire (2 crags)</option>
+            <option value="blue-mountains">Blue Mountains (4 crags)</option>
+            <option value="central-coast">Central Coast (1 crag)</option>
+          </select>
+        </div>
+
+        <!-- Condition Status Filter (3 cols) -->
+        <div class="lg:col-span-3">
+          <select id="condition-filter" onchange="UIController.handleConditionChange(this.value)" class="w-full bg-paper-100 border-[1.5px] border-paper-800 rounded-xl px-2.5 py-1.5 text-xs text-paper-900 font-bold focus:outline-none focus:bg-white">
+            <option value="all">⚡ All Conditions</option>
+            <option value="dry-safe">🟢 Dry & Climbable (Prime / Good / Fair)</option>
+            <option value="PRIME">✨ Prime / Crisp Only</option>
+            <option value="WET_DANGER">⛔ Soft Sandstone Danger Only</option>
+          </select>
+        </div>
+
+        <!-- Grade Range Filter & Favorites Toggle (2 cols) -->
+        <div class="lg:col-span-2 flex items-center gap-2">
+          <select id="grade-filter" onchange="UIController.handleGradeChange(this.value)" class="w-full bg-paper-100 border-[1.5px] border-paper-800 rounded-xl px-2 py-1.5 text-xs text-paper-900 font-bold focus:outline-none focus:bg-white" title="Filter by Grade Overlap">
+            <option value="all">🧗 All Grades</option>
+            <option value="V0-V4">Beginner (V0-V4)</option>
+            <option value="V4-V8">Intermediate (V4-V8)</option>
+            <option value="V8-V13">Advanced (V8-V13)</option>
+          </select>
+          <button id="favorites-toggle-btn" onclick="UIController.toggleFavoritesOnly()" class="btn-editorial px-2.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1 shrink-0" title="Show Favorited Crags Only (F)">
+            <i data-lucide="star" class="w-3.5 h-3.5 text-amber-500 fill-transparent" id="fav-filter-icon"></i>
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- MOBILE VIEW TOGGLE BUTTONS (LIST vs MAP) -->
+    <div class="flex sm:hidden items-center rounded-xl bg-paper-200 border border-paper-800 p-1 gap-1">
+      <button onclick="UIController.setMobileView('list')" id="mob-tab-list" class="flex-1 py-1.5 rounded-lg text-xs font-extrabold bg-cobalt-700 text-white shadow-editorial-sm">
+        List View (<span id="mob-crag-count">18</span>)
+      </button>
+      <button onclick="UIController.setMobileView('map')" id="mob-tab-map" class="flex-1 py-1.5 rounded-lg text-xs font-bold text-paper-900">
+        Interactive Map
+      </button>
+    </div>
+
+    <!-- SPLIT CONTENT AREA -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5 items-start flex-1">
+      
+      <!-- LEFT COLUMN: Crag Cards List (4 cols on desktop xl) -->
+      <div id="crag-list-panel" class="lg:col-span-5 xl:col-span-4 flex flex-col gap-3 lg:h-[calc(100vh-210px)] lg:overflow-y-auto pr-0 lg:pr-1.5">
+        
+        <!-- Summary Strip -->
+        <div class="flex items-center justify-between text-xs px-1 text-zinc-600 sticky top-0 bg-[#f7f6f2] py-1 z-10">
+          <span class="font-bold"><span id="visible-crags-count">18</span> crags matched</span>
+          <div class="flex items-center gap-2 text-[11px]">
+            <span class="inline-flex items-center gap-1 font-mono"><span class="w-2 h-2 rounded-full bg-emerald-500"></span> Prime</span>
+            <span class="inline-flex items-center gap-1 font-mono"><span class="w-2 h-2 rounded-full bg-lime-500"></span> Good</span>
+            <span class="inline-flex items-center gap-1 font-mono"><span class="w-2 h-2 rounded-full bg-amber-500"></span> Fair</span>
+            <span class="inline-flex items-center gap-1 font-mono"><span class="w-2 h-2 rounded-full bg-orange-500"></span> Damp</span>
+            <span class="inline-flex items-center gap-1 font-mono"><span class="w-2 h-2 rounded-full bg-red-500"></span> Wet</span>
+          </div>
+        </div>
+
+        <!-- Cards Container -->
+        <div id="crags-cards-container" class="space-y-3 pb-4">
+          <!-- Rendered dynamically -->
+        </div>
+
+        <!-- Empty State -->
+        <div id="no-crags-match" class="hidden card-editorial rounded-2xl p-8 text-center space-y-2">
+          <div class="text-3xl">🔍</div>
+          <h3 class="text-sm font-extrabold text-paper-900">No Crags Found</h3>
+          <p class="text-xs text-zinc-600">No crags match your active search and condition filters.</p>
+          <button onclick="UIController.resetFilters()" class="btn-editorial px-3 py-1.5 rounded-xl text-xs font-bold text-cobalt-700 underline mt-2">
+            Reset all filters
+          </button>
+        </div>
+
+      </div>
+
+      <!-- RIGHT COLUMN: Interactive Leaflet Map & Selected Crag Detail Drawer (8 cols on desktop xl) -->
+      <div id="map-panel" class="lg:col-span-7 xl:col-span-8 flex flex-col gap-4 sticky top-14">
+        
+        <!-- Interactive Leaflet Map Card -->
+        <div class="card-editorial rounded-2xl p-2 relative overflow-hidden bg-paper-100 flex flex-col">
+          <div class="flex items-center justify-between px-2.5 py-1.5 mb-1 text-xs">
+            <span class="font-extrabold text-paper-900 flex items-center gap-1.5 text-sm">
+              <i data-lucide="map-pin" class="w-4 h-4 text-cobalt-700"></i>
+              Sydney & Regional Crags Map
+            </span>
+            <div class="flex items-center gap-2">
+              <span class="text-[11px] font-medium text-zinc-500 hidden sm:inline">Click pin to inspect forecast</span>
+              <button onclick="MapController.resetBounds()" class="btn-editorial px-2.5 py-1 rounded-lg text-xs font-bold text-zinc-800 flex items-center gap-1" title="Fit all crags">
+                <i data-lucide="maximize" class="w-3 h-3"></i>
+                Fit View
+              </button>
+            </div>
+          </div>
+          
+          <div id="leaflet-map" class="w-full h-[520px] sm:h-[620px] lg:h-[calc(100vh-280px)] min-h-[480px] rounded-xl border border-paper-800 z-10"></div>
+          
+          <!-- Map Legend Footer -->
+          <div class="flex items-center justify-between flex-wrap gap-2 pt-2.5 px-2.5 text-xs text-zinc-700">
+            <span class="font-extrabold">Friction & Safety:</span>
+            <span class="flex items-center gap-1 font-medium"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500 border border-paper-800"></span> Prime</span>
+            <span class="flex items-center gap-1 font-medium"><span class="w-2.5 h-2.5 rounded-full bg-lime-500 border border-paper-800"></span> Good</span>
+            <span class="flex items-center gap-1 font-medium"><span class="w-2.5 h-2.5 rounded-full bg-amber-500 border border-paper-800"></span> Fair/Greasy</span>
+            <span class="flex items-center gap-1 font-medium"><span class="w-2.5 h-2.5 rounded-full bg-orange-500 border border-paper-800"></span> Damp</span>
+            <span class="flex items-center gap-1 font-medium"><span class="w-2.5 h-2.5 rounded-full bg-red-500 border border-paper-800"></span> Soft Sandstone Danger</span>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- SELECTED CRAG DETAIL MODAL / DRAWER -->
+  <div id="crag-detail-modal" onclick="UIController.closeModal()" class="fixed inset-0 z-50 bg-paper-900/60 backdrop-blur-sm hidden items-center justify-center p-3 sm:p-6 overflow-y-auto">
+    <div class="card-editorial bg-white rounded-2xl max-w-2xl w-full p-4 sm:p-6 space-y-4 max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
+      
+      <!-- Modal Header -->
+      <div class="flex items-start justify-between gap-3 border-b-[1.5px] border-paper-200 pb-3">
+        <div>
+          <div class="flex items-center gap-2 flex-wrap mb-1">
+            <span id="modal-region-badge" class="px-2 py-0.5 rounded-md bg-paper-200 border border-paper-800 text-[11px] font-bold text-paper-900">Region</span>
+            <span id="modal-sandstone-badge" class="px-2 py-0.5 rounded-md bg-amber-100 border border-paper-800 text-[11px] font-bold text-amber-900">Sandstone</span>
+            <span id="modal-grades-badge" class="px-2 py-0.5 rounded-md bg-cobalt-100 border border-paper-800 text-[11px] font-bold text-cobalt-900">Grades</span>
+          </div>
+          <h2 id="modal-crag-name" class="text-xl sm:text-2xl font-extrabold text-paper-900">Crag Name</h2>
+        </div>
+        <div class="flex items-center gap-2">
+          <button id="modal-fav-btn" onclick="UIController.toggleFavoriteFromModal()" class="btn-editorial p-2 rounded-xl text-zinc-700" title="Favorite crag">
+            <i data-lucide="star" class="w-4 h-4 text-amber-500" id="modal-fav-icon"></i>
+          </button>
+          <button onclick="UIController.closeModal()" class="btn-editorial p-2 rounded-xl text-zinc-700 hover:text-paper-900" title="Close inspector">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Current Selected Day Condition Callout -->
+      <div id="modal-condition-callout" class="rounded-xl border-[1.5px] border-paper-800 p-3.5 space-y-2">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span id="modal-condition-badge" class="px-2.5 py-1 rounded-lg text-xs font-extrabold border border-paper-800">Badge</span>
+            <span id="modal-day-title" class="text-xs font-bold text-zinc-600">Day Date</span>
+          </div>
+          <div class="flex items-center gap-3 text-xs font-mono font-bold">
+            <span>Dryness: <span id="modal-dryness-val" class="text-paper-900">100%</span></span>
+            <span>Friction: <span id="modal-friction-val" class="text-cobalt-700">85/100</span></span>
+          </div>
+        </div>
+        <p id="modal-condition-summary" class="text-xs text-zinc-700 leading-relaxed font-medium">Condition summary description.</p>
+      </div>
+
+      <!-- 7-Day Timeline for this Crag -->
+      <div class="space-y-2">
+        <h4 class="text-xs font-extrabold uppercase font-mono tracking-wider text-zinc-500">7-Day Condition Timeline</h4>
+        <div id="modal-crag-timeline" class="grid grid-cols-7 gap-1.5 text-center">
+          <!-- 7 day mini buttons -->
+        </div>
+      </div>
+
+      <!-- Condition Evaluation Reasons & Breakdown -->
+      <div class="space-y-2 bg-paper-100 rounded-xl p-3 border border-paper-800">
+        <h4 class="text-xs font-extrabold uppercase font-mono tracking-wider text-zinc-500">Evaluation Factors & Weather Metrics</h4>
+        <ul id="modal-reasons-list" class="space-y-1 text-xs text-zinc-700 list-disc list-inside">
+          <!-- Reasons list items -->
+        </ul>
+      </div>
+
+      <!-- Sandstone Ethics Warning Banner -->
+      <div class="rounded-xl bg-red-50 border border-red-300 p-3 text-xs text-red-900 space-y-1">
+        <div class="font-extrabold flex items-center gap-1.5 text-red-800">
+          <i data-lucide="shield-alert" class="w-3.5 h-3.5"></i>
+          Hawkesbury Sandstone Ethics & Hold Preservation
+        </div>
+        <p class="leading-relaxed">
+          Wet sandstone loses up to 75% of its structural tensile strength. Never pull on damp holds or attempt top-outs when seepage tracks are present. Holds break permanently.
+        </p>
+      </div>
+
+      <!-- Crag Details & Approach Tips -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+        <div class="space-y-1">
+          <span class="font-bold text-zinc-500 uppercase text-[10px] font-mono">Style & Features</span>
+          <p id="modal-crag-style" class="font-medium text-paper-900">Roofs, Ocean Slabs</p>
+        </div>
+        <div class="space-y-1">
+          <span class="font-bold text-zinc-500 uppercase text-[10px] font-mono">Approach & Sun Aspect</span>
+          <p id="modal-crag-approach" class="font-medium text-paper-900">5 min walk • Morning sun • High wind exposure</p>
+        </div>
+        <div class="sm:col-span-2 space-y-1">
+          <span class="font-bold text-zinc-500 uppercase text-[10px] font-mono">Description & Local Tips</span>
+          <p id="modal-crag-description" class="text-zinc-600 leading-relaxed">Description</p>
+          <p id="modal-crag-tips" class="text-zinc-600 italic leading-relaxed pt-1">Tips</p>
+        </div>
+      </div>
+
+      <!-- Footer Actions -->
+      <div class="flex items-center justify-between pt-3 border-t-[1.5px] border-paper-200">
+        <a id="modal-thecrag-link" href="#" target="_blank" rel="noopener" class="btn-editorial px-3 py-1.5 rounded-xl text-xs font-extrabold text-cobalt-700 flex items-center gap-1.5">
+          <span>View on theCrag</span>
+          <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+        </a>
+        <button onclick="UIController.closeModal()" class="btn-editorial px-4 py-1.5 rounded-xl text-xs font-bold text-paper-900">
+          Done
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="border-t-[1.5px] border-paper-800 bg-[#ffffff] text-center py-4 text-xs text-zinc-600 mt-auto">
+    <div class="max-w-[1680px] mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+      <p class="font-medium">Sydney Boulder Buddy • Hawkesbury Sandstone Preservation Initiative • Weather data via Open-Meteo.</p>
+      <div class="flex items-center gap-3 text-paper-900 font-bold text-xs">
+        <a href="../" class="hover:text-cobalt-700 transition">Playground Hub</a>
+        <span>•</span>
+        <a href="https://github.com/xwchow/my-playground" target="_blank" rel="noopener" class="hover:text-cobalt-700 transition flex items-center gap-1">
+          <i data-lucide="github" class="w-3.5 h-3.5"></i> GitHub
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- JAVASCRIPT APPLICATION CORE -->
+  <script>
+    /* ==========================================================================
+       LAYER 1: TYPES, CONSTANTS & CURATED CRAGS DATA (18 Crags Across 6 Regions)
+       ========================================================================== */
+
+    const CRAGS_DATA = [
+      // --- SYDNEY EAST ---
+      {
+        id: 'frontline-bondi',
+        name: 'Frontline (Bondi)',
+        region: 'sydney-east',
+        regionLabel: 'Sydney Eastern Suburbs',
+        lat: -33.8912,
+        lng: 151.2785,
+        sandstoneType: 'hard-coastal',
+        dryingProfile: { dryHoursPerMm: 1.8, seepageRisk: 'none', shelterFactor: 0.3, sunExposure: 'morning-sun', windExposure: 'high' },
+        grades: { min: 'V2', max: 'V11', count: 32 },
+        style: ['Ocean Slabs', 'Traverses', 'Hard Coastal Crimps'],
+        approachMinutes: 5,
+        theCragUrl: 'https://www.thecrag.com/climbing/australia/sydney-area/node/12104523',
+        description: 'Premier coastal sandstone bouldering with fierce ocean waves crashing below. High salt-air friction when dry.',
+        tips: 'High tide and ocean spray can wet the lower starts. Dries exceptionally fast after rain thanks to coastal breezes.'
+      },
+      {
+        id: 'south-coogee',
+        name: 'South Coogee Boulders',
+        region: 'sydney-east',
+        regionLabel: 'Sydney Eastern Suburbs',
+        lat: -33.9267,
+        lng: 151.2612,
+        sandstoneType: 'hard-coastal',
+        dryingProfile: { dryHoursPerMm: 1.6, seepageRisk: 'none', shelterFactor: 0.3, sunExposure: 'full-sun', windExposure: 'high' },
+        grades: { min: 'V1', max: 'V8', count: 18 },
+        style: ['Traverses', 'Pockets', 'Ocean Platforms'],
+        approachMinutes: 5,
+        theCragUrl: 'https://www.thecrag.com/climbing/australia/sydney-area/node/12104528',
+        description: 'Flat wave-cut rock platform with clean sandstone blocks and instant coastal drying.',
+        tips: 'Best on low tide and low swell days. Sun bakes the rock dry within hours of rain.'
+      },
+      {
+        id: 'maroubra-south',
+        name: 'Maroubra Boulders',
+        region: 'sydney-east',
+        regionLabel: 'Sydney Eastern Suburbs',
+        lat: -33.9554,
+        lng: 151.2619,
+        sandstoneType: 'hard-coastal',
+        dryingProfile: { dryHoursPerMm: 1.7, seepageRisk: 'none', shelterFactor: 0.2, sunExposure: 'full-sun', windExposure: 'high' },
+        grades: { min: 'V2', max: 'V10', count: 25 },
+        style: ['Fierce Crimps', 'Wave Platforms', 'Dynos'],
+        approachMinutes: 7,
+        theCragUrl: 'https://www.thecrag.com/climbing/australia/sydney-area/node/12104531',
+        description: 'Rugged ocean platform boulders with incredible solid rock quality.',
+        tips: 'Watch for high surf; rock dries almost immediately in steady sea winds.'
+      },
+
+      // --- SYDNEY NORTH ---
+      {
+        id: 'north-head-manly',
+        name: 'North Head (Manly)',
+        region: 'sydney-north',
+        regionLabel: 'Northern Beaches & North Shore',
+        lat: -33.8142,
+        lng: 151.2988,
+        sandstoneType: 'hard-coastal',
+        dryingProfile: { dryHoursPerMm: 2.0, seepageRisk: 'none', shelterFactor: 0.6, sunExposure: 'afternoon-sun', windExposure: 'high' },
+        grades: { min: 'V3', max: 'V12', count: 28 },
+        style: ['Steep Roofs', 'Power Endurance', 'Highballs'],
+        approachMinutes: 15,
+        theCragUrl: 'https://www.thecrag.com/climbing/australia/sydney-area/node/12104524',
+        description: 'Scenic cliffside roofs and caves perched above Sydney Harbour entrance. Steep, athletic climbing.',
+        tips: 'Main cave stays dry in light showers due to massive overhang, but damp sea mist can reduce friction in high humidity.'
+      },
+      {
+        id: 'lady-game-lindfield',
+        name: 'Lady Game Drive (Lindfield)',
+        region: 'sydney-north',
+        regionLabel: 'Northern Beaches & North Shore',
+        lat: -33.7785,
+        lng: 151.1578,
+        sandstoneType: 'soft-valley',
+        dryingProfile: { dryHoursPerMm: 4.5, seepageRisk: 'high', shelterFactor: 0.1, sunExposure: 'full-shade', windExposure: 'sheltered' },
+        grades: { min: 'V1', max: 'V9', count: 24 },
+        style: ['Pockets', 'Arêtes', 'Bush Blocks'],
+        approachMinutes: 3,
+        theCragUrl: 'https://www.thecrag.com/climbing/australia/sydney-area/node/12104525',
+        description: 'Convenient roadside bouldering secluded inside Lane Cove National Park bushland.',
+        tips: 'Prone to ground seepage and slow drying due to dense tree canopy. Never climb after heavy rain until 48+ dry hours.'
+      },
+      {
+        id: 'hassell-park-st-ives',
+        name: 'Hassell Park (St Ives)',
+        region: 'sydney-north',
+        regionLabel: 'Northern Beaches & North Shore',
+        lat: -33.7224,
+        lng: 151.1852,
+        sandstoneType: 'soft-valley',
+        dryingProfile: { dryHoursPerMm: 3.2, seepageRisk: 'moderate', shelterFactor: 0.2, sunExposure: 'morning-sun', windExposure: 'medium' },
+        grades: { min: 'V0', max: 'V8', count: 30 },
+        style: ['Slabs', 'Technical Arêtes', 'Compression'],
+        approachMinutes: 8,
+        theCragUrl: 'https://www.thecrag.com/climbing/australia/sydney-area/node/12104526',
+        description: 'Charming sandstone clusters with a dense spread of quality beginner and intermediate problems.',
+        tips: 'Morning sun helps dry the upper tier quickly, but shaded blocks remain damp after sustained downpours.'
+      },
+      {
+        id: 'buffalo-creek-chatswood',
+        name: 'Buffalo Creek (Chatswood)',
+        region: 'sydney-north',
+        regionLabel: 'Northern Beaches & North Shore',
+        lat: -33.7915,
+        lng: 151.1712,
+        sandstoneType: 'soft-valley',
+        dryingProfile: { dryHoursPerMm: 5.0, seepageRisk: 'high', shelterFactor: 0.1, sunExposure: 'full-shade', windExposure: 'sheltered' },
+        grades: { min: 'V2', max: 'V10', count: 20 },
+        style: ['Slopers', 'Underclings', 'Crimps'],
+        approachMinutes: 10,
+        theCragUrl: 'https://www.thecrag.com/climbing/australia/sydney-area/node/12104527',
+        description: 'Deep gully boulders nestled alongside the creek with unique sloper features.',
+        tips: 'Extremely seepage-prone after rain events. Allow ample drying time to protect fragile riverstone texture.'
+      },
+      {
+        id: 'narrabeen-bungan',
+        name: 'Bungan Head (Narrabeen)',
+        region: 'sydney-north',
+        regionLabel: 'Northern Beaches & North Shore',
+        lat: -33.6812,
+        lng: 151.3214,
+        sandstoneType: 'hard-coastal',
+        dryingProfile: { dryHoursPerMm: 1.9, seepageRisk: 'low', shelterFactor: 0.4, sunExposure: 'morning-sun', windExposure: 'high' },
+        grades: { min: 'V2', max: 'V9', count: 22 },
+        style: ['Wave Cut Roofs', 'Pinch Blocks', 'Beach Landings'],
+        approachMinutes: 10,
+        theCragUrl: 'https://www.thecrag.com/climbing/australia/sydney-area/node/12104529',
+        description: 'Stunning headland bouldering right above pristine golden sand beaches.',
+        tips: 'Bring a tarp to keep your bouldering pads free of beach sand.'
+      },
+      {
+        id: 'bangalley-head-avalon',
+        name: 'Bangalley Head (Avalon)',
+        region: 'sydney-north',
+        regionLabel: 'Northern Beaches & North Shore',
+        lat: -33.6284,
+        lng: 151.3392,
+        sandstoneType: 'hard-coastal',
+        dryingProfile: { dryHoursPerMm: 1.8, seepageRisk: 'none', shelterFactor: 0.5, sunExposure: 'morning-sun', windExposure: 'high' },
+        grades: { min: 'V3', max: 'V10', count: 18 },
+        style: ['Sea Cliff Caves', 'Horizontal Roofs', 'Pinch Spans'],
+        approachMinutes: 20,
+        theCragUrl: 'https://www.thecrag.com/climbing/australia/sydney-area/node/12104536',
+        description: 'Dramatic ocean headland with rugged cave roofs above the Pacific Ocean.',
+        tips: 'Brisk sea breezes dry the stone rapidly. Take care on the steep cliff path approach.'
+      },
+
+      // --- SYDNEY INNER WEST ---
+      {
+        id: 'kellys-bush-hunters-hill',
+        name: "Kelly's Bush (Hunters Hill)",
+        region: 'sydney-inner-west',
+        regionLabel: 'Inner West & Parramatta',
+        lat: -33.8345,
+        lng: 151.1534,
+        sandstoneType: 'hard-coastal',
+        dryingProfile: { dryHoursPerMm: 2.6, seepageRisk: 'low', shelterFactor: 0.3, sunExposure: 'afternoon-sun', windExposure: 'medium' },
+        grades: { min: 'V0', max: 'V7', count: 16 },
+        style: ['Harbour Arêtes', 'Mantels', 'Traverses'],
+        approachMinutes: 6,
+        theCragUrl: 'https://www.thecrag.com/climbing/australia/sydney-area/node/12104530',
+        description: 'Historical parkland on the Parramatta River offering fun casual circuits with harbour views.',
+        tips: 'Good afternoon sun exposure aids quick drying on the arêtes.'
+      },
+      {
+        id: 'undercliffe-wolli-creek',
+        name: 'Undercliffe (Earlwood)',
+        region: 'sydney-inner-west',
+        regionLabel: 'Inner West & Parramatta',
+        lat: -33.9212,
+        lng: 151.1423,
+        sandstoneType: 'iron-banded',
+        dryingProfile: { dryHoursPerMm: 2.8, seepageRisk: 'moderate', shelterFactor: 0.5, sunExposure: 'afternoon-sun', windExposure: 'medium' },
+        grades: { min: 'V1', max: 'V11', count: 35 },
+        style: ['Ironstone Roofs', 'Heel Hooks', 'Compression Caving'],
+        approachMinutes: 4,
+        theCragUrl: 'https://www.thecrag.com/climbing/australia/sydney-area/node/12104532',
+        description: 'Famous urban sandstone cave with hard ironstone bands and steep roofs.',
+        tips: 'The steep cave roof stays dry in light showers, but check top-out seepage after rain.'
+      },
+
+      // --- SYDNEY SOUTH ---
+      {
+        id: 'woronora-the-needles',
+        name: 'The Needles (Woronora)',
+        region: 'sydney-south',
+        regionLabel: 'Sydney South & Sutherland',
+        lat: -34.0289,
+        lng: 151.0456,
+        sandstoneType: 'hard-coastal',
+        dryingProfile: { dryHoursPerMm: 2.5, seepageRisk: 'low', shelterFactor: 0.3, sunExposure: 'morning-sun', windExposure: 'medium' },
+        grades: { min: 'V1', max: 'V9', count: 22 },
+        style: ['River Needles', 'Sharp Crimps', 'Highballs'],
+        approachMinutes: 10,
+        theCragUrl: 'https://www.thecrag.com/climbing/australia/sydney-area/node/12104539',
+        description: 'Scenic river valley bouldering in the Sutherland Shire with clean sandstone pillars and deep water solos.',
+        tips: 'Morning sun and gentle valley breezes allow good drying; check river levels after major storms.'
+      },
+      {
+        id: 'kurnell-boulders',
+        name: 'Kurnell (Kamay Botany Bay)',
+        region: 'sydney-south',
+        regionLabel: 'Sydney South & Sutherland',
+        lat: -34.0156,
+        lng: 151.2212,
+        sandstoneType: 'hard-coastal',
+        dryingProfile: { dryHoursPerMm: 1.6, seepageRisk: 'none', shelterFactor: 0.2, sunExposure: 'full-sun', windExposure: 'high' },
+        grades: { min: 'V2', max: 'V8', count: 15 },
+        style: ['Ocean Platforms', 'Wave Features', 'Heel Hooks'],
+        approachMinutes: 8,
+        theCragUrl: 'https://www.thecrag.com/climbing/australia/sydney-area/node/12104540',
+        description: 'Expansive ocean platform on the southern headland of Botany Bay with fast-drying coastal stone.',
+        tips: 'Full sun all day long makes this an ultra-fast drying winter spot.'
+      },
+
+      // --- BLUE MOUNTAINS ---
+      {
+        id: 'blackheath-boulders',
+        name: 'Blackheath Boulders (Shipley)',
+        region: 'blue-mountains',
+        regionLabel: 'Blue Mountains',
+        lat: -33.6421,
+        lng: 150.2642,
+        sandstoneType: 'mountain-sandstone',
+        dryingProfile: { dryHoursPerMm: 2.4, seepageRisk: 'low', shelterFactor: 0.4, sunExposure: 'morning-sun', windExposure: 'high' },
+        grades: { min: 'V2', max: 'V12', count: 40 },
+        style: ['Mountain Ironstone', 'High Friction Pockets', 'Highballs'],
+        approachMinutes: 12,
+        theCragUrl: 'https://www.thecrag.com/climbing/australia/blue-mountains/node/12104533',
+        description: 'World-class upper Blue Mountains bouldering with legendary crisp winter friction.',
+        tips: 'Elevation (~1000m) means 6-8°C cooler temperatures than Sydney. Ideal autumn/winter destination.'
+      },
+      {
+        id: 'medlow-bath-caves',
+        name: 'Medlow Bath (Sunnyside)',
+        region: 'blue-mountains',
+        regionLabel: 'Blue Mountains',
+        lat: -33.6741,
+        lng: 150.2912,
+        sandstoneType: 'mountain-sandstone',
+        dryingProfile: { dryHoursPerMm: 3.0, seepageRisk: 'moderate', shelterFactor: 0.7, sunExposure: 'afternoon-sun', windExposure: 'medium' },
+        grades: { min: 'V3', max: 'V13', count: 36 },
+        style: ['Massive Roofs', 'Underclings', 'Knee Bars'],
+        approachMinutes: 15,
+        theCragUrl: 'https://www.thecrag.com/climbing/australia/blue-mountains/node/12104534',
+        description: 'Overhanging amphitheatre with sustained roof climbing and steep boulder problems.',
+        tips: 'Overhang shelters routes from rain, but seepage tracks can develop after consecutive wet days.'
+      },
+      {
+        id: 'megalong-old-ford',
+        name: 'Old Ford Reserve (Megalong)',
+        region: 'blue-mountains',
+        regionLabel: 'Blue Mountains',
+        lat: -33.7123,
+        lng: 150.2514,
+        sandstoneType: 'mountain-sandstone',
+        dryingProfile: { dryHoursPerMm: 3.5, seepageRisk: 'moderate', shelterFactor: 0.2, sunExposure: 'full-sun', windExposure: 'medium' },
+        grades: { min: 'V1', max: 'V8', count: 20 },
+        style: ['Granite-like Sandstone', 'River Blocks', 'Slabs'],
+        approachMinutes: 5,
+        theCragUrl: 'https://www.thecrag.com/climbing/australia/blue-mountains/node/12104535',
+        description: 'Picturesque valley camping and bouldering surrounded by the Megalong Valley escarpment.',
+        tips: 'Gets very hot in middle of summer days; fantastic crisp friction on sunny winter mornings.'
+      },
+      {
+        id: 'warrimoo-lower-blue-mts',
+        name: 'Warrimoo Boulders',
+        region: 'blue-mountains',
+        regionLabel: 'Blue Mountains',
+        lat: -33.7289,
+        lng: 150.6012,
+        sandstoneType: 'soft-valley',
+        dryingProfile: { dryHoursPerMm: 3.8, seepageRisk: 'moderate', shelterFactor: 0.2, sunExposure: 'morning-sun', windExposure: 'sheltered' },
+        grades: { min: 'V1', max: 'V9', count: 22 },
+        style: ['Bush Blocks', 'Crimpy Faces', 'Arêtes'],
+        approachMinutes: 10,
+        theCragUrl: 'https://www.thecrag.com/climbing/australia/blue-mountains/node/12104537',
+        description: 'Lower Mountains bush bouldering with easy access and shaded gullies.',
+        tips: 'Warmer than upper mountains in winter. Ensure 36+ hours of dry weather before climbing.'
+      },
+
+      // --- CENTRAL COAST ---
+      {
+        id: 'kariong-gosford',
+        name: 'Kariong / Gosford (Central Coast)',
+        region: 'central-coast',
+        regionLabel: 'Central Coast',
+        lat: -33.4385,
+        lng: 151.3012,
+        sandstoneType: 'iron-banded',
+        dryingProfile: { dryHoursPerMm: 2.2, seepageRisk: 'low', shelterFactor: 0.3, sunExposure: 'full-sun', windExposure: 'high' },
+        grades: { min: 'V1', max: 'V10', count: 26 },
+        style: ['Iron Swirls', 'High Friction Slabs', 'Bulges'],
+        approachMinutes: 12,
+        theCragUrl: 'https://www.thecrag.com/climbing/australia/new-south-wales/central-coast/node/12104538',
+        description: 'Central Coast sandstone with prominent ironstone features, great texture, and sunny aspects.',
+        tips: 'Exposed hilltop location dries rapidly after rainfall with good air movement.'
+      }
+    ];
+
+    /* ==========================================================================
+       LAYER 2: CORE DOMAIN & HEURISTIC ENGINE
+       ========================================================================== */
+
+    function parseVGrade(gradeStr) {
+      if (!gradeStr) return 0;
+      const clean = gradeStr.toUpperCase().trim();
+      if (clean === 'VB') return -1;
+      const match = clean.match(/V(\d+)/);
+      return match ? parseInt(match[1], 10) : 0;
+    }
+
+    function matchesGradeRange(crag, minFilterV, maxFilterV) {
+      const cragMin = parseVGrade(crag.grades.min);
+      const cragMax = parseVGrade(crag.grades.max);
+      return cragMax >= minFilterV && cragMin <= maxFilterV;
+    }
+
+    const ConditionEngine = {
+      /**
+       * Calculates moisture index M in [0, 100] for a target day index in [3..9]
+       */
+      calculateMoistureIndex(weatherDays, dayIndex, dryingProfile) {
+        if (!weatherDays || dayIndex < 0 || dayIndex >= weatherDays.length) return 0;
+        
+        const profile = dryingProfile || { dryHoursPerMm: 2.5, seepageRisk: 'low', shelterFactor: 0.3 };
+        const w = [0, 3.5, 1.8, 0.8]; // lookback weights for k=1, 2, 3
+        const shelterMod = 1.0 - (0.6 * (profile.shelterFactor ?? 0.3));
+        
+        const seepageMultipliers = {
+          'none': 0.8,
+          'low': 1.0,
+          'moderate': 1.3,
+          'high': 1.8
+        };
+        const seepageMod = seepageMultipliers[profile.seepageRisk] ?? 1.0;
+        const dryRateMod = (profile.dryHoursPerMm ?? 2.5) / 2.5;
+
+        let lookbackSum = 0;
+        for (let k = 1; k <= 3; k++) {
+          const pastIndex = dayIndex - k;
+          if (pastIndex >= 0 && weatherDays[pastIndex]) {
+            const rawRain = weatherDays[pastIndex].precipSumMm;
+            const rain = typeof rawRain === 'number' && Number.isFinite(rawRain) ? rawRain : 0;
+            lookbackSum += rain * w[k] * shelterMod * seepageMod * dryRateMod;
+          }
+        }
+
+        const rawTargetRain = weatherDays[dayIndex]?.precipSumMm;
+        const targetRain = typeof rawTargetRain === 'number' && Number.isFinite(rawTargetRain) ? rawTargetRain : 0;
+        const targetContribution = targetRain * 15.0;
+
+        const totalMoisture = Math.min(100, Math.max(0, lookbackSum + targetContribution));
+        return Number.isFinite(totalMoisture) ? totalMoisture : 0;
+      },
+
+      /**
+       * Calculates friction score F in [0, 100]
+       */
+      calculateFrictionIndex(tempAvg, dewPointAvg, humidityAvg) {
+        const t = typeof tempAvg === 'number' && Number.isFinite(tempAvg) ? tempAvg : 15;
+        const dew = typeof dewPointAvg === 'number' && Number.isFinite(dewPointAvg) ? dewPointAvg : 6;
+        const rh = typeof humidityAvg === 'number' && Number.isFinite(humidityAvg) ? humidityAvg : 50;
+
+        let pTemp = 0;
+        if (t < 12) {
+          pTemp = (12 - t) * 1.5;
+        } else if (t > 18) {
+          pTemp = (t - 18) * 3.0;
+        }
+
+        let pDew = 0;
+        if (dew > 8) {
+          pDew = (dew - 8) * 3.5;
+        }
+
+        let pHumidity = 0;
+        if (rh > 55) {
+          pHumidity = (rh - 55) * 0.6;
+        }
+
+        const rawScore = 100 - pTemp - pDew - pHumidity;
+        return Math.max(0, Math.min(100, Math.round(rawScore)));
+      },
+
+      /**
+       * Strict waterfall condition classifier
+       */
+      classifyCondition(moisture, targetRain, rainProb, friction) {
+        // Step 1: Hard Sandstone Fragility Danger
+        if (moisture >= 35 || targetRain >= 1.5 || rainProb >= 60) {
+          return {
+            status: 'WET_DANGER',
+            colorCode: 'red',
+            badgeLabel: 'Soft Sandstone Danger',
+            summary: 'Rock is saturated or rain is imminent. Climbing now will permanently damage holds.'
+          };
+        }
+
+        // Step 2: Marginal / Damp Rock
+        if (moisture >= 15 || targetRain >= 0.4 || rainProb >= 40) {
+          return {
+            status: 'DAMP',
+            colorCode: 'orange',
+            badgeLabel: 'Damp / Marginal Dryness',
+            summary: 'Rock has residual dampness. Sub-optimal friction and delicate holds may be fragile.'
+          };
+        }
+
+        // Step 3: Rock is Bone Dry & Safe — Classified by Friction Score
+        if (moisture < 5 && targetRain === 0 && rainProb < 20 && friction >= 80) {
+          return {
+            status: 'PRIME',
+            colorCode: 'emerald',
+            badgeLabel: 'Prime / Crisp Friction',
+            summary: 'Bone dry stone with low humidity and ideal cool temperatures. Perfect send conditions!'
+          };
+        }
+
+        if (friction >= 60) {
+          return {
+            status: 'GOOD',
+            colorCode: 'lime',
+            badgeLabel: 'Dry & Good Conditions',
+            summary: 'Rock is dry and safe to climb with solid friction.'
+          };
+        }
+
+        return {
+          status: 'FAIR',
+          colorCode: 'amber',
+          badgeLabel: 'Dry but Warm / Greasy',
+          summary: 'Rock is completely dry, but higher temperatures or humidity will reduce grip.'
+        };
+      },
+
+      /**
+       * Full evaluation of a crag on a specific day
+       */
+      evaluateCrag(crag, weatherDays, dayIndex) {
+        if (!weatherDays || !weatherDays[dayIndex]) {
+          return {
+            date: '',
+            dayName: '',
+            isToday: false,
+            status: 'FAIR',
+            colorCode: 'amber',
+            badgeLabel: 'Unknown',
+            rockDrynessScore: 50,
+            frictionScore: 50,
+            reasons: ['No weather data available'],
+            summary: 'Weather data unavailable.'
+          };
+        }
+
+        const targetDay = weatherDays[dayIndex];
+        const moisture = this.calculateMoistureIndex(weatherDays, dayIndex, crag.dryingProfile);
+        const friction = this.calculateFrictionIndex(targetDay.tempAvg, targetDay.dewPointAvg, targetDay.humidityAvg);
+        const classification = this.classifyCondition(moisture, targetDay.precipSumMm, targetDay.rainProbabilityMax, friction);
+        const rockDrynessScore = Math.max(0, Math.min(100, Math.round(100 - moisture)));
+
+        // Compile explanatory bullet points
+        const reasons = [];
+        
+        // Rain history & forecast summary
+        let past3Rain = 0;
+        for (let k = 1; k <= 3; k++) {
+          const idx = dayIndex - k;
+          if (idx >= 0 && weatherDays[idx]) {
+            past3Rain += weatherDays[idx].precipSumMm ?? 0;
+          }
+        }
+        reasons.push(`Past 3 days rainfall: ${past3Rain.toFixed(1)} mm (decayed rock moisture: ${moisture.toFixed(0)}%)`);
+        reasons.push(`Day rainfall: ${targetDay.precipSumMm.toFixed(1)} mm (Rain Probability: ${targetDay.rainProbabilityMax}%)`);
+        reasons.push(`Friction Index: ${friction}/100 — Temp: ${targetDay.tempMin.toFixed(0)}°–${targetDay.tempMax.toFixed(0)}°C (mean: ${targetDay.tempAvg.toFixed(1)}°C), RH: ${targetDay.humidityAvg.toFixed(0)}%, Dew Point: ${targetDay.dewPointAvg.toFixed(1)}°C`);
+        reasons.push(`Wind: max ${targetDay.windSpeedMaxKmH.toFixed(0)} km/h • Crag aspect: ${crag.dryingProfile.sunExposure}, ${crag.dryingProfile.windExposure} wind exposure`);
+
+        if (classification.status === 'WET_DANGER') {
+          reasons.push('⚠️ DANGER: Sandstone hold breakage risk is EXTREME. Do not climb.');
+        } else if (classification.status === 'DAMP') {
+          reasons.push('⚠️ CAUTION: Holds may have residual dampness. Avoid crimping small edges.');
+        } else {
+          reasons.push('✅ Sandstone dryness is verified safe for climbing.');
+        }
+
+        return {
+          date: targetDay.date,
+          dayName: targetDay.dayName,
+          isToday: targetDay.isToday,
+          status: classification.status,
+          colorCode: classification.colorCode,
+          badgeLabel: classification.badgeLabel,
+          rockDrynessScore,
+          frictionScore: friction,
+          reasons,
+          summary: classification.summary
+        };
+      }
+    };
+
+    /* ==========================================================================
+       LAYER 3: BATCH WEATHER SERVICE & LOCALSTORAGE CACHE
+       ========================================================================== */
+
+    const WeatherService = {
+      CACHE_KEY: 'bb_weather_cache_v1',
+      CACHE_TTL_MS: 30 * 60 * 1000, // 30 minutes
+
+      buildApiUrl(crags) {
+        const lats = crags.map(c => c.lat.toFixed(4)).join(',');
+        const lngs = crags.map(c => c.lng.toFixed(4)).join(',');
+        return `https://api.open-meteo.com/v1/forecast?latitude=${lats}&longitude=${lngs}&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,wind_speed_10m_max&hourly=relative_humidity_2m,dew_point_2m,temperature_2m&past_days=3&forecast_days=7&timezone=Australia%2FSydney`;
+      },
+
+      parseResponse(raw, crags) {
+        const items = Array.isArray(raw) ? raw : [raw];
+        const result = {};
+
+        crags.forEach((crag, cragIdx) => {
+          const item = items[cragIdx] || items[0];
+          if (!item || !item.daily) {
+            result[crag.id] = this.generateFallbackForecastForCrag();
+            return;
+          }
+
+          const daily = item.daily;
+          const hourly = item.hourly || {};
+          const daysCount = daily.time ? daily.time.length : 10;
+          const days = [];
+
+          const mean = (arr) => {
+            const valid = (arr || []).filter(v => typeof v === 'number' && Number.isFinite(v));
+            return valid.length ? (valid.reduce((a, b) => a + b, 0) / valid.length) : null;
+          };
+
+          for (let k = 0; k < daysCount; k++) {
+            const startH = k * 24;
+            const endH = startH + 24;
+
+            const sliceTemp = hourly.temperature_2m ? hourly.temperature_2m.slice(startH, endH) : [];
+            const sliceRh = hourly.relative_humidity_2m ? hourly.relative_humidity_2m.slice(startH, endH) : [];
+            const sliceDew = hourly.dew_point_2m ? hourly.dew_point_2m.slice(startH, endH) : [];
+
+            const fallbackTemp = ((daily.temperature_2m_max?.[k] ?? 18) + (daily.temperature_2m_min?.[k] ?? 12)) / 2;
+            const tempAvg = mean(sliceTemp) ?? fallbackTemp;
+            const humidityAvg = mean(sliceRh) ?? 55;
+            const dewPointAvg = mean(sliceDew) ?? 8;
+
+            const dateStr = daily.time?.[k] || '';
+            const dayName = dateStr ? new Date(`${dateStr}T12:00:00Z`).toLocaleDateString('en-AU', { weekday: 'short', timeZone: 'UTC' }) : `D${k}`;
+            const isToday = k === 3;
+            const isPast = k < 3;
+
+            days.push({
+              date: dateStr,
+              dayName,
+              isToday,
+              isPast,
+              tempMax: daily.temperature_2m_max?.[k] ?? 20,
+              tempMin: daily.temperature_2m_min?.[k] ?? 12,
+              tempAvg: Math.round(tempAvg * 10) / 10,
+              precipSumMm: daily.precipitation_sum?.[k] ?? 0,
+              rainProbabilityMax: daily.precipitation_probability_max?.[k] ?? 0,
+              humidityAvg: Math.round(humidityAvg),
+              dewPointAvg: Math.round(dewPointAvg * 10) / 10,
+              windSpeedMaxKmH: daily.wind_speed_10m_max?.[k] ?? 15,
+              weatherCode: daily.weather_code?.[k] ?? daily.weathercode?.[k] ?? 0
+            });
+          }
+
+          result[crag.id] = days;
+        });
+
+        return result;
+      },
+
+      generateFallbackForecastForCrag() {
+        const days = [];
+        const baseDate = new Date();
+        // Index 0 is 3 days ago, Index 3 is today
+        baseDate.setDate(baseDate.getDate() - 3);
+
+        for (let k = 0; k < 10; k++) {
+          const d = new Date(baseDate);
+          d.setDate(baseDate.getDate() + k);
+          const dateStr = d.toISOString().split('T')[0];
+          const dayName = new Date(`${dateStr}T12:00:00Z`).toLocaleDateString('en-AU', { weekday: 'short', timeZone: 'UTC' });
+
+          days.push({
+            date: dateStr,
+            dayName,
+            isToday: k === 3,
+            isPast: k < 3,
+            tempMax: 18.5,
+            tempMin: 11.5,
+            tempAvg: 15.0,
+            precipSumMm: 0,
+            rainProbabilityMax: 0,
+            humidityAvg: 52,
+            dewPointAvg: 5.8,
+            windSpeedMaxKmH: 14,
+            weatherCode: 1
+          });
+        }
+        return days;
+      },
+
+      generateFallbackDataset(crags) {
+        const result = {};
+        crags.forEach(crag => {
+          result[crag.id] = this.generateFallbackForecastForCrag();
+        });
+        return result;
+      },
+
+      async fetchBatchWeather(crags) {
+        // 1. Try local cache
+        try {
+          const cachedRaw = localStorage.getItem(this.CACHE_KEY);
+          if (cachedRaw) {
+            const cached = JSON.parse(cachedRaw);
+            if (cached && cached.timestamp && (Date.now() - cached.timestamp < this.CACHE_TTL_MS) && cached.data) {
+              return { data: cached.data, isCached: true, isFallback: false };
+            }
+          }
+        } catch (e) {
+          console.warn('Weather cache read error:', e);
+        }
+
+        // 2. Fetch live data from Open-Meteo
+        try {
+          const url = this.buildApiUrl(crags);
+          const response = await fetch(url);
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+          
+          const json = await response.json();
+          const parsedData = this.parseResponse(json, crags);
+
+          // Save to cache
+          try {
+            localStorage.setItem(this.CACHE_KEY, JSON.stringify({
+              timestamp: Date.now(),
+              data: parsedData
+            }));
+          } catch (e) {
+            console.warn('Weather cache save error:', e);
+          }
+
+          return { data: parsedData, isCached: false, isFallback: false };
+        } catch (err) {
+          console.warn('Open-Meteo fetch failed, attempting stale cache or synthetic fallback:', err);
+          
+          // 3. Stale cache fallback
+          try {
+            const cachedRaw = localStorage.getItem(this.CACHE_KEY);
+            if (cachedRaw) {
+              const cached = JSON.parse(cachedRaw);
+              if (cached && cached.data) {
+                return { data: cached.data, isCached: true, isFallback: false, isStale: true };
+              }
+            }
+          } catch (e) {}
+
+          // 4. Synthetic baseline fallback
+          return { data: this.generateFallbackDataset(crags), isCached: false, isFallback: true };
+        }
+      }
+    };
+
+    /* ==========================================================================
+       LAYER 4: LEAFLET MAP & UI CONTROLLERS
+       ========================================================================== */
+
+    const MapController = {
+      map: null,
+      markers: {},
+
+      init() {
+        if (typeof L === 'undefined') return;
+        
+        const mapContainer = document.getElementById('leaflet-map');
+        if (!mapContainer) return;
+
+        // Base tile layer: OpenStreetMap Standard (Zero API key required, no watermarks)
+        this.map = L.map('leaflet-map', {
+          center: [-33.78, 151.05],
+          zoom: 9,
+          zoomControl: true,
+          attributionControl: true
+        });
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          maxZoom: 19,
+          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(this.map);
+
+        this.renderMarkers();
+        this.resetBounds();
+      },
+
+      getMarkerColorHex(colorCode) {
+        switch (colorCode) {
+          case 'emerald': return '#10b981';
+          case 'lime': return '#84cc16';
+          case 'amber': return '#f59e0b';
+          case 'orange': return '#f97316';
+          case 'red': return '#ef4444';
+          default: return '#3b82f6';
+        }
+      },
+
+      renderMarkers() {
+        if (!this.map) return;
+
+        // Clear existing markers
+        Object.values(this.markers).forEach(m => this.map.removeLayer(m));
+        this.markers = {};
+
+        const weatherData = UIController.weatherData;
+        const selectedDayIdx = UIController.selectedDayIndex;
+
+        CRAGS_DATA.forEach(crag => {
+          const evalResult = weatherData && weatherData[crag.id] 
+            ? ConditionEngine.evaluateCrag(crag, weatherData[crag.id], selectedDayIdx)
+            : { colorCode: 'lime', badgeLabel: 'Good', frictionScore: 80, rockDrynessScore: 100 };
+
+          const pinColor = this.getMarkerColorHex(evalResult.colorCode);
+
+          const icon = L.divIcon({
+            className: 'custom-crag-marker',
+            html: `
+              <div class="marker-pin" style="background-color: ${pinColor}">
+                <div class="marker-pin-inner">🧗</div>
+              </div>
+            `,
+            iconSize: [32, 32],
+            iconAnchor: [16, 32],
+            popupAnchor: [0, -28]
+          });
+
+          const marker = L.marker([crag.lat, crag.lng], { icon }).addTo(this.map);
+          
+          marker.bindPopup(`
+            <div class="space-y-1">
+              <div class="flex items-center justify-between gap-2">
+                <span class="font-extrabold text-xs text-paper-900">${crag.name}</span>
+                <span class="px-1.5 py-0.5 rounded text-[10px] font-bold" style="background-color: ${pinColor}33; color: #18181b;">${evalResult.badgeLabel}</span>
+              </div>
+              <p class="text-[11px] text-zinc-600">${crag.regionLabel} • ${crag.grades.min}–${crag.grades.max}</p>
+              <div class="flex items-center justify-between pt-1 border-t border-paper-200 text-[10px] font-mono">
+                <span>Dryness: ${evalResult.rockDrynessScore}%</span>
+                <span>Friction: ${evalResult.frictionScore}/100</span>
+              </div>
+              <button onclick="UIController.openCragDetails('${crag.id}')" class="btn-editorial w-full mt-1.5 py-1 rounded-lg text-center text-xs font-extrabold text-cobalt-700 bg-paper-100 hover:bg-cobalt-50">
+                Inspect 7-Day Forecast &rarr;
+              </button>
+            </div>
+          `);
+
+          marker.on('click', () => {
+            UIController.highlightCragCard(crag.id);
+          });
+
+          this.markers[crag.id] = marker;
+        });
+      },
+
+      updateMarkerEvaluations() {
+        if (!this.map) return;
+        this.renderMarkers();
+      },
+
+      panToCrag(cragId) {
+        const crag = CRAGS_DATA.find(c => c.id === cragId);
+        if (crag && this.map) {
+          this.map.setView([crag.lat, crag.lng], 12, { animate: true });
+          if (this.markers[cragId]) {
+            this.markers[cragId].openPopup();
+          }
+        }
+      },
+
+      resetBounds() {
+        if (!this.map) return;
+        const bounds = L.latLngBounds(CRAGS_DATA.map(c => [c.lat, c.lng]));
+        this.map.fitBounds(bounds, { padding: [30, 30] });
+      },
+
+      refreshMap() {
+        if (!this.map) return;
+        requestAnimationFrame(() => {
+          setTimeout(() => {
+            if (this.map) this.map.invalidateSize();
+          }, 100);
+        });
+      }
+    };
+
+    const UIController = {
+      weatherData: null,
+      selectedDayIndex: 3, // 3 = Today (0,1,2 are past days)
+      selectedCragId: null,
+      searchQuery: '',
+      selectedRegion: 'all',
+      selectedCondition: 'all',
+      selectedGradeRange: 'all',
+      favoritesOnly: false,
+      favorites: new Set(),
+      mobileView: 'list',
+
+      async init() {
+        this.loadFavorites();
+        this.initIcons();
+
+        // 1. Initial Leaflet map mount
+        MapController.init();
+
+        // 2. Fetch live batch weather
+        await this.refreshWeatherData(false);
+
+        // 3. Render controls and cards
+        this.renderGlobalTimeline();
+        this.renderCragCards();
+
+        // Window resize & keyboard handlers
+        window.addEventListener('resize', () => {
+          MapController.refreshMap();
+        });
+
+        window.addEventListener('keydown', (e) => {
+          const isInput = e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT' || e.target.tagName === 'TEXTAREA';
+          
+          if (e.key === 'Escape') {
+            this.closeModal();
+            return;
+          }
+
+          if (isInput) return;
+
+          if (e.key === '/') {
+            e.preventDefault();
+            const searchInput = document.getElementById('crag-search');
+            if (searchInput) searchInput.focus();
+          } else if (e.key >= '1' && e.key <= '7') {
+            const dayNum = parseInt(e.key, 10);
+            const targetDayIdx = 2 + dayNum; // 1 -> index 3 (today), 7 -> index 9
+            this.selectForecastDay(targetDayIdx);
+          } else if (e.key.toLowerCase() === 'f') {
+            e.preventDefault();
+            this.toggleFavoritesOnly();
+          } else if (e.key.toLowerCase() === 'r') {
+            e.preventDefault();
+            MapController.resetBounds();
+          }
+        });
+      },
+
+      initIcons() {
+        if (typeof lucide !== 'undefined') {
+          lucide.createIcons();
+        }
+      },
+
+      loadFavorites() {
+        try {
+          const raw = localStorage.getItem('bb_favorites');
+          if (raw) {
+            const arr = JSON.parse(raw);
+            if (Array.isArray(arr)) {
+              this.favorites = new Set(arr);
+            }
+          }
+        } catch (e) {
+          console.warn('Error loading favorites:', e);
+        }
+      },
+
+      saveFavorites() {
+        try {
+          localStorage.setItem('bb_favorites', JSON.stringify(Array.from(this.favorites)));
+        } catch (e) {
+          console.warn('Error saving favorites:', e);
+        }
+      },
+
+      toggleFavorite(cragId, event) {
+        if (event) event.stopPropagation();
+        if (this.favorites.has(cragId)) {
+          this.favorites.delete(cragId);
+        } else {
+          this.favorites.add(cragId);
+        }
+        this.saveFavorites();
+        this.renderCragCards();
+        this.updateModalFavState();
+      },
+
+      toggleFavoriteFromModal() {
+        if (!this.selectedCragId) return;
+        this.toggleFavorite(this.selectedCragId);
+      },
+
+      toggleFavoritesOnly() {
+        this.favoritesOnly = !this.favoritesOnly;
+        const favBtn = document.getElementById('favorites-toggle-btn');
+        const icon = document.getElementById('fav-filter-icon');
+        if (this.favoritesOnly) {
+          favBtn.classList.add('bg-amber-100', 'border-amber-600');
+          icon.classList.remove('fill-transparent');
+          icon.classList.add('fill-amber-500');
+        } else {
+          favBtn.classList.remove('bg-amber-100', 'border-amber-600');
+          icon.classList.remove('fill-amber-500');
+          icon.classList.add('fill-transparent');
+        }
+        this.renderCragCards();
+      },
+
+      async refreshWeatherData(forceRefresh = false) {
+        const dot = document.getElementById('weather-status-dot');
+        const text = document.getElementById('weather-status-text');
+        const offlineBanner = document.getElementById('offline-banner');
+
+        if (forceRefresh) {
+          try {
+            localStorage.removeItem(WeatherService.CACHE_KEY);
+          } catch (e) {}
+        }
+
+        if (text) text.textContent = 'Updating forecast...';
+        if (dot) dot.className = 'w-2 h-2 rounded-full bg-amber-500 animate-spin';
+
+        const result = await WeatherService.fetchBatchWeather(CRAGS_DATA);
+        this.weatherData = result.data;
+
+        if (dot && text) {
+          if (result.isFallback) {
+            dot.className = 'w-2 h-2 rounded-full bg-zinc-400';
+            text.textContent = 'Offline Baseline';
+            if (offlineBanner) offlineBanner.classList.remove('hidden');
+          } else if (result.isCached) {
+            dot.className = 'w-2 h-2 rounded-full bg-blue-500';
+            text.textContent = result.isStale ? 'Stale Cache' : 'Cached 30m';
+            if (offlineBanner) offlineBanner.classList.add('hidden');
+          } else {
+            dot.className = 'w-2 h-2 rounded-full bg-emerald-500';
+            text.textContent = 'Live Open-Meteo';
+            if (offlineBanner) offlineBanner.classList.add('hidden');
+          }
+        }
+
+        this.renderGlobalTimeline();
+        this.renderCragCards();
+        MapController.updateMarkerEvaluations();
+      },
+
+      renderGlobalTimeline() {
+        const container = document.getElementById('global-timeline-container');
+        if (!container || !this.weatherData) return;
+
+        // Use first crag's days as timeline template
+        const firstCragDays = this.weatherData[CRAGS_DATA[0].id] || [];
+        container.innerHTML = '';
+
+        // Render future & today days (indices 3..9)
+        for (let idx = 3; idx < firstCragDays.length; idx++) {
+          const day = firstCragDays[idx];
+          const isSelected = idx === this.selectedDayIndex;
+          const isToday = idx === 3;
+
+          const btn = document.createElement('button');
+          btn.className = isSelected
+            ? 'btn-editorial px-2.5 py-1 rounded-xl text-xs font-extrabold bg-cobalt-700 text-white border-paper-800 shadow-editorial shrink-0 flex items-center gap-1.5'
+            : 'btn-editorial px-2.5 py-1 rounded-xl text-xs font-bold text-paper-900 shrink-0 flex items-center gap-1.5';
+
+          btn.innerHTML = `
+            <span>${isToday ? 'Today' : day.dayName}</span>
+            <span class="text-[10px] font-mono opacity-80">${day.date.slice(5)}</span>
+          `;
+
+          btn.onclick = () => {
+            this.setForecastDay(idx);
+          };
+
+          container.appendChild(btn);
+        }
+
+        const label = document.getElementById('selected-day-label');
+        if (label && firstCragDays[this.selectedDayIndex]) {
+          const selDay = firstCragDays[this.selectedDayIndex];
+          label.textContent = `${this.selectedDayIndex === 3 ? 'Today • ' : ''}${selDay.dayName} (${selDay.date})`;
+        }
+      },
+
+      setForecastDay(dayIndex) {
+        this.selectedDayIndex = dayIndex;
+        this.renderGlobalTimeline();
+        this.renderCragCards();
+        MapController.updateMarkerEvaluations();
+      },
+
+      handleSearch(val) {
+        this.searchQuery = (val || '').toLowerCase().trim();
+        this.renderCragCards();
+      },
+
+      handleRegionChange(val) {
+        this.selectedRegion = val;
+        this.renderCragCards();
+      },
+
+      handleConditionChange(val) {
+        this.selectedCondition = val;
+        this.renderCragCards();
+      },
+
+      handleGradeChange(val) {
+        this.selectedGradeRange = val;
+        this.renderCragCards();
+      },
+
+      resetFilters() {
+        this.searchQuery = '';
+        this.selectedRegion = 'all';
+        this.selectedCondition = 'all';
+        this.selectedGradeRange = 'all';
+        this.favoritesOnly = false;
+        
+        const searchInput = document.getElementById('crag-search');
+        if (searchInput) searchInput.value = '';
+        const regionSelect = document.getElementById('region-filter');
+        if (regionSelect) regionSelect.value = 'all';
+        const condSelect = document.getElementById('condition-filter');
+        if (condSelect) condSelect.value = 'all';
+        const gradeSelect = document.getElementById('grade-filter');
+        if (gradeSelect) gradeSelect.value = 'all';
+        
+        const favBtn = document.getElementById('favorites-toggle-btn');
+        const icon = document.getElementById('fav-filter-icon');
+        if (favBtn) favBtn.classList.remove('bg-amber-100', 'border-amber-600');
+        if (icon) {
+          icon.classList.remove('fill-amber-500');
+          icon.classList.add('fill-transparent');
+        }
+
+        this.renderCragCards();
+      },
+
+      filterCrag(crag, evalResult) {
+        // 1. Search Query
+        if (this.searchQuery) {
+          const matchName = crag.name.toLowerCase().includes(this.searchQuery);
+          const matchRegion = crag.regionLabel.toLowerCase().includes(this.searchQuery);
+          const matchStyle = crag.style.some(s => s.toLowerCase().includes(this.searchQuery));
+          const matchDesc = crag.description.toLowerCase().includes(this.searchQuery);
+          if (!matchName && !matchRegion && !matchStyle && !matchDesc) return false;
+        }
+
+        // 2. Region Filter
+        if (this.selectedRegion !== 'all' && crag.region !== this.selectedRegion) {
+          return false;
+        }
+
+        // 3. Condition Filter
+        if (this.selectedCondition === 'dry-safe') {
+          if (evalResult.status === 'WET_DANGER' || evalResult.status === 'DAMP') return false;
+        } else if (this.selectedCondition !== 'all') {
+          if (evalResult.status !== this.selectedCondition) return false;
+        }
+
+        // 4. Grade Range Filter
+        if (this.selectedGradeRange === 'V0-V4') {
+          if (!matchesGradeRange(crag, 0, 4)) return false;
+        } else if (this.selectedGradeRange === 'V4-V8') {
+          if (!matchesGradeRange(crag, 4, 8)) return false;
+        } else if (this.selectedGradeRange === 'V8-V13') {
+          if (!matchesGradeRange(crag, 8, 13)) return false;
+        }
+
+        // 5. Favorites Filter
+        if (this.favoritesOnly && !this.favorites.has(crag.id)) {
+          return false;
+        }
+
+        return true;
+      },
+
+      getStatusBadgeStyles(status, colorCode) {
+        switch (colorCode) {
+          case 'emerald':
+            return {
+              bg: 'bg-emerald-50 text-emerald-950 border-[1.5px] border-paper-800',
+              dot: 'bg-emerald-500'
+            };
+          case 'lime':
+            return {
+              bg: 'bg-lime-50 text-lime-950 border-[1.5px] border-paper-800',
+              dot: 'bg-lime-500'
+            };
+          case 'amber':
+            return {
+              bg: 'bg-amber-50 text-amber-950 border-[1.5px] border-paper-800',
+              dot: 'bg-amber-500'
+            };
+          case 'orange':
+            return {
+              bg: 'bg-orange-50 text-orange-950 border-[1.5px] border-paper-800',
+              dot: 'bg-orange-500'
+            };
+          case 'red':
+            return {
+              bg: 'bg-red-50 text-red-950 border-[1.5px] border-paper-800',
+              dot: 'bg-red-500'
+            };
+          default:
+            return {
+              bg: 'bg-paper-100 text-paper-900 border-[1.5px] border-paper-800',
+              dot: 'bg-zinc-500'
+            };
+        }
+      },
+
+      renderCragCards() {
+        const container = document.getElementById('crags-cards-container');
+        const emptyState = document.getElementById('no-crags-match');
+        const visibleCountEl = document.getElementById('visible-crags-count');
+        const mobCountEl = document.getElementById('mob-crag-count');
+
+        if (!container) return;
+        container.innerHTML = '';
+
+        let matchCount = 0;
+
+        CRAGS_DATA.forEach(crag => {
+          const days = this.weatherData ? this.weatherData[crag.id] : null;
+          const evalResult = days
+            ? ConditionEngine.evaluateCrag(crag, days, this.selectedDayIndex)
+            : { status: 'GOOD', colorCode: 'lime', badgeLabel: 'Dry & Good', rockDrynessScore: 100, frictionScore: 80, summary: 'Dry stone.' };
+
+          if (!this.filterCrag(crag, evalResult)) return;
+
+          matchCount++;
+
+          const isFav = this.favorites.has(crag.id);
+          const badgeStyles = this.getStatusBadgeStyles(evalResult.status, evalResult.colorCode);
+          const drynessBarColor = evalResult.rockDrynessScore > 70 ? 'bg-emerald-500' : evalResult.rockDrynessScore > 40 ? 'bg-amber-500' : 'bg-red-500';
+          const frictionBarColor = evalResult.frictionScore >= 80 ? 'bg-emerald-500' : evalResult.frictionScore >= 60 ? 'bg-lime-500' : 'bg-amber-500';
+
+          const card = document.createElement('div');
+          card.id = `crag-card-${crag.id}`;
+          card.className = 'card-editorial rounded-2xl p-4 cursor-pointer flex flex-col justify-between space-y-3';
+          card.onclick = () => {
+            this.openCragDetails(crag.id);
+            MapController.panToCrag(crag.id);
+          };
+
+          card.innerHTML = `
+            <div>
+              <!-- Top Row: Region, Sandstone & Favorite -->
+              <div class="flex items-center justify-between gap-2 mb-2">
+                <div class="flex items-center gap-1.5 flex-wrap">
+                  <span class="px-2 py-0.5 rounded-md bg-paper-100 border border-paper-800 text-[10px] font-bold text-zinc-700">
+                    ${crag.regionLabel}
+                  </span>
+                  <span class="px-2 py-0.5 rounded-md bg-amber-50 border border-paper-800 text-[10px] font-bold text-amber-900">
+                    ${crag.sandstoneType.replace('-', ' ')}
+                  </span>
+                </div>
+                <button onclick="UIController.toggleFavorite('${crag.id}', event)" class="p-1 rounded-lg hover:bg-paper-200 transition" title="Toggle favorite">
+                  <i data-lucide="star" class="w-4 h-4 ${isFav ? 'text-amber-500 fill-amber-500' : 'text-zinc-400 fill-transparent'}"></i>
+                </button>
+              </div>
+
+              <!-- Crag Title & Grades -->
+              <div class="flex items-baseline justify-between gap-2">
+                <h3 class="text-base font-extrabold text-paper-900 hover:text-cobalt-700 transition">
+                  ${crag.name}
+                </h3>
+                <span class="text-xs font-mono font-extrabold text-cobalt-700 shrink-0">
+                  ${crag.grades.min}–${crag.grades.max}
+                </span>
+              </div>
+
+              <div class="flex items-center gap-1.5 flex-wrap mt-1.5">
+                ${crag.style.map(s => `<span class="px-1.5 py-0.5 rounded bg-paper-100 border border-paper-200 text-[10px] font-medium text-zinc-600">${s}</span>`).join('')}
+              </div>
+            </div>
+
+            <div class="rounded-xl ${badgeStyles.bg} p-2.5 space-y-1.5">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-extrabold flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full ${badgeStyles.dot}"></span>
+                  ${evalResult.badgeLabel}
+                </span>
+                <span class="text-[11px] font-mono font-bold">
+                  Dryness: ${evalResult.rockDrynessScore}%
+                </span>
+              </div>
+
+              <div class="grid grid-cols-2 gap-2 text-[10px] font-mono">
+                <div>
+                  <div class="flex justify-between text-zinc-600 mb-0.5">
+                    <span>Rock Dry</span>
+                    <span>${evalResult.rockDrynessScore}%</span>
+                  </div>
+                  <div class="w-full bg-paper-300 rounded-full h-1.5 overflow-hidden">
+                    <div class="h-full ${drynessBarColor} transition-all duration-300" style="width: ${evalResult.rockDrynessScore}%"></div>
+                  </div>
+                </div>
+                <div>
+                  <div class="flex justify-between text-zinc-600 mb-0.5">
+                    <span>Friction</span>
+                    <span>${evalResult.frictionScore}/100</span>
+                  </div>
+                  <div class="w-full bg-paper-300 rounded-full h-1.5 overflow-hidden">
+                    <div class="h-full ${frictionBarColor} transition-all duration-300" style="width: ${evalResult.frictionScore}%"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between pt-1 text-xs text-zinc-600 font-medium">
+              <span class="flex items-center gap-1">
+                <i data-lucide="footprints" class="w-3.5 h-3.5 text-zinc-500"></i>
+                ${crag.approachMinutes} min approach
+              </span>
+              <button onclick="UIController.openCragDetails('${crag.id}')" class="font-extrabold text-cobalt-700 hover:text-cobalt-900 flex items-center gap-1 transition">
+                <span>7-Day Forecast</span>
+                <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+              </button>
+            </div>
+          `;
+
+          container.appendChild(card);
+        });
+
+        if (visibleCountEl) visibleCountEl.textContent = matchCount;
+        if (mobCountEl) mobCountEl.textContent = matchCount;
+        if (emptyState) emptyState.classList.toggle('hidden', matchCount > 0);
+
+        this.initIcons();
+      },
+
+      highlightCragCard(cragId) {
+        const card = document.getElementById(`crag-card-${cragId}`);
+        if (card) {
+          card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          card.classList.add('ring-2', 'ring-cobalt-500');
+          setTimeout(() => card.classList.remove('ring-2', 'ring-cobalt-500'), 1500);
+        }
+      },
+
+      openCragDetails(cragId) {
+        const crag = CRAGS_DATA.find(c => c.id === cragId);
+        if (!crag) return;
+
+        this.selectedCragId = cragId;
+        const modal = document.getElementById('crag-detail-modal');
+        if (!modal) return;
+
+        const days = this.weatherData ? this.weatherData[crag.id] : null;
+        const evalResult = days
+          ? ConditionEngine.evaluateCrag(crag, days, this.selectedDayIndex)
+          : { status: 'GOOD', colorCode: 'lime', badgeLabel: 'Good', rockDrynessScore: 100, frictionScore: 80, reasons: [], summary: 'Dry stone.' };
+
+        // Populate modal data
+        document.getElementById('modal-region-badge').textContent = crag.regionLabel;
+        document.getElementById('modal-sandstone-badge').textContent = `Sandstone: ${crag.sandstoneType}`;
+        document.getElementById('modal-grades-badge').textContent = `${crag.grades.min}–${crag.grades.max} (${crag.grades.count} problems)`;
+        document.getElementById('modal-crag-name').textContent = crag.name;
+        
+        // Modal Condition Callout
+        const badgeStyles = this.getStatusBadgeStyles(evalResult.status, evalResult.colorCode);
+        const callout = document.getElementById('modal-condition-callout');
+        callout.className = `rounded-xl ${badgeStyles.bg} p-3.5 space-y-2`;
+        
+        const badge = document.getElementById('modal-condition-badge');
+        badge.className = `px-2.5 py-1 rounded-lg text-xs font-extrabold ${badgeStyles.bg}`;
+        badge.textContent = evalResult.badgeLabel;
+
+        const targetDay = days ? days[this.selectedDayIndex] : null;
+        document.getElementById('modal-day-title').textContent = targetDay ? `${targetDay.dayName} (${targetDay.date})` : 'Selected Day';
+        document.getElementById('modal-dryness-val').textContent = `${evalResult.rockDrynessScore}%`;
+        document.getElementById('modal-friction-val').textContent = `${evalResult.frictionScore}/100`;
+        document.getElementById('modal-condition-summary').textContent = evalResult.summary;
+
+        // 7-day mini buttons
+        const timelineContainer = document.getElementById('modal-crag-timeline');
+        timelineContainer.innerHTML = '';
+        if (days) {
+          for (let d = 3; d < days.length; d++) {
+            const dDay = days[d];
+            const dEval = ConditionEngine.evaluateCrag(crag, days, d);
+            const dStyles = this.getStatusBadgeStyles(dEval.status, dEval.colorCode);
+            const isSel = d === this.selectedDayIndex;
+
+            const dBtn = document.createElement('button');
+            dBtn.className = `rounded-xl p-2 text-center border-[1.5px] transition flex flex-col items-center justify-between ${isSel ? 'border-paper-800 shadow-editorial bg-white scale-105 ring-2 ring-cobalt-600' : 'border-paper-200 bg-paper-100 hover:bg-white'}`;
+            dBtn.innerHTML = `
+              <span class="text-[10px] font-extrabold uppercase font-mono">${d === 3 ? 'Today' : dDay.dayName}</span>
+              <span class="w-2.5 h-2.5 rounded-full ${dStyles.dot} my-1"></span>
+              <span class="text-[9px] font-mono font-bold">${dDay.tempMax.toFixed(0)}°</span>
+            `;
+            dBtn.onclick = () => {
+              this.setForecastDay(d);
+              this.openCragDetails(cragId);
+            };
+            timelineContainer.appendChild(dBtn);
+          }
+        }
+
+        // Reasons list
+        const reasonsList = document.getElementById('modal-reasons-list');
+        reasonsList.innerHTML = '';
+        evalResult.reasons.forEach(r => {
+          const li = document.createElement('li');
+          li.textContent = r;
+          reasonsList.appendChild(li);
+        });
+
+        // Crag styles & tips
+        document.getElementById('modal-crag-style').textContent = crag.style.join(' • ');
+        document.getElementById('modal-crag-approach').textContent = `${crag.approachMinutes} min walk • ${crag.dryingProfile.sunExposure.replace('-', ' ')} • ${crag.dryingProfile.windExposure} wind exposure`;
+        document.getElementById('modal-crag-description').textContent = crag.description;
+        document.getElementById('modal-crag-tips').textContent = `Local Tip: ${crag.tips}`;
+
+        // theCrag link
+        const theCragLink = document.getElementById('modal-thecrag-link');
+        theCragLink.href = crag.theCragUrl || 'https://www.thecrag.com';
+
+        this.updateModalFavState();
+
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        this.initIcons();
+      },
+
+      updateModalFavState() {
+        if (!this.selectedCragId) return;
+        const isFav = this.favorites.has(this.selectedCragId);
+        const icon = document.getElementById('modal-fav-icon');
+        if (icon) {
+          if (isFav) {
+            icon.classList.remove('fill-transparent');
+            icon.classList.add('fill-amber-500');
+          } else {
+            icon.classList.remove('fill-amber-500');
+            icon.classList.add('fill-transparent');
+          }
+        }
+      },
+
+      closeModal() {
+        const modal = document.getElementById('crag-detail-modal');
+        if (modal) {
+          modal.classList.add('hidden');
+          modal.classList.remove('flex');
+        }
+      },
+
+      setMobileView(view) {
+        this.mobileView = view;
+        const listPanel = document.getElementById('crag-list-panel');
+        const mapPanel = document.getElementById('map-panel');
+        const tabList = document.getElementById('mob-tab-list');
+        const tabMap = document.getElementById('mob-tab-map');
+
+        if (view === 'list') {
+          if (listPanel) listPanel.classList.remove('hidden');
+          if (mapPanel) mapPanel.classList.add('hidden');
+          if (tabList) {
+            tabList.className = 'flex-1 py-1.5 rounded-lg text-xs font-extrabold bg-cobalt-700 text-white shadow-editorial-sm';
+          }
+          if (tabMap) {
+            tabMap.className = 'flex-1 py-1.5 rounded-lg text-xs font-bold text-paper-900';
+          }
+        } else {
+          if (listPanel) listPanel.classList.add('hidden');
+          if (mapPanel) mapPanel.classList.remove('hidden');
+          if (tabList) {
+            tabList.className = 'flex-1 py-1.5 rounded-lg text-xs font-bold text-paper-900';
+          }
+          if (tabMap) {
+            tabMap.className = 'flex-1 py-1.5 rounded-lg text-xs font-extrabold bg-cobalt-700 text-white shadow-editorial-sm';
+          }
+          MapController.refreshMap();
+        }
+      }
+    };
+
+    /* ==========================================================================
+       LAYER 5: NODE.JS EXPORT BRIDGE & BROWSER BOOTSTRAP GUARDS
+       ========================================================================== */
+
+    if (typeof module !== 'undefined' && module.exports) {
+      module.exports = { ConditionEngine, WeatherService, CRAGS_DATA, parseVGrade, matchesGradeRange };
+    }
+
+    if (typeof window !== 'undefined' && typeof document !== 'undefined' && !window.__TEST_MODE__) {
+      document.addEventListener('DOMContentLoaded', () => UIController.init());
+    }
+  </script>
+</body>
+</html>

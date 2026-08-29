@@ -10,8 +10,16 @@ A collection of interactive toys, mental sports, and creative web experiments in
 ├── index.html                 # 🌟 Neal.fun-style Playground homepage & project launcher
 ├── doomsday/                  # 📅 The Doomsday Rule Trainer
 │   └── index.html
-├── README.md                  # Documentation & Cheat Sheets
-└── implementation_plan.md     # Architecture & Design Doc
+├── boulder-buddy/             # 🧗 Sydney Boulder Buddy (Dryness & Friction Forecaster)
+│   ├── index.html
+│   └── test.js
+├── docs/
+│   ├── design-system/         # 🎨 Editorial Paper Design System documentation & tokens
+│   │   └── DESIGN_SYSTEM.md
+│   └── specs/                 # Feature specifications & problem docs
+│       └── boulder-buddy-design.md
+├── README.md                  # Documentation & Project Directory
+└── implementation_plan.md     # Architecture & Implementation Plans
 ```
 
 ---
@@ -24,6 +32,15 @@ Master John Horton Conway's mental calculation algorithm to determine the day of
 - **Controls**: Number keys `1–7` / `0`, letter shortcuts `M T W R F S U`, touch/click buttons.
 - **Doomsday Engine**: 4-step step-by-step breakdown (Century anchor, Year offset, Month anchor, Day offset) available for hints, mistakes, and post-round review.
 - **Zero Dependencies**: Pure HTML, Tailwind CSS, Lucide icons, and Web Audio API synthesized sound effects.
+
+### 2. [Sydney Boulder Buddy](./boulder-buddy/)
+Real-time Sydney bouldering weather forecaster, rock dryness evaluator, and friction index calculator.
+- **Coverage**: 18 curated crags across 6 regions (Sydney East, Sydney North, Sydney Inner West, Sydney South, Blue Mountains, Central Coast).
+- **Condition Engine**: Two-tier model gating hard on sandstone fragility / seepage risk, combined with ambient friction scoring (temperature, dew point, humidity).
+- **7-Day Interactive Timeline**: Forecast and inspect dryness and friction day-by-day across all crags.
+- **Interactive Leaflet Map**: Custom condition-coded SVG markers, search, region & grade filters, and persistent favorites.
+- **Client-Side & Offline Ready**: Batch API queries via Open-Meteo with 30-minute caching and bundled synthetic fallback dataset.
+- **Automated Tests**: Zero-dependency test runner via `node boulder-buddy/test.js`.
 
 ---
 
