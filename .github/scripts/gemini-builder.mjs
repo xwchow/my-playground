@@ -109,26 +109,57 @@ async function main() {
   let isFollowUp = false;
   let targetBranch = null;
 
-  // 1. Parse Event Context
+  // 1. Parse Event Context & Check Trigger Conditions
   if (process.env.WORKFLOW_INPUT_PROMPT) {
     prompt = process.env.WORKFLOW_INPUT_PROMPT;
     console.log('Using workflow_dispatch input prompt.');
   } else if (GITHUB_EVENT_PATH) {
     try {
       const eventData = JSON.parse(await fs.readFile(GITHUB_EVENT_PATH, 'utf-8'));
+
+      // Ignore bot comments to prevent recursive loops
+      const senderLogin = eventData.comment?.user?.login || eventData.sender?.login || '';
+      if (senderLogin.endsWith('[bot]') || eventData.comment?.user?.type === 'Bot') {
+        console.log(`🤖 Skipping event: originated from bot @${senderLogin}`);
+        process.exit(0);
+      }
+
       if (eventData.issue) {
         issueNumber = eventData.issue.number;
         authorLogin = eventData.issue.user?.login || 'User';
 
         if (eventData.comment) {
           // Comment on issue or PR
-          prompt = eventData.comment.body;
+          const commentBody = eventData.comment.body || '';
+          const isTrigger = /@gemini\b/i.test(commentBody) || /^\/(build|fix|retry)\b/i.test(commentBody.trim());
+
+          if (!isTrigger) {
+            console.log('ℹ️ Skipping comment: does not mention @gemini or /build command.');
+            process.exit(0);
+          }
+
+          prompt = commentBody;
           isFollowUp = true;
           console.log(`Received comment on #${issueNumber} by @${eventData.comment.user?.login}`);
         } else {
           // New issue
-          prompt = `${eventData.issue.title}\n\n${eventData.issue.body || ''}`;
-          console.log(`Received issue #${issueNumber}: ${eventData.issue.title}`);
+          const title = eventData.issue.title || '';
+          const body = eventData.issue.body || '';
+          const labels = (eventData.issue.labels || []).map(l => l.name?.toLowerCase());
+
+          const isTrigger = 
+            /^build:\s*/i.test(title) ||
+            /^feat:\s*/i.test(title) ||
+            /@gemini\b/i.test(body) ||
+            labels.includes('build');
+
+          if (!isTrigger) {
+            console.log('ℹ️ Skipping issue: does not match "build:", "feat:", label "build", or "@gemini".');
+            process.exit(0);
+          }
+
+          prompt = `${title}\n\n${body}`;
+          console.log(`Received issue #${issueNumber}: ${title}`);
         }
       }
     } catch (err) {
@@ -136,7 +167,6 @@ async function main() {
     }
   }
 
-  // CLI fallback for local testing
   // CLI fallback for local testing
   const args = process.argv.slice(2);
   const promptArgIdx = args.indexOf('--prompt');
@@ -146,17 +176,16 @@ async function main() {
   const isMock = args.includes('--mock') || process.env.MOCK_GEMINI === 'true';
 
   if (!prompt.trim()) {
-    console.error('❌ No prompt found in event payload or arguments.');
-    process.exit(1);
+    console.log('ℹ️ No active prompt found. Exiting gracefully.');
+    process.exit(0);
   }
 
-  // Clean prompt triggers (remove @gemini, /build, build:, etc.)
+  // Clean prompt triggers (remove @gemini, /build, /fix, /retry, build:, etc.)
   const cleanPrompt = prompt
     .replace(/^build:\s*/i, '')
     .replace(/^feat:\s*/i, '')
     .replace(/@gemini\b/gi, '')
-    .replace(/^\/build\b/gi, '')
-    .replace(/^\/fix\b/gi, '')
+    .replace(/^\/(build|fix|retry)\b/gi, '')
     .trim();
 
   console.log(`\n📋 Cleaned Build Prompt:\n"${cleanPrompt}"\n`);

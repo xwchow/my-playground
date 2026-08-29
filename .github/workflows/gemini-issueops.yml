@@ -23,22 +23,6 @@ permissions:
 
 jobs:
   gemini-build:
-    # Trigger if issue has build label/prefix, or if a human comment mentions @gemini or /build
-    if: >
-      github.event_name == 'workflow_dispatch' ||
-      (github.event_name == 'issues' && (
-        contains(github.event.issue.labels.*.name, 'build') ||
-        startsWith(github.event.issue.title, 'build:') ||
-        startsWith(github.event.issue.title, 'feat:') ||
-        contains(github.event.issue.body, '@gemini')
-      )) ||
-      (github.event_name == 'issue_comment' &&
-        !github.event.comment.user.login.endsWith('[bot]') && (
-          contains(github.event.comment.body, '@gemini') ||
-          startsWith(github.event.comment.body, '/build') ||
-          startsWith(github.event.comment.body, '/fix')
-        )
-      )
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
