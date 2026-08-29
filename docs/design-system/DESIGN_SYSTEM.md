@@ -1,6 +1,6 @@
 # 🎨 Editorial Paper Design System
 
-The **Editorial Paper** design system powers the interactive toys, web tools, and mental calculation trainers across the Playground. It blends **tactile neo-brutalist physics**, **editorial print typography**, and a **clean paper palette** to create interfaces that feel responsive, physical, and durable.
+The **Editorial Paper** design system powers the tools and personal projects across the Playground. It blends **tactile neo-brutalist physics**, **editorial print typography**, and a **clean paper palette** to create interfaces that feel responsive, physical, and durable.
 
 ---
 

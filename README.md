@@ -1,6 +1,6 @@
-# 🎪 Playground & Web Experiments
+# 🎪 Playground: Tools & Personal Projects
 
-A collection of interactive toys, mental sports, and creative web experiments inspired by sites like [neal.fun](https://neal.fun).
+A personal collection of tools and web projects built for things that interest me or that I find useful.
 
 ---
 

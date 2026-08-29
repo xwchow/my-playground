@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Playground | Interactive Web Toys & Experiments</title>
-  <meta name="description" content="A collection of interactive toys, mental calculation trainers, games, and web experiments.">
+  <title>Playground | Tools & Personal Projects</title>
+  <meta name="description" content="A personal collection of tools and web projects built for things that interest me or that I find useful.">
   
   <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -86,13 +86,29 @@
       transform: translate(1.5px, 1.5px);
       box-shadow: 0px 0px 0px 0px #27272a;
     }
+
+    /* Custom Paper Scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f0eee6;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #ccc7b6;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #27272a;
+    }
   </style>
 </head>
 <body class="min-h-screen flex flex-col transition-colors duration-150 selection:bg-cobalt-100 selection:text-cobalt-900">
 
   <!-- TOP HEADER -->
   <header class="border-b-[1.5px] border-paper-800 bg-[#ffffff]/90 backdrop-blur-sm sticky top-0 z-30 px-4 py-3 sm:px-8">
-    <div class="max-w-6xl mx-auto flex items-center justify-between">
+    <div class="max-w-5xl mx-auto flex items-center justify-between">
       <a href="./" class="flex items-center gap-3 group">
         <div class="w-9 h-9 rounded-xl bg-cobalt-50 border-[1.5px] border-paper-800 shadow-editorial-sm flex items-center justify-center text-lg font-bold text-cobalt-700 group-hover:scale-105 transition duration-200">
           ⚡
@@ -101,7 +117,7 @@
           <h1 class="text-base sm:text-lg font-extrabold tracking-tight text-paper-900 flex items-center gap-1.5">
             Playground
           </h1>
-          <p class="text-[11px] text-zinc-500 font-medium">Interactive Web Toys & Experiments</p>
+          <p class="text-[11px] text-zinc-500 font-medium">Tools & Personal Projects</p>
         </div>
       </a>
 
@@ -119,16 +135,16 @@
   <main class="flex-1 max-w-5xl w-full mx-auto p-4 sm:p-8 space-y-8">
     
     <!-- Hero Intro -->
-    <div class="text-center space-y-3 max-w-2xl mx-auto pt-4 sm:pt-8">
+    <div class="text-center space-y-3 max-w-2xl mx-auto pt-4 sm:pt-6">
       <div class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-cobalt-50 text-cobalt-900 border-[1.5px] border-paper-800 text-xs font-bold shadow-editorial-sm">
         <span class="w-2 h-2 rounded-full bg-cobalt-600"></span>
         Zero dependencies • 100% Client-Side
       </div>
       <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-paper-900 leading-tight">
-        Tiny toys, mental math, & web experiments
+        A collection of tools & personal projects
       </h2>
       <p class="text-zinc-600 text-sm sm:text-base leading-relaxed">
-        A collection of clean, tactile mini-apps inspired by <a href="https://neal.fun" target="_blank" rel="noopener" class="underline font-bold text-paper-900 hover:text-cobalt-700">neal.fun</a>. Built for learning, speed, and curious exploration.
+        Built for things that interest me or that I find genuinely useful.
       </p>
     </div>
 
@@ -137,227 +153,110 @@
       <div class="flex flex-col sm:flex-row items-center justify-between gap-3">
         <!-- Filter Pills -->
         <div class="flex items-center gap-2 overflow-x-auto sm:overflow-visible w-full sm:w-auto p-1" id="filter-container">
-          <button onclick="filterCategory('all')" class="btn-filter btn-editorial px-3.5 py-1.5 rounded-xl text-xs font-extrabold bg-cobalt-700 text-white border-paper-800 shadow-editorial hover:bg-cobalt-800" data-cat="all">All</button>
+          <button onclick="filterCategory('all')" class="btn-filter btn-editorial px-3.5 py-1.5 rounded-xl text-xs font-extrabold bg-cobalt-700 text-white border-paper-800 shadow-editorial hover:bg-cobalt-800" data-cat="all">All (2)</button>
           <button onclick="filterCategory('mental-math')" class="btn-filter btn-editorial px-3.5 py-1.5 rounded-xl text-xs font-bold text-paper-900" data-cat="mental-math">Mental Math</button>
-          <button onclick="filterCategory('puzzles')" class="btn-filter btn-editorial px-3.5 py-1.5 rounded-xl text-xs font-bold text-paper-900" data-cat="puzzles">Puzzles</button>
-          <button onclick="filterCategory('games')" class="btn-filter btn-editorial px-3.5 py-1.5 rounded-xl text-xs font-bold text-paper-900" data-cat="games">Games</button>
           <button onclick="filterCategory('tools')" class="btn-filter btn-editorial px-3.5 py-1.5 rounded-xl text-xs font-bold text-paper-900" data-cat="tools">Tools</button>
+          <button onclick="filterCategory('games')" class="btn-filter btn-editorial px-3.5 py-1.5 rounded-xl text-xs font-bold text-paper-900" data-cat="games">Games</button>
         </div>
 
-        <!-- Live Search Input -->
+        <!-- Live Search Input with Keyboard Shortcut -->
         <div class="relative w-full sm:w-64 p-0.5">
           <i data-lucide="search" class="w-4 h-4 text-zinc-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
-          <input type="text" id="project-search" oninput="searchProjects(this.value)" placeholder="Search projects..." class="w-full bg-white border-[1.5px] border-paper-800 rounded-xl pl-9 pr-3 py-1.5 text-xs text-paper-900 placeholder-zinc-400 focus:outline-none focus:bg-cobalt-50 shadow-editorial transition font-medium">
+          <input type="text" id="project-search" oninput="searchProjects(this.value)" placeholder="Search projects..." class="w-full bg-white border-[1.5px] border-paper-800 rounded-xl pl-9 pr-8 py-1.5 text-xs text-paper-900 placeholder-zinc-400 focus:outline-none focus:bg-cobalt-50 shadow-editorial transition font-medium">
+          <kbd class="hidden sm:inline-block absolute right-2.5 top-1/2 -translate-y-1/2 px-1.5 py-0.5 rounded bg-paper-200 border border-paper-800 text-zinc-600 font-mono text-[10px] font-bold shadow-editorial-sm pointer-events-none">
+            /
+          </kbd>
         </div>
       </div>
     </div>
 
-    <!-- PROJECT CARDS GRID -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 max-w-5xl mx-auto" id="projects-grid">
+    <!-- PROJECT CARDS GRID (FEATURED LIVE APPS) -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl mx-auto" id="projects-grid">
       
-      <!-- CARD 1: DOOMSDAY RULE TRAINER (FEATURED LIVE PROJECT) -->
-      <a href="./doomsday/" class="card-editorial group relative rounded-2xl p-5 sm:p-6 flex flex-col justify-between" data-category="mental-math games tools" data-title="Doomsday Rule Trainer Day of the Week Calculation Conway">
-        <div>
+      <!-- CARD 1: DOOMSDAY RULE TRAINER -->
+      <a href="./doomsday/" class="card-editorial group relative rounded-2xl p-6 sm:p-7 flex flex-col justify-between" data-category="mental-math games tools" data-title="Doomsday Rule Trainer Day of the Week Calculation Conway Speedrun">
+        <div class="space-y-4">
           <!-- Top Row: Icon & Status -->
-          <div class="flex items-center justify-between mb-4">
-            <div class="w-12 h-12 rounded-xl bg-cobalt-50 border-[1.5px] border-paper-800 flex items-center justify-center text-2xl shadow-editorial-sm group-hover:scale-105 transition duration-200">
+          <div class="flex items-center justify-between">
+            <div class="w-14 h-14 rounded-2xl bg-cobalt-50 border-[1.5px] border-paper-800 flex items-center justify-center text-3xl shadow-editorial-sm group-hover:scale-105 transition duration-200">
               📅
             </div>
-            <span class="px-2.5 py-0.5 rounded-full bg-cobalt-100 text-cobalt-900 border-[1.5px] border-paper-800 text-[11px] font-extrabold flex items-center gap-1.5 shadow-editorial-sm">
-              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span class="px-3 py-1 rounded-full bg-cobalt-100 text-cobalt-900 border-[1.5px] border-paper-800 text-xs font-extrabold flex items-center gap-1.5 shadow-editorial-sm">
+              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
               Playable
             </span>
           </div>
 
           <!-- Title & Description -->
-          <h3 class="text-lg font-extrabold text-paper-900 group-hover:text-cobalt-700 transition flex items-center gap-1.5 mb-1.5">
-            Doomsday Rule Trainer
-            <i data-lucide="arrow-up-right" class="w-4 h-4 opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition"></i>
-          </h3>
-          <p class="text-xs text-zinc-600 leading-relaxed mb-6 font-normal">
-            Master John Conway's mental algorithm to calculate the day of the week for any date in history in seconds. Includes Sprint, Time Attack, and Zen modes.
-          </p>
+          <div>
+            <h3 class="text-xl font-extrabold text-paper-900 group-hover:text-cobalt-700 transition flex items-center gap-1.5 mb-2">
+              Doomsday Rule Trainer
+              <i data-lucide="arrow-up-right" class="w-4 h-4 opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition"></i>
+            </h3>
+            <p class="text-xs sm:text-sm text-zinc-600 leading-relaxed font-normal">
+              Master mathematician John Conway's legendary algorithm to calculate the day of the week for any date in history in seconds. Includes Sprint, Time Attack, and Zen practice modes with step-by-step breakdown hints.
+            </p>
+          </div>
         </div>
 
-        <!-- Card Footer -->
-        <div class="flex items-center justify-between pt-3.5 border-t-[1.5px] border-paper-200 text-xs">
+        <!-- Card Footer: Feature Badges & Launch CTA -->
+        <div class="pt-5 mt-4 border-t-[1.5px] border-paper-200 flex items-center justify-between gap-2">
           <div class="flex items-center gap-1.5 flex-wrap">
-            <span class="px-2.5 py-1 rounded-md bg-paper-200 border border-paper-800 text-paper-900 text-xs font-bold">Mental Math</span>
-            <span class="px-2.5 py-1 rounded-md bg-paper-200 border border-paper-800 text-paper-900 text-xs font-bold">Speed Run</span>
+            <span class="px-2.5 py-0.5 rounded-md bg-paper-200 border border-paper-800 text-paper-900 text-[11px] font-bold">Mental Math</span>
+            <span class="px-2.5 py-0.5 rounded-md bg-paper-200 border border-paper-800 text-paper-900 text-[11px] font-bold">Speed Run</span>
+            <span class="px-2.5 py-0.5 rounded-md bg-paper-200 border border-paper-800 text-paper-900 text-[11px] font-bold">Sound FX</span>
           </div>
-          <span class="font-extrabold text-cobalt-700 group-hover:translate-x-0.5 transition flex items-center gap-1">
-            Launch &rarr;
+          <span class="font-extrabold text-xs text-cobalt-700 group-hover:translate-x-0.5 transition flex items-center gap-1 shrink-0">
+            Launch Trainer &rarr;
           </span>
         </div>
       </a>
 
-      <!-- CARD 2: SYDNEY BOULDER BUDDY (FEATURED LIVE PROJECT) -->
-      <a href="./boulder-buddy/" class="card-editorial group relative rounded-2xl p-5 sm:p-6 flex flex-col justify-between" data-category="tools" data-title="Sydney Boulder Buddy Bouldering Sandstone Dryness Friction Weather Forecaster">
-        <div>
+      <!-- CARD 2: SYDNEY BOULDER BUDDY -->
+      <a href="./boulder-buddy/" class="card-editorial group relative rounded-2xl p-6 sm:p-7 flex flex-col justify-between" data-category="tools" data-title="Sydney Boulder Buddy Bouldering Sandstone Dryness Friction Weather Forecaster Climbing Map">
+        <div class="space-y-4">
           <!-- Top Row: Icon & Status -->
-          <div class="flex items-center justify-between mb-4">
-            <div class="w-12 h-12 rounded-xl bg-amber-100 border-[1.5px] border-paper-800 flex items-center justify-center text-2xl shadow-editorial-sm group-hover:scale-105 transition duration-200">
+          <div class="flex items-center justify-between">
+            <div class="w-14 h-14 rounded-2xl bg-amber-100 border-[1.5px] border-paper-800 flex items-center justify-center text-3xl shadow-editorial-sm group-hover:scale-105 transition duration-200">
               🧗
             </div>
-            <span class="px-2.5 py-0.5 rounded-full bg-cobalt-100 text-cobalt-900 border-[1.5px] border-paper-800 text-[11px] font-extrabold flex items-center gap-1.5 shadow-editorial-sm">
-              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span class="px-3 py-1 rounded-full bg-cobalt-100 text-cobalt-900 border-[1.5px] border-paper-800 text-xs font-extrabold flex items-center gap-1.5 shadow-editorial-sm">
+              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
               Playable
             </span>
           </div>
 
           <!-- Title & Description -->
-          <h3 class="text-lg font-extrabold text-paper-900 group-hover:text-cobalt-700 transition flex items-center gap-1.5 mb-1.5">
-            Sydney Boulder Buddy
-            <i data-lucide="arrow-up-right" class="w-4 h-4 opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition"></i>
-          </h3>
-          <p class="text-xs text-zinc-600 leading-relaxed mb-6 font-normal">
-            Real-time bouldering dryness & 7-day friction forecaster across 18 Sydney, Blue Mountains & Central Coast crags with sandstone safety gating.
-          </p>
+          <div>
+            <h3 class="text-xl font-extrabold text-paper-900 group-hover:text-cobalt-700 transition flex items-center gap-1.5 mb-2">
+              Sydney Boulder Buddy
+              <i data-lucide="arrow-up-right" class="w-4 h-4 opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition"></i>
+            </h3>
+            <p class="text-xs sm:text-sm text-zinc-600 leading-relaxed font-normal">
+              Real-time rock dryness evaluator and 7-day ambient friction index forecaster across 18 Sydney, Blue Mountains, and Central Coast bouldering crags with strict Hawkesbury sandstone safety gating.
+            </p>
+          </div>
         </div>
 
-        <!-- Card Footer -->
-        <div class="flex items-center justify-between pt-3.5 border-t-[1.5px] border-paper-200 text-xs">
+        <!-- Card Footer: Feature Badges & Launch CTA -->
+        <div class="pt-5 mt-4 border-t-[1.5px] border-paper-200 flex items-center justify-between gap-2">
           <div class="flex items-center gap-1.5 flex-wrap">
-            <span class="px-2.5 py-1 rounded-md bg-paper-200 border border-paper-800 text-paper-900 text-xs font-bold">Rock Climbing</span>
-            <span class="px-2.5 py-1 rounded-md bg-paper-200 border border-paper-800 text-paper-900 text-xs font-bold">Forecaster</span>
+            <span class="px-2.5 py-0.5 rounded-md bg-paper-200 border border-paper-800 text-paper-900 text-[11px] font-bold">Rock Climbing</span>
+            <span class="px-2.5 py-0.5 rounded-md bg-paper-200 border border-paper-800 text-paper-900 text-[11px] font-bold">Interactive Map</span>
+            <span class="px-2.5 py-0.5 rounded-md bg-paper-200 border border-paper-800 text-paper-900 text-[11px] font-bold">Weather Radar</span>
           </div>
-          <span class="font-extrabold text-cobalt-700 group-hover:translate-x-0.5 transition flex items-center gap-1">
-            Launch &rarr;
+          <span class="font-extrabold text-xs text-cobalt-700 group-hover:translate-x-0.5 transition flex items-center gap-1 shrink-0">
+            Launch Forecaster &rarr;
           </span>
         </div>
       </a>
-
-      <!-- CARD 2: CHRONO GUESSER (INCUBATOR / TEASER) -->
-      <div class="card-editorial group relative rounded-2xl p-5 sm:p-6 flex flex-col justify-between opacity-80 hover:opacity-100" data-category="games puzzles" data-title="Chrono Guesser History Timeline Guessing Game">
-        <div>
-          <div class="flex items-center justify-between mb-4">
-            <div class="w-12 h-12 rounded-xl bg-paper-200 border-[1.5px] border-paper-800 flex items-center justify-center text-2xl shadow-editorial-sm">
-              ⏳
-            </div>
-            <span class="px-2.5 py-0.5 rounded-full bg-paper-200 border border-paper-800 text-zinc-700 text-[10px] font-bold">
-              Coming Soon
-            </span>
-          </div>
-          <h3 class="text-base font-extrabold text-paper-900 mb-1.5">Chrono Guesser</h3>
-          <p class="text-xs text-zinc-600 leading-relaxed mb-6">
-            Test your historical intuition. Place famous world events, inventions, and discoveries on an accurate chronological timeline without errors.
-          </p>
-        </div>
-        <div class="flex items-center justify-between pt-3.5 border-t-[1.5px] border-paper-200 text-xs text-zinc-400">
-          <div class="flex gap-1.5">
-            <span class="px-2.5 py-1 rounded-md bg-paper-200 text-zinc-700 text-xs font-bold border border-paper-800/60">History</span>
-            <span class="px-2.5 py-1 rounded-md bg-paper-200 text-zinc-700 text-xs font-bold border border-paper-800/60">Timeline</span>
-          </div>
-          <span class="text-[11px] italic font-medium">In development</span>
-        </div>
-      </div>
-
-      <!-- CARD 3: CLOCK ANGLE GYM (INCUBATOR / TEASER) -->
-      <div class="card-editorial group relative rounded-2xl p-5 sm:p-6 flex flex-col justify-between opacity-80 hover:opacity-100" data-category="mental-math puzzles" data-title="Clock Angle Gym Mental Math Geometry Speedrun">
-        <div>
-          <div class="flex items-center justify-between mb-4">
-            <div class="w-12 h-12 rounded-xl bg-paper-200 border-[1.5px] border-paper-800 flex items-center justify-center text-2xl shadow-editorial-sm">
-              ⏱️
-            </div>
-            <span class="px-2.5 py-0.5 rounded-full bg-paper-200 border border-paper-800 text-zinc-700 text-[10px] font-bold">
-              Coming Soon
-            </span>
-          </div>
-          <h3 class="text-base font-extrabold text-paper-900 mb-1.5">Clock Angle Gym</h3>
-          <p class="text-xs text-zinc-600 leading-relaxed mb-6">
-            Rapidly calculate the exact acute angle between the hour and minute hands for random analog clock times using mental math shortcuts.
-          </p>
-        </div>
-        <div class="flex items-center justify-between pt-3.5 border-t-[1.5px] border-paper-200 text-xs text-zinc-400">
-          <div class="flex gap-1.5">
-            <span class="px-2.5 py-1 rounded-md bg-paper-200 text-zinc-700 text-xs font-bold border border-paper-800/60">Geometry</span>
-            <span class="px-2.5 py-1 rounded-md bg-paper-200 text-zinc-700 text-xs font-bold border border-paper-800/60">Angles</span>
-          </div>
-          <span class="text-[11px] italic font-medium">In development</span>
-        </div>
-      </div>
-
-      <!-- CARD 4: MEMORY MATRIX (INCUBATOR / TEASER) -->
-      <div class="card-editorial group relative rounded-2xl p-5 sm:p-6 flex flex-col justify-between opacity-80 hover:opacity-100" data-category="puzzles games" data-title="Memory Matrix Working Memory Span Benchmark">
-        <div>
-          <div class="flex items-center justify-between mb-4">
-            <div class="w-12 h-12 rounded-xl bg-paper-200 border-[1.5px] border-paper-800 flex items-center justify-center text-2xl shadow-editorial-sm">
-              🧠
-            </div>
-            <span class="px-2.5 py-0.5 rounded-full bg-paper-200 border border-paper-800 text-zinc-700 text-[10px] font-bold">
-              Coming Soon
-            </span>
-          </div>
-          <h3 class="text-base font-extrabold text-paper-900 mb-1.5">Memory Matrix</h3>
-          <p class="text-xs text-zinc-600 leading-relaxed mb-6">
-            A spatial working-memory benchmark testing your recall span against increasingly complex flashing patterns and grid sizes.
-          </p>
-        </div>
-        <div class="flex items-center justify-between pt-3.5 border-t-[1.5px] border-paper-200 text-xs text-zinc-400">
-          <div class="flex gap-1.5">
-            <span class="px-2.5 py-1 rounded-md bg-paper-200 text-zinc-700 text-xs font-bold border border-paper-800/60">Cognition</span>
-            <span class="px-2.5 py-1 rounded-md bg-paper-200 text-zinc-700 text-xs font-bold border border-paper-800/60">Span</span>
-          </div>
-          <span class="text-[11px] italic font-medium">In development</span>
-        </div>
-      </div>
-
-      <!-- CARD 5: SOROBAN ANZAN FLASH (INCUBATOR / TEASER) -->
-      <div class="card-editorial group relative rounded-2xl p-5 sm:p-6 flex flex-col justify-between opacity-80 hover:opacity-100" data-category="mental-math tools" data-title="Anzan Soroban Mental Abacus Arithmetic">
-        <div>
-          <div class="flex items-center justify-between mb-4">
-            <div class="w-12 h-12 rounded-xl bg-paper-200 border-[1.5px] border-paper-800 flex items-center justify-center text-2xl shadow-editorial-sm">
-              🧮
-            </div>
-            <span class="px-2.5 py-0.5 rounded-full bg-paper-200 border border-paper-800 text-zinc-700 text-[10px] font-bold">
-              Coming Soon
-            </span>
-          </div>
-          <h3 class="text-base font-extrabold text-paper-900 mb-1.5">Anzan Flash Gym</h3>
-          <p class="text-xs text-zinc-600 leading-relaxed mb-6">
-            Practice Japanese flash mental arithmetic with rapidly flashing numbers at configurable millisecond speeds.
-          </p>
-        </div>
-        <div class="flex items-center justify-between pt-3.5 border-t-[1.5px] border-paper-200 text-xs text-zinc-400">
-          <div class="flex gap-1.5">
-            <span class="px-2.5 py-1 rounded-md bg-paper-200 text-zinc-700 text-xs font-bold border border-paper-800/60">Anzan</span>
-            <span class="px-2.5 py-1 rounded-md bg-paper-200 text-zinc-700 text-xs font-bold border border-paper-800/60">Flash Math</span>
-          </div>
-          <span class="text-[11px] italic font-medium">In development</span>
-        </div>
-      </div>
-
-      <!-- CARD 6: KELVIN COLOR LAB (INCUBATOR / TEASER) -->
-      <div class="card-editorial group relative rounded-2xl p-5 sm:p-6 flex flex-col justify-between opacity-80 hover:opacity-100" data-category="games tools" data-title="Color Temperature Kelvin Optics Perception">
-        <div>
-          <div class="flex items-center justify-between mb-4">
-            <div class="w-12 h-12 rounded-xl bg-paper-200 border-[1.5px] border-paper-800 flex items-center justify-center text-2xl shadow-editorial-sm">
-              🌈
-            </div>
-            <span class="px-2.5 py-0.5 rounded-full bg-paper-200 border border-paper-800 text-zinc-700 text-[10px] font-bold">
-              Coming Soon
-            </span>
-          </div>
-          <h3 class="text-base font-extrabold text-paper-900 mb-1.5">Kelvin Color Lab</h3>
-          <p class="text-xs text-zinc-600 leading-relaxed mb-6">
-            Guess and match black-body radiation color temperatures from candle flame (1800K) to deep blue sky (10,000K).
-          </p>
-        </div>
-        <div class="flex items-center justify-between pt-3.5 border-t-[1.5px] border-paper-200 text-xs text-zinc-400">
-          <div class="flex gap-1.5">
-            <span class="px-2.5 py-1 rounded-md bg-paper-200 text-zinc-700 text-xs font-bold border border-paper-800/60">Physics</span>
-            <span class="px-2.5 py-1 rounded-md bg-paper-200 text-zinc-700 text-xs font-bold border border-paper-800/60">Optics</span>
-          </div>
-          <span class="text-[11px] italic font-medium">In development</span>
-        </div>
-      </div>
 
     </div>
 
     <!-- Empty Search State -->
     <div id="empty-state" class="hidden text-center py-12 space-y-2">
       <p class="text-zinc-600 text-sm font-medium">No experiments found matching your search.</p>
-      <button onclick="filterCategory('all'); document.getElementById('project-search').value='';" class="text-xs font-bold text-cobalt-700 underline">
+      <button onclick="filterCategory('all'); document.getElementById('project-search').value=''; applyFilters();" class="text-xs font-bold text-cobalt-700 underline">
         Reset filters
       </button>
     </div>
@@ -365,8 +264,8 @@
   </main>
 
   <!-- FOOTER -->
-  <footer class="border-t-[1.5px] border-paper-800 bg-[#ffffff] text-center py-6 text-xs text-zinc-600">
-    <div class="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+  <footer class="border-t-[1.5px] border-paper-800 bg-[#ffffff] text-center py-6 text-xs text-zinc-600 mt-auto">
+    <div class="max-w-5xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
       <p class="font-medium">Built with curiosity • Zero cookies • Open source on GitHub.</p>
       <div class="flex items-center gap-3 text-paper-900 font-bold text-xs">
         <a href="./doomsday/" class="hover:text-cobalt-700 transition">Doomsday Trainer</a>
@@ -406,7 +305,7 @@
 
     function applyFilters() {
       const searchVal = (document.getElementById('project-search').value || '').toLowerCase().trim();
-      const cards = document.querySelectorAll('.card-editorial');
+      const cards = document.querySelectorAll('#projects-grid > a');
       let visibleCount = 0;
 
       cards.forEach(card => {
@@ -427,6 +326,23 @@
 
       document.getElementById('empty-state').classList.toggle('hidden', visibleCount > 0);
     }
+
+    // Keyboard Shortcuts (/ to search, Esc to clear)
+    window.addEventListener('keydown', (e) => {
+      const searchInput = document.getElementById('project-search');
+      const isInput = e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA';
+
+      if (e.key === '/' && !isInput) {
+        e.preventDefault();
+        if (searchInput) searchInput.focus();
+      } else if (e.key === 'Escape') {
+        if (searchInput) {
+          searchInput.value = '';
+          searchInput.blur();
+        }
+        filterCategory('all');
+      }
+    });
   </script>
 </body>
 </html>
