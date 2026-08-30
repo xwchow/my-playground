@@ -93,8 +93,8 @@ export function parseModelOutput(rawText) {
 
   // 3. Fallback: If no <file> tags, try finding markdown code block ```html ... ```
   if (files.length === 0) {
-    const htmlBlockMatch = text.match(/```(?:html)?\s*\n([\s\S]*?)\n```/i);
-    if (htmlBlockMatch) {
+    const htmlBlockMatch = text.match(/```(?:html|htm|xml)?\s*\n?([\s\S]*?)```/i);
+    if (htmlBlockMatch && htmlBlockMatch[1].trim().length > 50) {
       const slug = metadata?.slug || 'my-app';
       files.push({
         path: `${slug}/index.html`,
@@ -103,7 +103,19 @@ export function parseModelOutput(rawText) {
     }
   }
 
-  // 4. Fallback: If model returned pure JSON
+  // 4. Fallback: Direct HTML tag extraction (<!DOCTYPE html> or <html>)
+  if (files.length === 0) {
+    const directHtmlMatch = text.match(/(?:<!DOCTYPE\s+html[\s\S]*?<\/html>|<html[\s\S]*?<\/html>)/i);
+    if (directHtmlMatch) {
+      const slug = metadata?.slug || 'my-app';
+      files.push({
+        path: `${slug}/index.html`,
+        content: directHtmlMatch[0].trim()
+      });
+    }
+  }
+
+  // 5. Fallback: If model returned pure JSON
   if (!metadata || files.length === 0) {
     try {
       let cleaned = text;
@@ -123,10 +135,10 @@ export function parseModelOutput(rawText) {
   }
 
   if (files.length === 0) {
-    throw new Error('No valid <file> code blocks found in model response.');
+    throw new Error('No valid HTML code or <file> blocks found in model response.');
   }
 
-  const slug = metadata?.slug || files[0].path.split('/')[0] || 'app';
+  const slug = metadata?.slug || files[0].path.split('/')[0] || 'my-app';
   const title = metadata?.title || slug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
 
   return {
@@ -303,7 +315,18 @@ Generate the complete single-page web app inside <meta> and <file> delimiter tag
       });
     }
 
-    const appData = parseModelOutput(rawTextResponse);
+    console.log('🤖 Raw Gemini Output length:', rawTextResponse.length);
+
+    let appData;
+    try {
+      appData = parseModelOutput(rawTextResponse);
+    } catch (parseErr) {
+      console.error('Parse error:', parseErr.message);
+      return res.status(500).json({
+        error: `Failed to parse generated app: ${parseErr.message}`,
+        rawResponse: rawTextResponse
+      });
+    }
 
     return res.status(200).json({
       success: true,

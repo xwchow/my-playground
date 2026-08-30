@@ -460,7 +460,10 @@
 
         const data = await res.json();
         if (!res.ok || !data.success) {
-          throw new Error(data.error || 'Generation failed');
+          const rawPreview = data.rawResponse ? `\n\n<details class="mt-2 text-left"><summary class="cursor-pointer font-mono text-[11px] font-bold text-cobalt-700">🔍 Inspect Raw Model Output (${data.rawResponse.length} chars)</summary><pre class="mt-1.5 p-2.5 bg-paper-900 text-zinc-200 text-[10px] font-mono rounded-lg overflow-x-auto max-h-60 whitespace-pre-wrap select-text">${escapeHtml(data.rawResponse)}</pre></details>` : '';
+          appendChatMessage('assistant', `⚠️ **Error generating app**: ${data.error || 'Unknown error'}${rawPreview}`);
+          statusIndicator.innerHTML = `<span class="w-2 h-2 rounded-full bg-red-500"></span> Error: ${data.error || 'Failed'}`;
+          return;
         }
 
         currentAppData = data.appData;
