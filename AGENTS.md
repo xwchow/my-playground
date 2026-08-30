@@ -32,9 +32,6 @@ Welcome to the **Playground** repository! This document establishes operational 
 This repository is built as a zero-build-step, static playground inspired by sites like [neal.fun](https://neal.fun).
 
 ```
-├── .agents/
-│   └── skills/
-│       └── thecrag-extractor/ # 🧗 Skill: Extract bouldering crags from theCrag
 ├── index.html                 # 🌟 Main playground portal & project launcher
 ├── doomsday/                  # 📅 The Doomsday Rule Trainer
 │   ├── index.html             # Self-contained SPA

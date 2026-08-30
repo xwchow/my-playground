@@ -7,9 +7,6 @@ A personal collection of tools and web projects built for things that interest m
 ## 📁 Repository Structure
 
 ```
-├── .agents/
-│   └── skills/
-│       └── thecrag-extractor/ # 🧗 Skill: Extract bouldering crags from theCrag
 ├── index.html                 # 🌟 Main playground homepage & project launcher
 ├── doomsday/                  # 📅 The Doomsday Rule Trainer
 │   ├── index.html             # Self-contained SPA

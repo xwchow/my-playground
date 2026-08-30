@@ -57,5 +57,4 @@ Run the automated verification test suite with Node.js:
 
 ## 5. Upcoming Features
 
-- [x] Add a SKILL that extracts crag information from theCrag given a crag name.
 - [ ] Add all Sydney bouldering crags into `CRAGS_DATA`.
