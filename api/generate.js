@@ -154,7 +154,35 @@ Generate a complete, beautiful, fully functional single-page web app adhering to
       },
       generationConfig: {
         responseMimeType: 'application/json',
-        temperature: 0.2
+        maxOutputTokens: 8192,
+        temperature: 0.2,
+        responseSchema: {
+          type: 'OBJECT',
+          properties: {
+            slug: { type: 'STRING' },
+            title: { type: 'STRING' },
+            category: { type: 'STRING', enum: ['tools', 'games', 'mental-math', 'puzzles'] },
+            emoji: { type: 'STRING' },
+            summary: { type: 'STRING' },
+            tags: { 
+              type: 'ARRAY',
+              items: { type: 'STRING' }
+            },
+            files: {
+              type: 'ARRAY',
+              items: {
+                type: 'OBJECT',
+                properties: {
+                  path: { type: 'STRING' },
+                  content: { type: 'STRING' }
+                },
+                required: ['path', 'content']
+              }
+            },
+            summaryMessage: { type: 'STRING' }
+          },
+          required: ['slug', 'title', 'category', 'emoji', 'summary', 'tags', 'files']
+        }
       }
     };
 
@@ -210,7 +238,27 @@ Generate a complete, beautiful, fully functional single-page web app adhering to
       });
     }
 
-    const appData = JSON.parse(rawTextResponse);
+    // Robust JSON Parser with fence stripping and bounds extraction
+    let appData;
+    try {
+      let cleanedText = rawTextResponse.trim();
+      if (cleanedText.startsWith('```')) {
+        cleanedText = cleanedText.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '').trim();
+      }
+      const firstBrace = cleanedText.indexOf('{');
+      const lastBrace = cleanedText.lastIndexOf('}');
+      if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+        cleanedText = cleanedText.substring(firstBrace, lastBrace + 1);
+      }
+      appData = JSON.parse(cleanedText);
+    } catch (parseErr) {
+      console.error('Failed to parse raw Gemini response:', rawTextResponse);
+      return res.status(500).json({
+        error: `Failed to parse generated app JSON: ${parseErr.message}`,
+        rawResponse: rawTextResponse.substring(0, 500)
+      });
+    }
+
     return res.status(200).json({
       success: true,
       modelUsed: usedModel,
