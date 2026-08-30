@@ -232,9 +232,12 @@
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-2.5 items-center">
         
         <!-- Search Input (4 cols) -->
-        <div class="relative lg:col-span-4">
-          <i data-lucide="search" class="w-4 h-4 text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
-          <input type="text" id="crag-search" oninput="UIController.handleSearch(this.value)" placeholder="Search crags, style, region..." class="w-full bg-paper-100 border-[1.5px] border-paper-800 rounded-xl pl-9 pr-8 py-1.5 text-xs text-paper-900 placeholder-zinc-400 focus:outline-none focus:bg-white focus:ring-1 focus:ring-cobalt-500 font-medium">
+        <div class="relative lg:col-span-4 flex items-center">
+          <i data-lucide="search" class="w-4 h-4 text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+          <input type="text" id="crag-search" oninput="UIController.handleSearch(this.value)" placeholder="Search crags, suburbs, regions..." class="w-full bg-paper-100 border-[1.5px] border-paper-800 rounded-xl pl-9 pr-14 py-1.5 text-xs text-paper-900 placeholder-zinc-400 focus:outline-none focus:bg-white focus:ring-1 focus:ring-cobalt-500 font-medium">
+          <button id="search-clear-btn" onclick="UIController.clearSearch()" class="hidden absolute right-8 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-700 p-0.5" title="Clear search">
+            <i data-lucide="x" class="w-3.5 h-3.5"></i>
+          </button>
           <kbd class="hidden sm:inline-block absolute right-2.5 top-1/2 -translate-y-1/2 px-1.5 py-0.5 rounded bg-paper-200 border border-paper-800 text-zinc-600 font-mono text-[10px] font-bold shadow-editorial-sm pointer-events-none">
             /
           </kbd>
@@ -635,7 +638,9 @@
         reasons.push(`Past 3 days rainfall: ${past3Rain.toFixed(1)} mm (decayed rock moisture: ${moisture.toFixed(0)}%)`);
         reasons.push(`Day rainfall: ${targetDay.precipSumMm.toFixed(1)} mm (Rain Probability: ${targetDay.rainProbabilityMax}%)`);
         reasons.push(`Friction Index: ${friction}/100 — Temp: ${targetDay.tempMin.toFixed(0)}°–${targetDay.tempMax.toFixed(0)}°C (mean: ${targetDay.tempAvg.toFixed(1)}°C), RH: ${targetDay.humidityAvg.toFixed(0)}%, Dew Point: ${targetDay.dewPointAvg.toFixed(1)}°C`);
-        reasons.push(`Wind: max ${targetDay.windSpeedMaxKmH.toFixed(0)} km/h • Crag aspect: ${crag.dryingProfile.sunExposure}, ${crag.dryingProfile.windExposure} wind exposure`);
+        const sunExp = crag.dryingProfile?.sunExposure || 'Open aspect';
+        const windExp = crag.dryingProfile?.windExposure || 'standard';
+        reasons.push(`Wind: max ${targetDay.windSpeedMaxKmH.toFixed(0)} km/h • Aspect: ${sunExp}, ${windExp} wind exposure`);
 
         if (classification.status === 'WET_DANGER') {
           reasons.push('⚠️ DANGER: Sandstone hold breakage risk is EXTREME. Do not climb.');
@@ -993,7 +998,7 @@
 
         // Window resize & keyboard handlers
         window.addEventListener('resize', () => {
-          MapController.refreshMap();
+          this.setMobileView(this.mobileView);
         });
 
         window.addEventListener('keydown', (e) => {
@@ -1180,8 +1185,21 @@
       },
 
       handleSearch(val) {
-        this.searchQuery = (val || '').toLowerCase().trim();
+        this.searchQuery = (val || '').trim();
+        const clearBtn = document.getElementById('search-clear-btn');
+        if (clearBtn) {
+          clearBtn.classList.toggle('hidden', !this.searchQuery);
+        }
         this.renderCragCards();
+      },
+
+      clearSearch() {
+        const input = document.getElementById('crag-search');
+        if (input) {
+          input.value = '';
+          input.focus();
+        }
+        this.handleSearch('');
       },
 
       handleRegionChange(val) {
@@ -1208,6 +1226,8 @@
         
         const searchInput = document.getElementById('crag-search');
         if (searchInput) searchInput.value = '';
+        const clearBtn = document.getElementById('search-clear-btn');
+        if (clearBtn) clearBtn.classList.add('hidden');
         const regionSelect = document.getElementById('region-filter');
         if (regionSelect) regionSelect.value = 'all';
         const condSelect = document.getElementById('condition-filter');
@@ -1220,11 +1240,12 @@
       },
 
       filterCrag(crag, evalResult) {
-        // 1. Search Query
+        // 1. Multi-token search query (all tokens must match crag metadata)
         if (this.searchQuery) {
-          const matchName = crag.name.toLowerCase().includes(this.searchQuery);
-          const matchRegion = crag.regionLabel.toLowerCase().includes(this.searchQuery);
-          if (!matchName && !matchRegion) return false;
+          const tokens = this.searchQuery.toLowerCase().split(/\s+/).filter(Boolean);
+          const searchable = `${crag.name} ${crag.id} ${crag.regionLabel} ${crag.region} ${crag.grades?.min || ''} ${crag.grades?.max || ''}`.toLowerCase();
+          const matchesAllTokens = tokens.every(token => searchable.includes(token));
+          if (!matchesAllTokens) return false;
         }
 
         // 2. Region Filter
@@ -1568,24 +1589,31 @@
         const tabList = document.getElementById('mob-tab-list');
         const tabMap = document.getElementById('mob-tab-map');
 
-        if (view === 'list') {
-          if (listPanel) listPanel.classList.remove('hidden');
-          if (mapPanel) mapPanel.classList.add('hidden');
-          if (tabList) {
-            tabList.className = 'flex-1 py-1.5 rounded-lg text-xs font-extrabold bg-cobalt-700 text-white shadow-editorial-sm';
-          }
-          if (tabMap) {
-            tabMap.className = 'flex-1 py-1.5 rounded-lg text-xs font-bold text-paper-900';
+        if (window.innerWidth < 1024) {
+          if (view === 'list') {
+            if (listPanel) listPanel.classList.remove('hidden');
+            if (mapPanel) mapPanel.classList.add('hidden');
+            if (tabList) {
+              tabList.className = 'flex-1 py-1.5 rounded-lg text-xs font-extrabold bg-cobalt-700 text-white shadow-editorial-sm';
+            }
+            if (tabMap) {
+              tabMap.className = 'flex-1 py-1.5 rounded-lg text-xs font-bold text-paper-900';
+            }
+          } else {
+            if (listPanel) listPanel.classList.add('hidden');
+            if (mapPanel) mapPanel.classList.remove('hidden');
+            if (tabList) {
+              tabList.className = 'flex-1 py-1.5 rounded-lg text-xs font-bold text-paper-900';
+            }
+            if (tabMap) {
+              tabMap.className = 'flex-1 py-1.5 rounded-lg text-xs font-extrabold bg-cobalt-700 text-white shadow-editorial-sm';
+            }
+            MapController.refreshMap();
           }
         } else {
-          if (listPanel) listPanel.classList.add('hidden');
+          // On desktop (lg: and up), always ensure both panels are visible
+          if (listPanel) listPanel.classList.remove('hidden');
           if (mapPanel) mapPanel.classList.remove('hidden');
-          if (tabList) {
-            tabList.className = 'flex-1 py-1.5 rounded-lg text-xs font-bold text-paper-900';
-          }
-          if (tabMap) {
-            tabMap.className = 'flex-1 py-1.5 rounded-lg text-xs font-extrabold bg-cobalt-700 text-white shadow-editorial-sm';
-          }
           MapController.refreshMap();
         }
       }
