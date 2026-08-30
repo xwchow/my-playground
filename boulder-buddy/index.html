@@ -972,6 +972,10 @@
 
       async init() {
         this.loadFavorites();
+        if (this.favorites.size > 0) {
+          this.favoritesOnly = true;
+        }
+        this.updateFavoritesButtonUI();
         this.initIcons();
 
         // 1. Initial synchronous render of cards and counts
@@ -1048,6 +1052,23 @@
         }
       },
 
+      updateFavoritesButtonUI() {
+        const favBtn = document.getElementById('favorites-toggle-btn');
+        const icon = document.getElementById('fav-filter-icon');
+        if (!favBtn || !icon) return;
+        if (this.favoritesOnly) {
+          favBtn.classList.add('bg-amber-100', 'border-amber-600', 'text-amber-900');
+          icon.classList.remove('fill-transparent');
+          icon.classList.add('fill-amber-500');
+          favBtn.setAttribute('title', `Showing Starred Crags (${this.favorites.size}) — Press F or click to show all`);
+        } else {
+          favBtn.classList.remove('bg-amber-100', 'border-amber-600', 'text-amber-900');
+          icon.classList.remove('fill-amber-500');
+          icon.classList.add('fill-transparent');
+          favBtn.setAttribute('title', `Show Starred Crags Only (F)${this.favorites.size > 0 ? ` [${this.favorites.size} saved]` : ''}`);
+        }
+      },
+
       toggleFavorite(cragId, event) {
         if (event) event.stopPropagation();
         if (this.favorites.has(cragId)) {
@@ -1056,6 +1077,10 @@
           this.favorites.add(cragId);
         }
         this.saveFavorites();
+        if (this.favoritesOnly && this.favorites.size === 0) {
+          this.favoritesOnly = false;
+        }
+        this.updateFavoritesButtonUI();
         this.renderCragCards();
         this.updateModalFavState();
       },
@@ -1067,17 +1092,7 @@
 
       toggleFavoritesOnly() {
         this.favoritesOnly = !this.favoritesOnly;
-        const favBtn = document.getElementById('favorites-toggle-btn');
-        const icon = document.getElementById('fav-filter-icon');
-        if (this.favoritesOnly) {
-          favBtn.classList.add('bg-amber-100', 'border-amber-600');
-          icon.classList.remove('fill-transparent');
-          icon.classList.add('fill-amber-500');
-        } else {
-          favBtn.classList.remove('bg-amber-100', 'border-amber-600');
-          icon.classList.remove('fill-amber-500');
-          icon.classList.add('fill-transparent');
-        }
+        this.updateFavoritesButtonUI();
         this.renderCragCards();
       },
 
@@ -1200,14 +1215,7 @@
         const gradeSelect = document.getElementById('grade-filter');
         if (gradeSelect) gradeSelect.value = 'all';
         
-        const favBtn = document.getElementById('favorites-toggle-btn');
-        const icon = document.getElementById('fav-filter-icon');
-        if (favBtn) favBtn.classList.remove('bg-amber-100', 'border-amber-600');
-        if (icon) {
-          icon.classList.remove('fill-amber-500');
-          icon.classList.add('fill-transparent');
-        }
-
+        this.updateFavoritesButtonUI();
         this.renderCragCards();
       },
 
@@ -1252,28 +1260,28 @@
         switch (colorCode) {
           case 'emerald':
             return {
-              bg: 'bg-emerald-50 text-emerald-950 border-[1.5px] border-paper-800',
-              dot: 'bg-emerald-500'
+              bg: 'bg-emerald-50 text-emerald-950 border-[1.5px] border-emerald-700',
+              dot: 'bg-emerald-500 ring-2 ring-emerald-300'
             };
           case 'lime':
             return {
-              bg: 'bg-lime-50 text-lime-950 border-[1.5px] border-paper-800',
+              bg: 'bg-lime-50 text-lime-950 border-[1.5px] border-lime-700',
               dot: 'bg-lime-500'
             };
           case 'amber':
             return {
-              bg: 'bg-amber-50 text-amber-950 border-[1.5px] border-paper-800',
+              bg: 'bg-amber-50 text-amber-950 border-[1.5px] border-amber-700',
               dot: 'bg-amber-500'
             };
           case 'orange':
             return {
-              bg: 'bg-orange-50 text-orange-950 border-[1.5px] border-paper-800',
+              bg: 'bg-orange-50 text-orange-950 border-[1.5px] border-orange-700',
               dot: 'bg-orange-500'
             };
           case 'red':
             return {
-              bg: 'bg-red-50 text-red-950 border-[1.5px] border-paper-800',
-              dot: 'bg-red-500'
+              bg: 'bg-rose-50 text-rose-950 border-[1.5px] border-rose-700',
+              dot: 'bg-rose-500 animate-pulse'
             };
           default:
             return {
@@ -1396,7 +1404,38 @@
 
         if (visibleCountEl) visibleCountEl.textContent = matchCount;
         if (mobCountEl) mobCountEl.textContent = matchCount;
-        if (emptyState) emptyState.classList.toggle('hidden', matchCount > 0);
+        
+        if (emptyState) {
+          if (matchCount === 0) {
+            emptyState.classList.remove('hidden');
+            const emptyTitle = emptyState.querySelector('h3');
+            const emptyDesc = emptyState.querySelector('p');
+            const resetBtn = emptyState.querySelector('button');
+            if (this.favoritesOnly) {
+              if (emptyTitle) emptyTitle.textContent = 'No Starred Crags';
+              if (emptyDesc) emptyDesc.textContent = this.favorites.size === 0
+                ? 'You have not starred any favourite crags yet. Click the star on any crag to pin it to your favorites.'
+                : 'No starred crags match your current filters.';
+              if (resetBtn) {
+                resetBtn.textContent = 'Show all crags';
+                resetBtn.onclick = () => {
+                  this.favoritesOnly = false;
+                  this.updateFavoritesButtonUI();
+                  this.renderCragCards();
+                };
+              }
+            } else {
+              if (emptyTitle) emptyTitle.textContent = 'No Crags Found';
+              if (emptyDesc) emptyDesc.textContent = 'No crags match your active search and condition filters.';
+              if (resetBtn) {
+                resetBtn.textContent = 'Reset all filters';
+                resetBtn.onclick = () => this.resetFilters();
+              }
+            }
+          } else {
+            emptyState.classList.add('hidden');
+          }
+        }
 
         this.initIcons();
       },
