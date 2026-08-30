@@ -243,13 +243,13 @@
         <!-- Region Dropdown / Pill (3 cols) -->
         <div class="lg:col-span-3">
           <select id="region-filter" onchange="UIController.handleRegionChange(this.value)" class="w-full bg-paper-100 border-[1.5px] border-paper-800 rounded-xl px-2.5 py-1.5 text-xs text-paper-900 font-bold focus:outline-none focus:bg-white">
-            <option value="all">📍 All 6 Regions (18 Crags)</option>
-            <option value="sydney-east">Sydney East (3 crags)</option>
-            <option value="sydney-north">Sydney North Shore & Beaches (6 crags)</option>
-            <option value="sydney-inner-west">Sydney Inner West (2 crags)</option>
-            <option value="sydney-south">Sydney South & Shire (2 crags)</option>
-            <option value="blue-mountains">Blue Mountains (4 crags)</option>
-            <option value="central-coast">Central Coast (1 crag)</option>
+            <option value="all">📍 All Regions</option>
+            <option value="sydney-east">Sydney East</option>
+            <option value="sydney-north">Sydney North Shore & Beaches</option>
+            <option value="sydney-inner-west">Sydney Inner West</option>
+            <option value="sydney-south">Sydney South & Shire</option>
+            <option value="blue-mountains">Blue Mountains</option>
+            <option value="central-coast">Central Coast</option>
           </select>
         </div>
 
@@ -283,7 +283,7 @@
     <!-- MOBILE VIEW TOGGLE BUTTONS (LIST vs MAP) -->
     <div class="flex sm:hidden items-center rounded-xl bg-paper-200 border border-paper-800 p-1 gap-1">
       <button onclick="UIController.setMobileView('list')" id="mob-tab-list" class="flex-1 py-1.5 rounded-lg text-xs font-extrabold bg-cobalt-700 text-white shadow-editorial-sm">
-        List View (<span id="mob-crag-count">18</span>)
+        List View (<span id="mob-crag-count">-</span>)
       </button>
       <button onclick="UIController.setMobileView('map')" id="mob-tab-map" class="flex-1 py-1.5 rounded-lg text-xs font-bold text-paper-900">
         Interactive Map
@@ -298,7 +298,7 @@
         
         <!-- Summary Strip -->
         <div class="flex items-center justify-between text-xs px-1 text-zinc-600 sticky top-0 bg-[#f7f6f2] py-1 z-10">
-          <span class="font-bold"><span id="visible-crags-count">18</span> crags matched</span>
+          <span class="font-bold"><span id="visible-crags-count">-</span> crags matched</span>
           <div class="flex items-center gap-2 text-[11px]">
             <span class="inline-flex items-center gap-1 font-mono"><span class="w-2 h-2 rounded-full bg-emerald-500"></span> Prime</span>
             <span class="inline-flex items-center gap-1 font-mono"><span class="w-2 h-2 rounded-full bg-lime-500"></span> Good</span>
@@ -974,13 +974,16 @@
         this.loadFavorites();
         this.initIcons();
 
-        // 1. Initial Leaflet map mount
+        // 1. Initial synchronous render of cards and counts
+        this.renderCragCards();
+
+        // 2. Initial Leaflet map mount
         MapController.init();
 
-        // 2. Fetch live batch weather
+        // 3. Fetch live batch weather and re-render with telemetry
         await this.refreshWeatherData(false);
 
-        // 3. Render controls and cards
+        // 4. Render controls and cards with live forecast
         this.renderGlobalTimeline();
         this.renderCragCards();
 
