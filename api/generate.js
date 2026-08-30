@@ -334,13 +334,21 @@ Apply the requested changes and fixes while keeping all other working features i
       });
     }
 
-    console.log('🤖 Raw Gemini Output length:', rawTextResponse.length);
+    console.log('--- 🤖 RAW GEMINI RESPONSE START ---');
+    console.log(rawTextResponse);
+    console.log('--- 🤖 RAW GEMINI RESPONSE END ---');
 
     let appData;
     try {
       appData = parseModelOutput(rawTextResponse);
+      console.log('✨ Successfully Parsed App Data:', {
+        slug: appData.slug,
+        title: appData.title,
+        category: appData.category,
+        files: appData.files?.map(f => ({ path: f.path, bytes: f.content.length }))
+      });
     } catch (parseErr) {
-      console.error('Parse error:', parseErr.message);
+      console.error('❌ Parse error:', parseErr.message);
       return res.status(500).json({
         error: `Failed to parse generated app: ${parseErr.message}`,
         rawResponse: rawTextResponse
