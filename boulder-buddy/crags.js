@@ -343,7 +343,7 @@ const CRAGS_DATA = [
   },
   {
     id: 'the-fear-factory',
-    name: 'The Fear Factory (Login to join in)',
+    name: 'The Fear Factory',
     region: 'sydney-inner-west',
     regionLabel: 'Inner West & Parramatta',
     lat: -33.75,
@@ -354,7 +354,7 @@ const CRAGS_DATA = [
   },
   {
     id: 'funky-town',
-    name: 'Funky Town (Login to join in)',
+    name: 'Funky Town',
     region: 'sydney-inner-west',
     regionLabel: 'Inner West & Parramatta',
     lat: -33.75,
@@ -365,7 +365,7 @@ const CRAGS_DATA = [
   },
   {
     id: 'the-komodo-dojo',
-    name: 'The Komodo Dojo (Login to join in)',
+    name: 'The Komodo Dojo',
     region: 'sydney-inner-west',
     regionLabel: 'Inner West & Parramatta',
     lat: -33.75,
@@ -376,7 +376,7 @@ const CRAGS_DATA = [
   },
   {
     id: 'le-march-aux-fruits',
-    name: 'Le Marché Aux Fruits (Login to join in)',
+    name: 'Le Marché Aux Fruits',
     region: 'sydney-inner-west',
     regionLabel: 'Inner West & Parramatta',
     lat: -33.75,
@@ -387,7 +387,7 @@ const CRAGS_DATA = [
   },
   {
     id: 'sleeping-serpent-hill',
-    name: 'Sleeping Serpent Hill (Login to join in)',
+    name: 'Sleeping Serpent Hill',
     region: 'sydney-inner-west',
     regionLabel: 'Inner West & Parramatta',
     lat: -33.75,
@@ -409,18 +409,18 @@ const CRAGS_DATA = [
   },
   {
     id: 'the-hive',
-    name: 'The Hive',
+    name: 'The Hive (North Rocks)',
     region: 'sydney-inner-west',
     regionLabel: 'Inner West & Parramatta',
-    lat: -34.442343,
-    lng: 150.456053,
-    grades: { min: 'V0', max: 'V10', count: 130 },
+    lat: -33.76841,
+    lng: 151.006218,
+    grades: { min: 'V0', max: 'V10', count: 27 },
     approachMinutes: 5,
-    theCragUrl: 'https://www.thecrag.com/en/climbing/australia/north-west/area/12011467'
+    theCragUrl: 'https://www.thecrag.com/en/climbing/australia/north-west/area/727051149'
   },
   {
     id: 'the-trenches',
-    name: 'The Trenches (Login to join in)',
+    name: 'The Trenches',
     region: 'sydney-inner-west',
     regionLabel: 'Inner West & Parramatta',
     lat: -33.75,
@@ -431,7 +431,7 @@ const CRAGS_DATA = [
   },
   {
     id: 'the-frontline',
-    name: 'The Frontline (Login to join in)',
+    name: 'The Frontline',
     region: 'sydney-inner-west',
     regionLabel: 'Inner West & Parramatta',
     lat: -33.75,
@@ -442,7 +442,7 @@ const CRAGS_DATA = [
   },
   {
     id: 'the-lip',
-    name: 'The Lip (Login to join in)',
+    name: 'The Lip',
     region: 'sydney-inner-west',
     regionLabel: 'Inner West & Parramatta',
     lat: -33.75,
@@ -453,7 +453,7 @@ const CRAGS_DATA = [
   },
   {
     id: 'pony-cave',
-    name: 'Pony Cave (Login to join in)',
+    name: 'Pony Cave',
     region: 'sydney-inner-west',
     regionLabel: 'Inner West & Parramatta',
     lat: -33.75,
@@ -464,7 +464,7 @@ const CRAGS_DATA = [
   },
   {
     id: 'the-sewer',
-    name: 'The Sewer (Login to join in)',
+    name: 'The Sewer',
     region: 'sydney-inner-west',
     regionLabel: 'Inner West & Parramatta',
     lat: -33.75,
@@ -527,7 +527,7 @@ const CRAGS_DATA = [
   },
   {
     id: 'the-fish-boulders',
-    name: 'The Fish Boulders (Login to join in)',
+    name: 'The Fish Boulders',
     region: 'sydney-south',
     regionLabel: 'Sydney South & Sutherland',
     lat: -33.75,
@@ -538,7 +538,7 @@ const CRAGS_DATA = [
   },
   {
     id: 'jannali-reserve',
-    name: 'Jannali Reserve (Login to join in)',
+    name: 'Jannali Reserve',
     region: 'sydney-south',
     regionLabel: 'Sydney South & Sutherland',
     lat: -33.75,
@@ -549,7 +549,7 @@ const CRAGS_DATA = [
   },
   {
     id: 'the-school',
-    name: 'The School (Login to join in)',
+    name: 'The School',
     region: 'sydney-south',
     regionLabel: 'Sydney South & Sutherland',
     lat: -33.75,
@@ -560,7 +560,7 @@ const CRAGS_DATA = [
   },
   {
     id: 'forgotten-cave',
-    name: 'Forgotten Cave (Login to join in)',
+    name: 'Forgotten Cave',
     region: 'sydney-south',
     regionLabel: 'Sydney South & Sutherland',
     lat: -33.75,
@@ -571,7 +571,7 @@ const CRAGS_DATA = [
   },
   {
     id: 'the-sleaze-cave',
-    name: 'The Sleaze Cave (Login to join in)',
+    name: 'The Sleaze Cave',
     region: 'sydney-south',
     regionLabel: 'Sydney South & Sutherland',
     lat: -33.75,
@@ -582,7 +582,7 @@ const CRAGS_DATA = [
   },
   {
     id: 'the-greenhouse',
-    name: 'The Greenhouse (Login to join in)',
+    name: 'The Greenhouse',
     region: 'sydney-south',
     regionLabel: 'Sydney South & Sutherland',
     lat: -33.75,
@@ -593,7 +593,7 @@ const CRAGS_DATA = [
   },
   {
     id: 'westside',
-    name: 'Westside (Login to join in)',
+    name: 'Westside',
     region: 'sydney-south',
     regionLabel: 'Sydney South & Sutherland',
     lat: -33.75,
@@ -604,7 +604,7 @@ const CRAGS_DATA = [
   },
   {
     id: 'kentlyn',
-    name: 'Kentlyn (Login to join in)',
+    name: 'Kentlyn',
     region: 'sydney-south',
     regionLabel: 'Sydney South & Sutherland',
     lat: -33.75,
@@ -615,7 +615,7 @@ const CRAGS_DATA = [
   },
   {
     id: 'st-helens-park',
-    name: 'St Helens Park (Login to join in)',
+    name: 'St Helens Park',
     region: 'sydney-south',
     regionLabel: 'Sydney South & Sutherland',
     lat: -33.75,
@@ -626,7 +626,7 @@ const CRAGS_DATA = [
   },
   {
     id: 'the-burn',
-    name: 'The Burn (Login to join in)',
+    name: 'The Burn',
     region: 'sydney-south',
     regionLabel: 'Sydney South & Sutherland',
     lat: -33.75,
@@ -637,7 +637,7 @@ const CRAGS_DATA = [
   },
   {
     id: 'wedderburn',
-    name: 'Wedderburn (Login to join in)',
+    name: 'Wedderburn',
     region: 'sydney-south',
     regionLabel: 'Sydney South & Sutherland',
     lat: -33.75,
