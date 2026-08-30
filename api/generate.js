@@ -53,6 +53,95 @@ async function getRepoContext() {
 }
 
 /**
+ * Robust Model Output Parser: Extracts <meta> and <file> blocks
+ * Prevents JSON escaping errors on raw code files.
+ */
+export function parseModelOutput(rawText) {
+  if (!rawText || typeof rawText !== 'string') {
+    throw new Error('Empty or invalid response from model');
+  }
+
+  const text = rawText.trim();
+  let metadata = null;
+  const files = [];
+
+  // 1. Extract <meta> block
+  const metaMatch = text.match(/<meta>([\s\S]*?)<\/meta>/i);
+  if (metaMatch) {
+    try {
+      let metaJson = metaMatch[1].trim();
+      if (metaJson.startsWith('```')) {
+        metaJson = metaJson.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '').trim();
+      }
+      metadata = JSON.parse(metaJson);
+    } catch (e) {
+      console.warn('Failed to parse <meta> JSON:', e.message);
+    }
+  }
+
+  // 2. Extract all <file path="...">...</file> blocks
+  const fileRegex = /<file\s+path=["']([^"']+)["']>([\s\S]*?)<\/file>/gi;
+  let match;
+  while ((match = fileRegex.exec(text)) !== null) {
+    const filePath = match[1].trim();
+    let content = match[2].trim();
+    if (content.startsWith('```')) {
+      content = content.replace(/^```[a-z]*\s*\n?/i, '').replace(/\n?```$/i, '').trim();
+    }
+    files.push({ path: filePath, content });
+  }
+
+  // 3. Fallback: If no <file> tags, try finding markdown code block ```html ... ```
+  if (files.length === 0) {
+    const htmlBlockMatch = text.match(/```(?:html)?\s*\n([\s\S]*?)\n```/i);
+    if (htmlBlockMatch) {
+      const slug = metadata?.slug || 'my-app';
+      files.push({
+        path: `${slug}/index.html`,
+        content: htmlBlockMatch[1].trim()
+      });
+    }
+  }
+
+  // 4. Fallback: If model returned pure JSON
+  if (!metadata || files.length === 0) {
+    try {
+      let cleaned = text;
+      if (cleaned.startsWith('```')) {
+        cleaned = cleaned.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '').trim();
+      }
+      const firstBrace = cleaned.indexOf('{');
+      const lastBrace = cleaned.lastIndexOf('}');
+      if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+        cleaned = cleaned.substring(firstBrace, lastBrace + 1);
+      }
+      const parsedJson = JSON.parse(cleaned);
+      if (parsedJson.slug && parsedJson.files) {
+        return parsedJson;
+      }
+    } catch {}
+  }
+
+  if (files.length === 0) {
+    throw new Error('No valid <file> code blocks found in model response.');
+  }
+
+  const slug = metadata?.slug || files[0].path.split('/')[0] || 'app';
+  const title = metadata?.title || slug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+
+  return {
+    slug,
+    title,
+    category: metadata?.category || 'tools',
+    emoji: metadata?.emoji || '⚡',
+    summary: metadata?.summary || 'Interactive playground mini-app.',
+    tags: metadata?.tags || ['Interactive', 'Web App'],
+    files,
+    summaryMessage: `### ${metadata?.emoji || '⚡'} ${title}\n\n- Created \`${files[0].path}\`\n\n${metadata?.summary || ''}`
+  };
+}
+
+/**
  * Vercel Serverless Handler: POST /api/generate
  */
 export default async function handler(req, res) {
@@ -112,22 +201,26 @@ CRITICAL ARCHITECTURAL REQUIREMENTS:
 4. Mobile & Touch Optimized: Large touch targets (min 44x44px), responsive layouts, haptic feedback if appropriate, Web Audio API sound FX.
 5. Self-Contained: The app must live in a dedicated folder (e.g. <slug>/index.html).
 
-Output MUST be valid JSON adhering to this schema:
+OUTPUT FORMAT:
+Output MUST use these exact XML delimiter tags. DO NOT escape code inside JSON.
+
+<meta>
 {
-  "slug": "kebab-case-app-slug (e.g. reaction-timer)",
-  "title": "Title Case App Name (e.g. Reaction Time Tester)",
+  "slug": "kebab-case-app-slug",
+  "title": "Title Case App Name",
   "category": "tools" | "games" | "mental-math" | "puzzles",
-  "emoji": "single emoji icon (e.g. ⚡)",
+  "emoji": "⚡",
   "summary": "1-2 sentence description for the home page card",
-  "tags": ["Tag1", "Tag2", "Tag3"],
-  "files": [
-    {
-      "path": "<slug>/index.html",
-      "content": "<!DOCTYPE html>..."
-    }
-  ],
-  "summaryMessage": "Markdown notes describing features, controls, and instructions."
-}`;
+  "tags": ["Tag1", "Tag2", "Tag3"]
+}
+</meta>
+
+<file path="<slug>/index.html">
+<!DOCTYPE html>
+<html lang="en">
+<!-- Complete, working, single-file HTML/JS/CSS -->
+</html>
+</file>`;
 
     const geminiPayload = {
       contents: [
@@ -144,7 +237,7 @@ ${agentsDoc}
 DESIGN SYSTEM RULES:
 ${designSystemDoc}
 
-Generate a complete, beautiful, fully functional single-page web app adhering to the above specifications.`
+Generate the complete single-page web app inside <meta> and <file> delimiter tags as specified.`
             }
           ]
         }
@@ -153,36 +246,8 @@ Generate a complete, beautiful, fully functional single-page web app adhering to
         parts: [{ text: systemInstruction }]
       },
       generationConfig: {
-        responseMimeType: 'application/json',
         maxOutputTokens: 8192,
-        temperature: 0.2,
-        responseSchema: {
-          type: 'OBJECT',
-          properties: {
-            slug: { type: 'STRING' },
-            title: { type: 'STRING' },
-            category: { type: 'STRING', enum: ['tools', 'games', 'mental-math', 'puzzles'] },
-            emoji: { type: 'STRING' },
-            summary: { type: 'STRING' },
-            tags: { 
-              type: 'ARRAY',
-              items: { type: 'STRING' }
-            },
-            files: {
-              type: 'ARRAY',
-              items: {
-                type: 'OBJECT',
-                properties: {
-                  path: { type: 'STRING' },
-                  content: { type: 'STRING' }
-                },
-                required: ['path', 'content']
-              }
-            },
-            summaryMessage: { type: 'STRING' }
-          },
-          required: ['slug', 'title', 'category', 'emoji', 'summary', 'tags', 'files']
-        }
+        temperature: 0.2
       }
     };
 
@@ -238,26 +303,7 @@ Generate a complete, beautiful, fully functional single-page web app adhering to
       });
     }
 
-    // Robust JSON Parser with fence stripping and bounds extraction
-    let appData;
-    try {
-      let cleanedText = rawTextResponse.trim();
-      if (cleanedText.startsWith('```')) {
-        cleanedText = cleanedText.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '').trim();
-      }
-      const firstBrace = cleanedText.indexOf('{');
-      const lastBrace = cleanedText.lastIndexOf('}');
-      if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
-        cleanedText = cleanedText.substring(firstBrace, lastBrace + 1);
-      }
-      appData = JSON.parse(cleanedText);
-    } catch (parseErr) {
-      console.error('Failed to parse raw Gemini response:', rawTextResponse);
-      return res.status(500).json({
-        error: `Failed to parse generated app JSON: ${parseErr.message}`,
-        rawResponse: rawTextResponse.substring(0, 500)
-      });
-    }
+    const appData = parseModelOutput(rawTextResponse);
 
     return res.status(200).json({
       success: true,

@@ -11,6 +11,7 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { generateProjectCardHtml, injectCardIntoIndexHtml, injectEntryIntoReadme } from '../api/commit.js';
+import { parseModelOutput } from '../api/generate.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -30,8 +31,49 @@ async function runTests() {
   assert(builderHtml.includes('iframe'), 'Builder UI must have live preview iframe');
   console.log('  ✅ builder/index.html design system tokens verified.');
 
-  // Test 2: Verify project card generator
-  console.log('\nTest 2: Verifying generateProjectCardHtml helper...');
+  // Test 2: Verify parseModelOutput with XML delimiter tags
+  console.log('\nTest 2: Verifying parseModelOutput with raw unescaped code...');
+  const sampleModelOutput = `
+Here is your mini-app!
+
+<meta>
+{
+  "slug": "reaction-timer",
+  "title": "Reaction Time Tester",
+  "category": "games",
+  "emoji": "⚡",
+  "summary": "Test your visual reflex speed in milliseconds with sound alerts.",
+  "tags": ["Reaction", "Speed Test", "Sound FX"]
+}
+</meta>
+
+<file path="reaction-timer/index.html">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Reaction Time</title>
+</head>
+<body>
+  <h1>Test "Double Quotes" and 'Single Quotes' & template \${literals}</h1>
+  <script>
+    const regex = /[a-z]+/gi;
+    const msg = "Don't break JSON parsing!";
+  </script>
+</body>
+</html>
+</file>
+`;
+  const parsed = parseModelOutput(sampleModelOutput);
+  assert.strictEqual(parsed.slug, 'reaction-timer');
+  assert.strictEqual(parsed.title, 'Reaction Time Tester');
+  assert.strictEqual(parsed.category, 'games');
+  assert.strictEqual(parsed.files.length, 1);
+  assert(parsed.files[0].content.includes('<h1>Test "Double Quotes"'), 'HTML content must be unescaped');
+  assert(parsed.files[0].content.includes('const msg = "Don\'t break JSON parsing!"'), 'JS code must be intact');
+  console.log('  ✅ parseModelOutput successfully extracted raw HTML/JS without JSON errors.');
+
+  // Test 3: Verify project card generator
+  console.log('\nTest 3: Verifying generateProjectCardHtml helper...');
   const mockApp = {
     slug: 'focus-clock',
     title: 'Focus Clock',
@@ -47,8 +89,8 @@ async function runTests() {
   assert(cardSnippet.includes('Productivity'), 'Card must render feature badges');
   console.log('  ✅ Project card snippet generated correctly.');
 
-  // Test 3: Verify index.html injection
-  console.log('\nTest 3: Testing card injection into root index.html...');
+  // Test 4: Verify index.html injection
+  console.log('\nTest 4: Testing card injection into root index.html...');
   const sampleIndexHtml = `
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl mx-auto" id="projects-grid">
       <!-- EXISTING CARD -->
@@ -62,16 +104,16 @@ async function runTests() {
   assert(injectedIndex.includes('<!-- Empty Search State -->'), 'Injected index must preserve structure');
   console.log('  ✅ Card injection into index.html verified.');
 
-  // Test 4: Verify README.md injection
-  console.log('\nTest 4: Testing README.md project entry injection...');
+  // Test 5: Verify README.md injection
+  console.log('\nTest 5: Testing README.md project entry injection...');
   const sampleReadme = `# Playground\n\n## 🚀 Live Projects\n\n### 1. Existing App\n\n---\n\n## 🛠️ How to Add a New Project\n`;
   const injectedReadme = injectEntryIntoReadme(sampleReadme, mockApp);
   assert(injectedReadme.includes('### [Focus Clock](./focus-clock/)'), 'README must contain new project heading');
   assert(injectedReadme.includes('## 🛠️ How to Add a New Project'), 'README must retain structure');
   console.log('  ✅ README injection verified.');
 
-  // Test 5: Verify API route files exist, parse, and enforce STUDIO_SECRET
-  console.log('\nTest 5: Verifying api/generate.js and api/commit.js...');
+  // Test 6: Verify API route files exist, parse, and enforce STUDIO_SECRET
+  console.log('\nTest 6: Verifying api/generate.js and api/commit.js...');
   const generateJs = await fs.readFile(path.join(ROOT_DIR, 'api/generate.js'), 'utf-8');
   const commitJs = await fs.readFile(path.join(ROOT_DIR, 'api/commit.js'), 'utf-8');
   assert(generateJs.includes('export default async function handler'), 'api/generate.js must export handler');
