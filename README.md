@@ -60,6 +60,14 @@ Real-time Sydney bouldering weather forecaster, rock dryness evaluator, and fric
 
 ---
 
+
+### [CrimpLab — Hangboard Protocol Timer](./hangboard-timer/)
+Precision hangboard interval timer tailored for climbing training protocols including Max Hangs, Repeaters, and Density Hangs with audio cues and custom regimes.
+- **Tags**: Climbing, Training, Timer, Hangboard, Fitness
+- **Zero Dependencies**: Single-file HTML, Tailwind CSS, Lucide icons.
+
+---
+
 ## 🛠️ How to Add a New Project
 
 Follow these steps to add a new mini-app:
