@@ -249,6 +249,20 @@
         </div>
       </div>
 
+      <!-- Runtime Error Auto-Fix Banner -->
+      <div id="preview-error-banner" class="hidden bg-red-50 border-[1.5px] border-red-700 text-red-900 rounded-xl p-3 shadow-editorial-sm flex items-center justify-between gap-2">
+        <div class="flex items-center gap-2 overflow-hidden">
+          <span class="text-sm">⚠️</span>
+          <div class="text-xs truncate">
+            <span class="font-bold">Runtime Error:</span> <span id="preview-error-text" class="font-mono text-[11px]"></span>
+          </div>
+        </div>
+        <button onclick="autoFixRuntimeError()" class="btn-editorial bg-white px-2.5 py-1 rounded-lg text-xs font-bold text-red-700 hover:bg-red-100 flex items-center gap-1 shrink-0 shadow-editorial-sm">
+          <i data-lucide="wrench" class="w-3.5 h-3.5"></i>
+          <span>Auto-Fix</span>
+        </button>
+      </div>
+
       <!-- Sandboxed iframe Container -->
       <div class="flex-1 min-h-[500px] sm:min-h-[600px] card-editorial rounded-2xl overflow-hidden relative flex flex-col bg-paper-100">
         <iframe
@@ -362,6 +376,7 @@
 
     let currentAppData = null;
     let activeTab = 'chat';
+    let lastRuntimeError = null;
 
     function getAuthHeaders() {
       const secret = localStorage.getItem('studio_secret') || '';
@@ -369,6 +384,56 @@
         'Content-Type': 'application/json',
         'x-studio-secret': secret
       };
+    }
+
+    // Listen for runtime errors from within the preview iframe
+    window.addEventListener('message', (e) => {
+      if (e.data && e.data.type === 'iframe-runtime-error') {
+        lastRuntimeError = e.data;
+        const banner = document.getElementById('preview-error-banner');
+        const textEl = document.getElementById('preview-error-text');
+        textEl.textContent = `${e.data.msg} (Line ${e.data.line})`;
+        banner.classList.remove('hidden');
+        lucide.createIcons();
+      }
+    });
+
+    function autoFixRuntimeError() {
+      if (!lastRuntimeError) return;
+      const fixPrompt = `Fix this runtime JavaScript error occurring in the application:\nError: ${lastRuntimeError.msg}\nLine: ${lastRuntimeError.line}\n${lastRuntimeError.stack ? 'Stack: ' + lastRuntimeError.stack : ''}`;
+      switchTab('chat');
+      document.getElementById('prompt-input').value = fixPrompt;
+      handleGenerate();
+    }
+
+    function setPreviewContent(htmlContent) {
+      lastRuntimeError = null;
+      document.getElementById('preview-error-banner').classList.add('hidden');
+
+      // Inject runtime error trapper script
+      const trapScript = `<script>
+  window.onerror = function(msg, url, line, col, error) {
+    window.parent.postMessage({
+      type: 'iframe-runtime-error',
+      msg: msg,
+      line: line,
+      col: col,
+      stack: error ? error.stack : ''
+    }, '*');
+  };
+</` + `script>`;
+
+      let finalHtml = htmlContent;
+      if (finalHtml.includes('<head>')) {
+        finalHtml = finalHtml.replace('<head>', '<head>' + trapScript);
+      } else {
+        finalHtml = trapScript + finalHtml;
+      }
+
+      const frame = document.getElementById('preview-frame');
+      const emptyState = document.getElementById('preview-empty');
+      frame.srcdoc = finalHtml;
+      emptyState.classList.add('hidden');
     }
 
     function openPasscodeModal(customMsg = null) {
@@ -437,11 +502,13 @@
       }
 
       const model = document.getElementById('model-select').value;
+      const currentMainHtml = currentAppData?.files?.find(f => f.path.endsWith('.html'))?.content || null;
+      const isRefining = Boolean(currentMainHtml);
 
       // Update UI to generating state
       generateBtn.disabled = true;
-      generateBtn.innerHTML = `<span class="inline-block animate-spin mr-1">⏳</span> Generating...`;
-      statusIndicator.innerHTML = `<span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span> Calling ${model}...`;
+      generateBtn.innerHTML = `<span class="inline-block animate-spin mr-1">⏳</span> ${isRefining ? 'Refining...' : 'Generating...'}`;
+      statusIndicator.innerHTML = `<span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span> ${isRefining ? 'Refining with' : 'Calling'} ${model}...`;
 
       // Append user message to chat view
       appendChatMessage('user', promptText);
@@ -450,7 +517,7 @@
         const res = await fetch('/api/generate', {
           method: 'POST',
           headers: getAuthHeaders(),
-          body: JSON.stringify({ prompt: promptText, model })
+          body: JSON.stringify({ prompt: promptText, model, currentCode: currentMainHtml })
         });
 
         if (res.status === 401) {
@@ -469,12 +536,9 @@
         currentAppData = data.appData;
         const mainHtmlFile = currentAppData.files?.find(f => f.path.endsWith('.html')) || currentAppData.files?.[0];
 
-        // Update preview iframe
+        // Update preview iframe & code view
         if (mainHtmlFile) {
-          const frame = document.getElementById('preview-frame');
-          const emptyState = document.getElementById('preview-empty');
-          frame.srcdoc = mainHtmlFile.content;
-          emptyState.classList.add('hidden');
+          setPreviewContent(mainHtmlFile.content);
           document.getElementById('preview-app-title').textContent = currentAppData.title;
           document.getElementById('code-view-area').value = mainHtmlFile.content;
           document.getElementById('code-filepath').textContent = mainHtmlFile.path;
@@ -488,9 +552,9 @@
         document.getElementById('deploy-summary').textContent = currentAppData.summary;
 
         // Append assistant response
-        appendChatMessage('assistant', `✨ Generated **${currentAppData.title}** (${currentAppData.emoji})\n\n${currentAppData.summary}\n\n*Tap **Preview** above to test it on your phone or **Push to GitHub** below to deploy live!*`);
+        appendChatMessage('assistant', `✨ ${isRefining ? 'Updated' : 'Generated'} **${currentAppData.title}** (${currentAppData.emoji})\n\n${currentAppData.summary}\n\n*Tap **Preview** above to test it on your phone or **Push to GitHub** below to deploy live!*`);
 
-        statusIndicator.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500"></span> Generated with ${data.modelUsed}`;
+        statusIndicator.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500"></span> ${isRefining ? 'Refined' : 'Generated'} with ${data.modelUsed}`;
         promptInput.value = '';
 
         // Switch to preview on mobile
@@ -502,7 +566,7 @@
         statusIndicator.innerHTML = `<span class="w-2 h-2 rounded-full bg-red-500"></span> Error: ${err.message}`;
       } finally {
         generateBtn.disabled = false;
-        generateBtn.innerHTML = `<i data-lucide="sparkles" class="w-3.5 h-3.5"></i><span>Generate App</span>`;
+        generateBtn.innerHTML = `<i data-lucide="sparkles" class="w-3.5 h-3.5"></i><span>${currentAppData ? 'Refine App' : 'Generate App'}</span>`;
         lucide.createIcons();
       }
     }
@@ -569,11 +633,10 @@
     }
 
     function reloadPreview() {
-      const frame = document.getElementById('preview-frame');
-      if (frame && frame.srcdoc) {
-        const doc = frame.srcdoc;
-        frame.srcdoc = '';
-        setTimeout(() => frame.srcdoc = doc, 50);
+      if (!currentAppData) return;
+      const htmlFile = currentAppData.files?.find(f => f.path.endsWith('.html')) || currentAppData.files?.[0];
+      if (htmlFile) {
+        setPreviewContent(htmlFile.content);
       }
     }
 

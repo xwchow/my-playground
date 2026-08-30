@@ -183,7 +183,7 @@ export default async function handler(req, res) {
     }
   }
 
-  const { prompt, model: requestedModel } = req.body || {};
+  const { prompt, model: requestedModel, currentCode } = req.body || {};
   if (!prompt || typeof prompt !== 'string' || !prompt.trim()) {
     return res.status(400).json({ error: 'Missing required "prompt" string.' });
   }
@@ -234,13 +234,7 @@ Output MUST use these exact XML delimiter tags. DO NOT escape code inside JSON.
 </html>
 </file>`;
 
-    const geminiPayload = {
-      contents: [
-        {
-          role: 'user',
-          parts: [
-            {
-              text: `USER REQUEST:
+    let userPromptText = `USER REQUEST:
 ${prompt.trim()}
 
 REPOSITORY GUIDELINES:
@@ -249,7 +243,32 @@ ${agentsDoc}
 DESIGN SYSTEM RULES:
 ${designSystemDoc}
 
-Generate the complete single-page web app inside <meta> and <file> delimiter tags as specified.`
+Generate the complete single-page web app inside <meta> and <file> delimiter tags as specified.`;
+
+    if (currentCode && typeof currentCode === 'string' && currentCode.trim().length > 50) {
+      userPromptText = `You are refining an existing single-page web application based on the user's feedback or error reports.
+
+CURRENT EXISTING CODE:
+\`\`\`html
+${currentCode.trim()}
+\`\`\`
+
+USER REFINEMENT / FIX REQUEST:
+${prompt.trim()}
+
+DESIGN SYSTEM RULES:
+${designSystemDoc}
+
+Apply the requested changes and fixes while keeping all other working features intact. Output the complete updated application inside <meta> and <file> tags.`;
+    }
+
+    const geminiPayload = {
+      contents: [
+        {
+          role: 'user',
+          parts: [
+            {
+              text: userPromptText
             }
           ]
         }
