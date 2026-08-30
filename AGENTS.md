@@ -34,15 +34,16 @@ This repository is built as a zero-build-step, static playground inspired by sit
 ```
 ├── index.html                 # 🌟 Main playground portal & project launcher
 ├── doomsday/                  # 📅 The Doomsday Rule Trainer
-│   └── index.html             # Self-contained SPA
+│   ├── index.html             # Self-contained SPA
+│   └── README.md              # Conway mental calculation guide & controls
 ├── boulder-buddy/             # 🧗 Sydney Boulder Buddy
 │   ├── index.html             # Self-contained SPA
+│   ├── README.md              # Sandstone drying physics & crags guide
 │   └── test.js                # Zero-dependency verification test suite
 ├── docs/
-│   ├── design-system/
-│   │   └── DESIGN_SYSTEM.md   # 🎨 Unified design system reference
-│   └── specs/                 # Product specs & feature blueprints
-│       └── boulder-buddy-design.md
+│   └── design-system/
+│       ├── DESIGN_SYSTEM.md   # 🎨 Unified design system reference
+│       └── preview.html       # Design system typography & component preview studio
 ├── AGENTS.md                  # 🤖 AI Agent guidelines (this file)
 └── README.md                  # Project overview & documentation
 ```
