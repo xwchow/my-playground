@@ -41,6 +41,7 @@ This repository is built as a zero-build-step, static playground inspired by sit
 │   └── README.md              # Conway mental calculation guide & controls
 ├── boulder-buddy/             # 🧗 Sydney Boulder Buddy
 │   ├── index.html             # Self-contained SPA
+│   ├── crags.js               # Dedicated verified crag dataset
 │   ├── README.md              # Sandstone drying physics & crags guide
 │   └── test.js                # Zero-dependency verification test suite
 ├── hangboard-timer/           # ⏱️ CrimpLab — Hangboard Protocol Timer

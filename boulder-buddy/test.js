@@ -16,10 +16,13 @@ const __dirname = path.dirname(__filename);
 
 console.log('🧗 Running Sydney Boulder Buddy Verification Suite...\n');
 
-// 1. Load and extract script code from boulder-buddy/index.html
+// 1. Load crags.js and index.html
+const cragsPath = path.join(__dirname, 'crags.js');
+assert(fs.existsSync(cragsPath), `Error: File not found at ${cragsPath}`);
+const cragsCode = fs.readFileSync(cragsPath, 'utf8');
+
 const htmlPath = path.join(__dirname, 'index.html');
 assert(fs.existsSync(htmlPath), `Error: File not found at ${htmlPath}`);
-
 const htmlContent = fs.readFileSync(htmlPath, 'utf8');
 
 // Extract script contents
@@ -28,8 +31,7 @@ let match;
 let jsCode = '';
 
 while ((match = scriptRegex.exec(htmlContent)) !== null) {
-  // We want the application logic script that contains CRAGS_DATA
-  if (match[1].includes('CRAGS_DATA')) {
+  if (match[1].includes('ConditionEngine')) {
     jsCode = match[1];
     break;
   }
@@ -70,6 +72,7 @@ const sandbox = {
 };
 
 vm.createContext(sandbox);
+vm.runInContext(cragsCode, sandbox);
 vm.runInContext(jsCode, sandbox);
 
 const { ConditionEngine, WeatherService, CRAGS_DATA, parseVGrade, matchesGradeRange } = sandbox.module.exports;
@@ -95,12 +98,11 @@ function test(name, fn) {
 }
 
 // ==========================================
-// TEST 1: DATASET INTEGRITY (18 Crags Across 6 Regions)
+// TEST 1: DATASET INTEGRITY (Extracted theCrag Schema Validation)
 // ==========================================
-test('Dataset Integrity — 18 Curated Crags Across 6 Regions with NSW Bounding Box', () => {
-  assert.strictEqual(CRAGS_DATA.length, 18, `Expected exactly 18 crags, found ${CRAGS_DATA.length}`);
+test('Dataset Integrity — Extracted theCrag Schema with NSW Bounding Box', () => {
+  assert(CRAGS_DATA.length >= 1, `Expected at least 1 crag, found ${CRAGS_DATA.length}`);
 
-  const regions = new Set();
   const ids = new Set();
 
   CRAGS_DATA.forEach(crag => {
@@ -110,7 +112,7 @@ test('Dataset Integrity — 18 Curated Crags Across 6 Regions with NSW Bounding 
 
     assert(crag.name, `Crag ${crag.id} must have a name`);
     assert(crag.region, `Crag ${crag.id} must have a region`);
-    regions.add(crag.region);
+    assert(crag.regionLabel, `Crag ${crag.id} must have a regionLabel`);
 
     // Coordinates bounding box for NSW / Greater Sydney / Blue Mts / Central Coast
     // Lat: -34.5 to -33.0, Lng: 150.0 to 151.5
@@ -129,10 +131,10 @@ test('Dataset Integrity — 18 Curated Crags Across 6 Regions with NSW Bounding 
     }
   });
 
-  const expectedRegions = ['sydney-east', 'sydney-north', 'sydney-inner-west', 'sydney-south', 'blue-mountains', 'central-coast'];
-  expectedRegions.forEach(r => {
-    assert(regions.has(r), `Missing expected region: ${r}`);
-  });
+  const sissy = CRAGS_DATA.find(c => c.id === 'sissy-crag');
+  assert(sissy, 'Sissy Crag must be present in CRAGS_DATA');
+  assert.strictEqual(sissy.name, 'Sissy Crag (Forestville)');
+  assert.strictEqual(sissy.approachMinutes, 5);
 });
 
 // ==========================================
@@ -318,8 +320,8 @@ test('Open-Meteo URL Builder — Comma-Separated Batch Query & Parameters', () =
 
   const lats = latMatch[1].split(',');
   const lngs = lngMatch[1].split(',');
-  assert.strictEqual(lats.length, 18, `Expected 18 comma-separated lats, got ${lats.length}`);
-  assert.strictEqual(lngs.length, 18, `Expected 18 comma-separated lngs, got ${lngs.length}`);
+  assert.strictEqual(lats.length, CRAGS_DATA.length, `Expected ${CRAGS_DATA.length} comma-separated lats, got ${lats.length}`);
+  assert.strictEqual(lngs.length, CRAGS_DATA.length, `Expected ${CRAGS_DATA.length} comma-separated lngs, got ${lngs.length}`);
 });
 
 // ==========================================

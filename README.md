@@ -16,6 +16,7 @@ A personal collection of tools and web projects built for things that interest m
 │   └── README.md              # Conway mental calculation guide & controls
 ├── boulder-buddy/             # 🧗 Sydney Boulder Buddy (Dryness & Friction Forecaster)
 │   ├── index.html             # Self-contained SPA
+│   ├── crags.js               # Dedicated verified crag dataset
 │   ├── README.md              # Sandstone drying physics & crags guide
 │   └── test.js                # Zero-dependency verification test suite
 ├── hangboard-timer/           # ⏱️ CrimpLab — Hangboard Protocol Timer

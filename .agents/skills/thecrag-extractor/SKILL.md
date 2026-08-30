@@ -66,7 +66,7 @@ Follow these steps to extract and format a crag:
    - **`theCragUrl`**: Record the canonical node URL.
    - **`approachMinutes`** (optional): Record approach walking time if the page mentions it.
 4. Output the formatted JavaScript object snippet to the user.
-5. Offer to insert the new crag into `CRAGS_DATA` in `boulder-buddy/index.html`.
+5. Offer to insert the new crag into `CRAGS_DATA` in `boulder-buddy/crags.js`.
 6. Run `node boulder-buddy/test.js` to verify dataset integrity.
 
 ---
