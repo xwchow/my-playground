@@ -392,7 +392,8 @@
         lastRuntimeError = e.data;
         const banner = document.getElementById('preview-error-banner');
         const textEl = document.getElementById('preview-error-text');
-        textEl.textContent = `${e.data.msg} (Line ${e.data.line})`;
+        const errType = e.data.errorType || 'Error';
+        textEl.textContent = `${errType}: ${e.data.msg} (Line ${e.data.line})`;
         banner.classList.remove('hidden');
         lucide.createIcons();
       }
@@ -400,27 +401,76 @@
 
     function autoFixRuntimeError() {
       if (!lastRuntimeError) return;
-      const fixPrompt = `Fix this runtime JavaScript error occurring in the application:\nError: ${lastRuntimeError.msg}\nLine: ${lastRuntimeError.line}\n${lastRuntimeError.stack ? 'Stack: ' + lastRuntimeError.stack : ''}`;
+
+      const currentMainHtml = getMainHtmlFile(currentAppData)?.content || '';
+      const lines = currentMainHtml.split('\n');
+      const errLine = parseInt(lastRuntimeError.line, 10);
+      let codeSnippet = '';
+      if (errLine > 0 && lines.length > 0) {
+        const start = Math.max(0, errLine - 5);
+        const end = Math.min(lines.length, errLine + 4);
+        codeSnippet = lines
+          .slice(start, end)
+          .map((l, idx) => `${start + idx + 1 === errLine ? '▶ ' : '  '}${String(start + idx + 1).padStart(3, ' ')}: ${l}`)
+          .join('\n');
+      }
+
+      const fixPrompt = `A runtime JavaScript error occurred in the application:\n\n` +
+        `🔴 ERROR DETAILS:\n` +
+        `- Type: ${lastRuntimeError.errorType || 'Runtime Error'}\n` +
+        `- Message: ${lastRuntimeError.msg}\n` +
+        `- Location: Line ${lastRuntimeError.line}, Column ${lastRuntimeError.col}\n\n` +
+        (lastRuntimeError.stack && lastRuntimeError.stack !== 'No full stack trace available' ? `📋 STACK TRACE:\n${lastRuntimeError.stack}\n\n` : '') +
+        (codeSnippet ? `🔍 RELEVANT SOURCE CODE (around Line ${lastRuntimeError.line}):\n\`\`\`html\n${codeSnippet}\n\`\`\`\n\n` : '') +
+        (lastRuntimeError.consoleLogs && lastRuntimeError.consoleLogs.length ? `📜 RECENT CONSOLE ERRORS:\n${lastRuntimeError.consoleLogs.join('\n')}\n\n` : '') +
+        `Diagnose the root cause, fix the bug, and output the complete updated application inside <meta> and <file> tags.`;
+
+      const chatDisplay = `🔧 **Auto-Fixing Runtime Error**\n\n- **${lastRuntimeError.errorType || 'Error'}**: \`${lastRuntimeError.msg}\`\n- **Location**: Line ${lastRuntimeError.line}, Col ${lastRuntimeError.col}`;
+
       switchTab('chat');
-      document.getElementById('prompt-input').value = fixPrompt;
-      handleGenerate();
+      handleGenerate(fixPrompt, chatDisplay);
     }
 
     function setPreviewContent(htmlContent) {
       lastRuntimeError = null;
       document.getElementById('preview-error-banner').classList.add('hidden');
 
-      // Inject runtime error trapper script
+      // Enhanced runtime error and rejection trap script
       const trapScript = `<script>
+(function() {
+  const logs = [];
+  const origError = console.error;
+  console.error = function(...args) {
+    logs.push(args.map(a => (typeof a === 'object' ? JSON.stringify(a) : String(a))).join(' '));
+    if (logs.length > 5) logs.shift();
+    origError.apply(console, args);
+  };
+
   window.onerror = function(msg, url, line, col, error) {
     window.parent.postMessage({
       type: 'iframe-runtime-error',
+      errorType: error ? error.name : 'UncaughtError',
       msg: msg,
-      line: line,
-      col: col,
-      stack: error ? error.stack : ''
+      line: line || 0,
+      col: col || 0,
+      stack: error && error.stack ? error.stack : 'No full stack trace available',
+      consoleLogs: logs.slice()
     }, '*');
   };
+
+  window.addEventListener('unhandledrejection', function(event) {
+    const reason = event.reason;
+    window.parent.postMessage({
+      type: 'iframe-runtime-error',
+      errorType: 'UnhandledPromiseRejection',
+      msg: reason ? (reason.message || String(reason)) : 'Unhandled Promise Rejection',
+      line: reason && reason.lineNumber ? reason.lineNumber : 0,
+      col: reason && reason.columnNumber ? reason.columnNumber : 0,
+      stack: reason && reason.stack ? reason.stack : String(reason),
+      consoleLogs: logs.slice()
+    }, '*');
+  });
+})();
 </` + `script>`;
 
       let finalHtml = htmlContent;
@@ -495,11 +545,11 @@
       return appData.files.find(f => f.path && f.path.endsWith('.html')) || appData.files[0];
     }
 
-    async function handleGenerate() {
+    async function handleGenerate(customPrompt = null, chatDisplayText = null) {
       const promptInput = document.getElementById('prompt-input');
       const generateBtn = document.getElementById('generate-btn');
       const statusIndicator = document.getElementById('status-indicator');
-      const promptText = promptInput.value.trim();
+      const promptText = customPrompt ? customPrompt.trim() : promptInput.value.trim();
 
       if (!promptText) {
         promptInput.focus();
@@ -516,7 +566,12 @@
       statusIndicator.innerHTML = `<span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span> ${isRefining ? 'Refining with' : 'Calling'} ${model}...`;
 
       // Append user message to chat view
-      appendChatMessage('user', promptText);
+      appendChatMessage('user', chatDisplayText || promptText);
+
+      // Clear input only if this was a manual user entry
+      if (!customPrompt) {
+        promptInput.value = '';
+      }
 
       try {
         const res = await fetch('/api/generate', {
@@ -560,7 +615,6 @@
         appendChatMessage('assistant', `✨ ${isRefining ? 'Updated' : 'Generated'} **${currentAppData.title}** (${currentAppData.emoji})\n\n${currentAppData.summary}\n\n*Tap **Preview** above to test it on your phone or **Push to GitHub** below to deploy live!*`);
 
         statusIndicator.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500"></span> ${isRefining ? 'Refined' : 'Generated'} with ${data.modelUsed}`;
-        promptInput.value = '';
 
         // Switch to preview on mobile
         setTimeout(() => switchTab('preview'), 400);
