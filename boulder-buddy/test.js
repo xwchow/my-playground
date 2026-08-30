@@ -117,22 +117,16 @@ test('Dataset Integrity — 18 Curated Crags Across 6 Regions with NSW Bounding 
     assert(crag.lat <= -33.0 && crag.lat >= -34.5, `Lat ${crag.lat} for ${crag.id} outside NSW bbox [-34.5, -33.0]`);
     assert(crag.lng >= 150.0 && crag.lng <= 151.5, `Lng ${crag.lng} for ${crag.id} outside NSW bbox [150.0, 151.5]`);
 
-    // Sandstone type
-    const validSandstone = ['hard-coastal', 'soft-valley', 'iron-banded', 'mountain-sandstone'];
-    assert(validSandstone.includes(crag.sandstoneType), `Invalid sandstoneType: ${crag.sandstoneType} in ${crag.id}`);
-
-    // Drying profile
-    assert(crag.dryingProfile, `Crag ${crag.id} missing dryingProfile`);
-    assert(typeof crag.dryingProfile.dryHoursPerMm === 'number' && crag.dryingProfile.dryHoursPerMm > 0, `Invalid dryHoursPerMm in ${crag.id}`);
-    assert(['none', 'low', 'moderate', 'high'].includes(crag.dryingProfile.seepageRisk), `Invalid seepageRisk in ${crag.id}`);
-    assert(typeof crag.dryingProfile.shelterFactor === 'number' && crag.dryingProfile.shelterFactor >= 0 && crag.dryingProfile.shelterFactor <= 1.0, `Invalid shelterFactor in ${crag.id}`);
-    assert(['full-sun', 'morning-sun', 'afternoon-sun', 'full-shade'].includes(crag.dryingProfile.sunExposure), `Invalid sunExposure in ${crag.id}`);
-    assert(['high', 'medium', 'sheltered'].includes(crag.dryingProfile.windExposure), `Invalid windExposure in ${crag.id}`);
-
-    // Grades and Styles
+    // Grades
     assert(crag.grades && crag.grades.min && crag.grades.max && crag.grades.count > 0, `Invalid grades in ${crag.id}`);
-    assert(Array.isArray(crag.style) && crag.style.length > 0, `Style tags missing in ${crag.id}`);
-    assert(typeof crag.approachMinutes === 'number' && crag.approachMinutes > 0, `Invalid approachMinutes in ${crag.id}`);
+    
+    // theCrag URL
+    assert(typeof crag.theCragUrl === 'string' && crag.theCragUrl.startsWith('https://www.thecrag.com'), `Invalid theCragUrl in ${crag.id}`);
+
+    // Optional approach minutes
+    if (crag.approachMinutes !== undefined) {
+      assert(typeof crag.approachMinutes === 'number' && crag.approachMinutes > 0, `Invalid approachMinutes in ${crag.id}`);
+    }
   });
 
   const expectedRegions = ['sydney-east', 'sydney-north', 'sydney-inner-west', 'sydney-south', 'blue-mountains', 'central-coast'];

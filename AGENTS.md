@@ -32,6 +32,9 @@ Welcome to the **Playground** repository! This document establishes operational 
 This repository is built as a zero-build-step, static playground inspired by sites like [neal.fun](https://neal.fun).
 
 ```
+├── .agents/
+│   └── skills/
+│       └── thecrag-extractor/ # 🧗 Skill: Extract bouldering crags from theCrag
 ├── index.html                 # 🌟 Main playground portal & project launcher
 ├── doomsday/                  # 📅 The Doomsday Rule Trainer
 │   ├── index.html             # Self-contained SPA
@@ -40,6 +43,8 @@ This repository is built as a zero-build-step, static playground inspired by sit
 │   ├── index.html             # Self-contained SPA
 │   ├── README.md              # Sandstone drying physics & crags guide
 │   └── test.js                # Zero-dependency verification test suite
+├── hangboard-timer/           # ⏱️ CrimpLab — Hangboard Protocol Timer
+│   └── index.html             # Self-contained SPA
 ├── docs/
 │   └── design-system/
 │       ├── DESIGN_SYSTEM.md   # 🎨 Unified design system reference

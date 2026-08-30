@@ -7,14 +7,10 @@ A personal collection of tools and web projects built for things that interest m
 ## 📁 Repository Structure
 
 ```
+├── .agents/
+│   └── skills/
+│       └── thecrag-extractor/ # 🧗 Skill: Extract bouldering crags from theCrag
 ├── index.html                 # 🌟 Main playground homepage & project launcher
-├── builder/                   # 📱 Mobile Studio Builder
-│   ├── index.html             # Mobile creation studio & live preview
-│   ├── README.md              # Studio documentation & Vercel guide
-│   └── test.js                # Builder verification test suite
-├── api/                       # ⚡ Vercel Serverless APIs
-│   ├── generate.js            # Gemini AI code generator endpoint
-│   └── commit.js              # GitHub atomic commit endpoint
 ├── doomsday/                  # 📅 The Doomsday Rule Trainer
 │   ├── index.html             # Self-contained SPA
 │   └── README.md              # Conway mental calculation guide & controls
@@ -22,6 +18,8 @@ A personal collection of tools and web projects built for things that interest m
 │   ├── index.html             # Self-contained SPA
 │   ├── README.md              # Sandstone drying physics & crags guide
 │   └── test.js                # Zero-dependency verification test suite
+├── hangboard-timer/           # ⏱️ CrimpLab — Hangboard Protocol Timer
+│   └── index.html             # Self-contained SPA
 ├── docs/
 │   └── design-system/         # 🎨 Editorial Paper Design System documentation & tokens
 │       ├── DESIGN_SYSTEM.md
@@ -34,14 +32,7 @@ A personal collection of tools and web projects built for things that interest m
 
 ## 🚀 Live Projects
 
-### 1. [Studio Builder](./builder/)
-Mobile-first AI creation studio for the Playground.
-- **Conversational Builder**: Generate single-file web applications using Gemini 3.7 Flash.
-- **Live Preview Sandbox**: Test and play with generated applications directly in an interactive mobile frame.
-- **One-Tap Deployment**: Commit and push new applications directly to GitHub.
-- **Documentation**: See [`builder/README.md`](./builder/README.md).
-
-### 2. [Doomsday Rule Trainer](./doomsday/)
+### 1. [Doomsday Rule Trainer](./doomsday/)
 Master John Horton Conway's mental calculation algorithm to determine the day of the week for any date in seconds.
 - **Modes**: Sprint (10/25/50), Time Attack (60s/120s), and Endless Practice.
 - **Controls**: Number keys `1–7` / `0`, letter shortcuts `M T W R F S U`, and click buttons.
@@ -49,7 +40,7 @@ Master John Horton Conway's mental calculation algorithm to determine the day of
 - **Zero Dependencies**: Single-file HTML, Tailwind CSS, Lucide icons, and Web Audio API synthesized sounds.
 - **Documentation**: See [`doomsday/README.md`](./doomsday/README.md).
 
-### 3. [Sydney Boulder Buddy](./boulder-buddy/)
+### 2. [Sydney Boulder Buddy](./boulder-buddy/)
 Real-time Sydney bouldering weather forecaster, rock dryness evaluator, and friction index calculator.
 - **Coverage**: 18 curated crags across 6 regions (Sydney East, North, Inner West, South, Blue Mountains, Central Coast).
 - **Condition Engine**: Two-tier model gating on sandstone fragility and ambient friction scoring.
@@ -58,13 +49,11 @@ Real-time Sydney bouldering weather forecaster, rock dryness evaluator, and fric
 - **Client-Side & Offline Ready**: Batch API queries via Open-Meteo with 30-minute caching and synthetic fallback data.
 - **Documentation**: See [`boulder-buddy/README.md`](./boulder-buddy/README.md).
 
----
-
-
-### [CrimpLab — Hangboard Protocol Timer](./hangboard-timer/)
-Precision hangboard interval timer tailored for climbing training protocols including Max Hangs, Repeaters, and Density Hangs with audio cues and custom regimes.
-- **Tags**: Climbing, Training, Timer, Hangboard, Fitness
-- **Zero Dependencies**: Single-file HTML, Tailwind CSS, Lucide icons.
+### 3. [CrimpLab — Hangboard Protocol Timer](./hangboard-timer/)
+Precision hangboard interval timer for rock climbing training protocols.
+- **Protocols**: Max Hangs, Repeaters (7:3), and Density Hangs with audio cues.
+- **Custom Regimes**: Configurable hang, rest, rep, and set timers.
+- **Zero Dependencies**: Single-file HTML, Tailwind CSS, and Web Audio API.
 
 ---
 

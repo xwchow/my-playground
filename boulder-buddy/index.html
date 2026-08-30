@@ -372,8 +372,8 @@
         <div>
           <div class="flex items-center gap-2 flex-wrap mb-1">
             <span id="modal-region-badge" class="px-2 py-0.5 rounded-md bg-paper-200 border border-paper-800 text-[11px] font-bold text-paper-900">Region</span>
-            <span id="modal-sandstone-badge" class="px-2 py-0.5 rounded-md bg-amber-100 border border-paper-800 text-[11px] font-bold text-amber-900">Sandstone</span>
             <span id="modal-grades-badge" class="px-2 py-0.5 rounded-md bg-cobalt-100 border border-paper-800 text-[11px] font-bold text-cobalt-900">Grades</span>
+            <span id="modal-approach-badge" class="hidden px-2 py-0.5 rounded-md bg-paper-100 border border-paper-800 text-[11px] font-bold text-zinc-700">Approach</span>
           </div>
           <h2 id="modal-crag-name" class="text-xl sm:text-2xl font-extrabold text-paper-900">Crag Name</h2>
         </div>
@@ -429,23 +429,6 @@
         </p>
       </div>
 
-      <!-- Crag Details & Approach Tips -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-        <div class="space-y-1">
-          <span class="font-bold text-zinc-500 uppercase text-[10px] font-mono">Style & Features</span>
-          <p id="modal-crag-style" class="font-medium text-paper-900">Roofs, Ocean Slabs</p>
-        </div>
-        <div class="space-y-1">
-          <span class="font-bold text-zinc-500 uppercase text-[10px] font-mono">Approach & Sun Aspect</span>
-          <p id="modal-crag-approach" class="font-medium text-paper-900">5 min walk • Morning sun • High wind exposure</p>
-        </div>
-        <div class="sm:col-span-2 space-y-1">
-          <span class="font-bold text-zinc-500 uppercase text-[10px] font-mono">Description & Local Tips</span>
-          <p id="modal-crag-description" class="text-zinc-600 leading-relaxed">Description</p>
-          <p id="modal-crag-tips" class="text-zinc-600 italic leading-relaxed pt-1">Tips</p>
-        </div>
-      </div>
-
       <!-- Footer Actions -->
       <div class="flex items-center justify-between pt-3 border-t-[1.5px] border-paper-200">
         <a id="modal-thecrag-link" href="#" target="_blank" rel="noopener" class="btn-editorial px-3 py-1.5 rounded-xl text-xs font-extrabold text-cobalt-700 flex items-center gap-1.5">
@@ -489,14 +472,9 @@
         regionLabel: 'Sydney Eastern Suburbs',
         lat: -33.8912,
         lng: 151.2785,
-        sandstoneType: 'hard-coastal',
-        dryingProfile: { dryHoursPerMm: 1.8, seepageRisk: 'none', shelterFactor: 0.3, sunExposure: 'morning-sun', windExposure: 'high' },
         grades: { min: 'V2', max: 'V11', count: 32 },
-        style: ['Ocean Slabs', 'Traverses', 'Hard Coastal Crimps'],
         approachMinutes: 5,
-        theCragUrl: 'https://www.thecrag.com/climbing/australia/sydney-area/node/12104523',
-        description: 'Premier coastal sandstone bouldering with fierce ocean waves crashing below. High salt-air friction when dry.',
-        tips: 'High tide and ocean spray can wet the lower starts. Dries exceptionally fast after rain thanks to coastal breezes.'
+        theCragUrl: 'https://www.thecrag.com/climbing/australia/sydney-area/node/12104523'
       },
       {
         id: 'south-coogee',
@@ -505,14 +483,9 @@
         regionLabel: 'Sydney Eastern Suburbs',
         lat: -33.9267,
         lng: 151.2612,
-        sandstoneType: 'hard-coastal',
-        dryingProfile: { dryHoursPerMm: 1.6, seepageRisk: 'none', shelterFactor: 0.3, sunExposure: 'full-sun', windExposure: 'high' },
         grades: { min: 'V1', max: 'V8', count: 18 },
-        style: ['Traverses', 'Pockets', 'Ocean Platforms'],
         approachMinutes: 5,
-        theCragUrl: 'https://www.thecrag.com/climbing/australia/sydney-area/node/12104528',
-        description: 'Flat wave-cut rock platform with clean sandstone blocks and instant coastal drying.',
-        tips: 'Best on low tide and low swell days. Sun bakes the rock dry within hours of rain.'
+        theCragUrl: 'https://www.thecrag.com/climbing/australia/sydney-area/node/12104528'
       },
       {
         id: 'maroubra-south',
@@ -521,14 +494,9 @@
         regionLabel: 'Sydney Eastern Suburbs',
         lat: -33.9554,
         lng: 151.2619,
-        sandstoneType: 'hard-coastal',
-        dryingProfile: { dryHoursPerMm: 1.7, seepageRisk: 'none', shelterFactor: 0.2, sunExposure: 'full-sun', windExposure: 'high' },
         grades: { min: 'V2', max: 'V10', count: 25 },
-        style: ['Fierce Crimps', 'Wave Platforms', 'Dynos'],
         approachMinutes: 7,
-        theCragUrl: 'https://www.thecrag.com/climbing/australia/sydney-area/node/12104531',
-        description: 'Rugged ocean platform boulders with incredible solid rock quality.',
-        tips: 'Watch for high surf; rock dries almost immediately in steady sea winds.'
+        theCragUrl: 'https://www.thecrag.com/climbing/australia/sydney-area/node/12104531'
       },
 
       // --- SYDNEY NORTH ---
@@ -539,14 +507,9 @@
         regionLabel: 'Northern Beaches & North Shore',
         lat: -33.8142,
         lng: 151.2988,
-        sandstoneType: 'hard-coastal',
-        dryingProfile: { dryHoursPerMm: 2.0, seepageRisk: 'none', shelterFactor: 0.6, sunExposure: 'afternoon-sun', windExposure: 'high' },
         grades: { min: 'V3', max: 'V12', count: 28 },
-        style: ['Steep Roofs', 'Power Endurance', 'Highballs'],
         approachMinutes: 15,
-        theCragUrl: 'https://www.thecrag.com/climbing/australia/sydney-area/node/12104524',
-        description: 'Scenic cliffside roofs and caves perched above Sydney Harbour entrance. Steep, athletic climbing.',
-        tips: 'Main cave stays dry in light showers due to massive overhang, but damp sea mist can reduce friction in high humidity.'
+        theCragUrl: 'https://www.thecrag.com/climbing/australia/sydney-area/node/12104524'
       },
       {
         id: 'lady-game-lindfield',
@@ -555,14 +518,9 @@
         regionLabel: 'Northern Beaches & North Shore',
         lat: -33.7785,
         lng: 151.1578,
-        sandstoneType: 'soft-valley',
-        dryingProfile: { dryHoursPerMm: 4.5, seepageRisk: 'high', shelterFactor: 0.1, sunExposure: 'full-shade', windExposure: 'sheltered' },
         grades: { min: 'V1', max: 'V9', count: 24 },
-        style: ['Pockets', 'Arêtes', 'Bush Blocks'],
         approachMinutes: 3,
-        theCragUrl: 'https://www.thecrag.com/climbing/australia/sydney-area/node/12104525',
-        description: 'Convenient roadside bouldering secluded inside Lane Cove National Park bushland.',
-        tips: 'Prone to ground seepage and slow drying due to dense tree canopy. Never climb after heavy rain until 48+ dry hours.'
+        theCragUrl: 'https://www.thecrag.com/climbing/australia/sydney-area/node/12104525'
       },
       {
         id: 'hassell-park-st-ives',
@@ -571,14 +529,9 @@
         regionLabel: 'Northern Beaches & North Shore',
         lat: -33.7224,
         lng: 151.1852,
-        sandstoneType: 'soft-valley',
-        dryingProfile: { dryHoursPerMm: 3.2, seepageRisk: 'moderate', shelterFactor: 0.2, sunExposure: 'morning-sun', windExposure: 'medium' },
         grades: { min: 'V0', max: 'V8', count: 30 },
-        style: ['Slabs', 'Technical Arêtes', 'Compression'],
         approachMinutes: 8,
-        theCragUrl: 'https://www.thecrag.com/climbing/australia/sydney-area/node/12104526',
-        description: 'Charming sandstone clusters with a dense spread of quality beginner and intermediate problems.',
-        tips: 'Morning sun helps dry the upper tier quickly, but shaded blocks remain damp after sustained downpours.'
+        theCragUrl: 'https://www.thecrag.com/climbing/australia/sydney-area/node/12104526'
       },
       {
         id: 'buffalo-creek-chatswood',
@@ -587,14 +540,9 @@
         regionLabel: 'Northern Beaches & North Shore',
         lat: -33.7915,
         lng: 151.1712,
-        sandstoneType: 'soft-valley',
-        dryingProfile: { dryHoursPerMm: 5.0, seepageRisk: 'high', shelterFactor: 0.1, sunExposure: 'full-shade', windExposure: 'sheltered' },
         grades: { min: 'V2', max: 'V10', count: 20 },
-        style: ['Slopers', 'Underclings', 'Crimps'],
         approachMinutes: 10,
-        theCragUrl: 'https://www.thecrag.com/climbing/australia/sydney-area/node/12104527',
-        description: 'Deep gully boulders nestled alongside the creek with unique sloper features.',
-        tips: 'Extremely seepage-prone after rain events. Allow ample drying time to protect fragile riverstone texture.'
+        theCragUrl: 'https://www.thecrag.com/climbing/australia/sydney-area/node/12104527'
       },
       {
         id: 'narrabeen-bungan',
@@ -603,14 +551,9 @@
         regionLabel: 'Northern Beaches & North Shore',
         lat: -33.6812,
         lng: 151.3214,
-        sandstoneType: 'hard-coastal',
-        dryingProfile: { dryHoursPerMm: 1.9, seepageRisk: 'low', shelterFactor: 0.4, sunExposure: 'morning-sun', windExposure: 'high' },
         grades: { min: 'V2', max: 'V9', count: 22 },
-        style: ['Wave Cut Roofs', 'Pinch Blocks', 'Beach Landings'],
         approachMinutes: 10,
-        theCragUrl: 'https://www.thecrag.com/climbing/australia/sydney-area/node/12104529',
-        description: 'Stunning headland bouldering right above pristine golden sand beaches.',
-        tips: 'Bring a tarp to keep your bouldering pads free of beach sand.'
+        theCragUrl: 'https://www.thecrag.com/climbing/australia/sydney-area/node/12104529'
       },
       {
         id: 'bangalley-head-avalon',
@@ -619,14 +562,9 @@
         regionLabel: 'Northern Beaches & North Shore',
         lat: -33.6284,
         lng: 151.3392,
-        sandstoneType: 'hard-coastal',
-        dryingProfile: { dryHoursPerMm: 1.8, seepageRisk: 'none', shelterFactor: 0.5, sunExposure: 'morning-sun', windExposure: 'high' },
         grades: { min: 'V3', max: 'V10', count: 18 },
-        style: ['Sea Cliff Caves', 'Horizontal Roofs', 'Pinch Spans'],
         approachMinutes: 20,
-        theCragUrl: 'https://www.thecrag.com/climbing/australia/sydney-area/node/12104536',
-        description: 'Dramatic ocean headland with rugged cave roofs above the Pacific Ocean.',
-        tips: 'Brisk sea breezes dry the stone rapidly. Take care on the steep cliff path approach.'
+        theCragUrl: 'https://www.thecrag.com/climbing/australia/sydney-area/node/12104536'
       },
 
       // --- SYDNEY INNER WEST ---
@@ -637,14 +575,9 @@
         regionLabel: 'Inner West & Parramatta',
         lat: -33.8345,
         lng: 151.1534,
-        sandstoneType: 'hard-coastal',
-        dryingProfile: { dryHoursPerMm: 2.6, seepageRisk: 'low', shelterFactor: 0.3, sunExposure: 'afternoon-sun', windExposure: 'medium' },
         grades: { min: 'V0', max: 'V7', count: 16 },
-        style: ['Harbour Arêtes', 'Mantels', 'Traverses'],
         approachMinutes: 6,
-        theCragUrl: 'https://www.thecrag.com/climbing/australia/sydney-area/node/12104530',
-        description: 'Historical parkland on the Parramatta River offering fun casual circuits with harbour views.',
-        tips: 'Good afternoon sun exposure aids quick drying on the arêtes.'
+        theCragUrl: 'https://www.thecrag.com/climbing/australia/sydney-area/node/12104530'
       },
       {
         id: 'undercliffe-wolli-creek',
@@ -653,14 +586,9 @@
         regionLabel: 'Inner West & Parramatta',
         lat: -33.9212,
         lng: 151.1423,
-        sandstoneType: 'iron-banded',
-        dryingProfile: { dryHoursPerMm: 2.8, seepageRisk: 'moderate', shelterFactor: 0.5, sunExposure: 'afternoon-sun', windExposure: 'medium' },
         grades: { min: 'V1', max: 'V11', count: 35 },
-        style: ['Ironstone Roofs', 'Heel Hooks', 'Compression Caving'],
         approachMinutes: 4,
-        theCragUrl: 'https://www.thecrag.com/climbing/australia/sydney-area/node/12104532',
-        description: 'Famous urban sandstone cave with hard ironstone bands and steep roofs.',
-        tips: 'The steep cave roof stays dry in light showers, but check top-out seepage after rain.'
+        theCragUrl: 'https://www.thecrag.com/climbing/australia/sydney-area/node/12104532'
       },
 
       // --- SYDNEY SOUTH ---
@@ -671,14 +599,9 @@
         regionLabel: 'Sydney South & Sutherland',
         lat: -34.0289,
         lng: 151.0456,
-        sandstoneType: 'hard-coastal',
-        dryingProfile: { dryHoursPerMm: 2.5, seepageRisk: 'low', shelterFactor: 0.3, sunExposure: 'morning-sun', windExposure: 'medium' },
         grades: { min: 'V1', max: 'V9', count: 22 },
-        style: ['River Needles', 'Sharp Crimps', 'Highballs'],
         approachMinutes: 10,
-        theCragUrl: 'https://www.thecrag.com/climbing/australia/sydney-area/node/12104539',
-        description: 'Scenic river valley bouldering in the Sutherland Shire with clean sandstone pillars and deep water solos.',
-        tips: 'Morning sun and gentle valley breezes allow good drying; check river levels after major storms.'
+        theCragUrl: 'https://www.thecrag.com/climbing/australia/sydney-area/node/12104539'
       },
       {
         id: 'kurnell-boulders',
@@ -687,14 +610,9 @@
         regionLabel: 'Sydney South & Sutherland',
         lat: -34.0156,
         lng: 151.2212,
-        sandstoneType: 'hard-coastal',
-        dryingProfile: { dryHoursPerMm: 1.6, seepageRisk: 'none', shelterFactor: 0.2, sunExposure: 'full-sun', windExposure: 'high' },
         grades: { min: 'V2', max: 'V8', count: 15 },
-        style: ['Ocean Platforms', 'Wave Features', 'Heel Hooks'],
         approachMinutes: 8,
-        theCragUrl: 'https://www.thecrag.com/climbing/australia/sydney-area/node/12104540',
-        description: 'Expansive ocean platform on the southern headland of Botany Bay with fast-drying coastal stone.',
-        tips: 'Full sun all day long makes this an ultra-fast drying winter spot.'
+        theCragUrl: 'https://www.thecrag.com/climbing/australia/sydney-area/node/12104540'
       },
 
       // --- BLUE MOUNTAINS ---
@@ -705,14 +623,9 @@
         regionLabel: 'Blue Mountains',
         lat: -33.6421,
         lng: 150.2642,
-        sandstoneType: 'mountain-sandstone',
-        dryingProfile: { dryHoursPerMm: 2.4, seepageRisk: 'low', shelterFactor: 0.4, sunExposure: 'morning-sun', windExposure: 'high' },
         grades: { min: 'V2', max: 'V12', count: 40 },
-        style: ['Mountain Ironstone', 'High Friction Pockets', 'Highballs'],
         approachMinutes: 12,
-        theCragUrl: 'https://www.thecrag.com/climbing/australia/blue-mountains/node/12104533',
-        description: 'World-class upper Blue Mountains bouldering with legendary crisp winter friction.',
-        tips: 'Elevation (~1000m) means 6-8°C cooler temperatures than Sydney. Ideal autumn/winter destination.'
+        theCragUrl: 'https://www.thecrag.com/climbing/australia/blue-mountains/node/12104533'
       },
       {
         id: 'medlow-bath-caves',
@@ -721,14 +634,9 @@
         regionLabel: 'Blue Mountains',
         lat: -33.6741,
         lng: 150.2912,
-        sandstoneType: 'mountain-sandstone',
-        dryingProfile: { dryHoursPerMm: 3.0, seepageRisk: 'moderate', shelterFactor: 0.7, sunExposure: 'afternoon-sun', windExposure: 'medium' },
         grades: { min: 'V3', max: 'V13', count: 36 },
-        style: ['Massive Roofs', 'Underclings', 'Knee Bars'],
         approachMinutes: 15,
-        theCragUrl: 'https://www.thecrag.com/climbing/australia/blue-mountains/node/12104534',
-        description: 'Overhanging amphitheatre with sustained roof climbing and steep boulder problems.',
-        tips: 'Overhang shelters routes from rain, but seepage tracks can develop after consecutive wet days.'
+        theCragUrl: 'https://www.thecrag.com/climbing/australia/blue-mountains/node/12104534'
       },
       {
         id: 'megalong-old-ford',
@@ -737,14 +645,9 @@
         regionLabel: 'Blue Mountains',
         lat: -33.7123,
         lng: 150.2514,
-        sandstoneType: 'mountain-sandstone',
-        dryingProfile: { dryHoursPerMm: 3.5, seepageRisk: 'moderate', shelterFactor: 0.2, sunExposure: 'full-sun', windExposure: 'medium' },
         grades: { min: 'V1', max: 'V8', count: 20 },
-        style: ['Granite-like Sandstone', 'River Blocks', 'Slabs'],
         approachMinutes: 5,
-        theCragUrl: 'https://www.thecrag.com/climbing/australia/blue-mountains/node/12104535',
-        description: 'Picturesque valley camping and bouldering surrounded by the Megalong Valley escarpment.',
-        tips: 'Gets very hot in middle of summer days; fantastic crisp friction on sunny winter mornings.'
+        theCragUrl: 'https://www.thecrag.com/climbing/australia/blue-mountains/node/12104535'
       },
       {
         id: 'warrimoo-lower-blue-mts',
@@ -753,14 +656,9 @@
         regionLabel: 'Blue Mountains',
         lat: -33.7289,
         lng: 150.6012,
-        sandstoneType: 'soft-valley',
-        dryingProfile: { dryHoursPerMm: 3.8, seepageRisk: 'moderate', shelterFactor: 0.2, sunExposure: 'morning-sun', windExposure: 'sheltered' },
         grades: { min: 'V1', max: 'V9', count: 22 },
-        style: ['Bush Blocks', 'Crimpy Faces', 'Arêtes'],
         approachMinutes: 10,
-        theCragUrl: 'https://www.thecrag.com/climbing/australia/blue-mountains/node/12104537',
-        description: 'Lower Mountains bush bouldering with easy access and shaded gullies.',
-        tips: 'Warmer than upper mountains in winter. Ensure 36+ hours of dry weather before climbing.'
+        theCragUrl: 'https://www.thecrag.com/climbing/australia/blue-mountains/node/12104537'
       },
 
       // --- CENTRAL COAST ---
@@ -771,14 +669,9 @@
         regionLabel: 'Central Coast',
         lat: -33.4385,
         lng: 151.3012,
-        sandstoneType: 'iron-banded',
-        dryingProfile: { dryHoursPerMm: 2.2, seepageRisk: 'low', shelterFactor: 0.3, sunExposure: 'full-sun', windExposure: 'high' },
         grades: { min: 'V1', max: 'V10', count: 26 },
-        style: ['Iron Swirls', 'High Friction Slabs', 'Bulges'],
         approachMinutes: 12,
-        theCragUrl: 'https://www.thecrag.com/climbing/australia/new-south-wales/central-coast/node/12104538',
-        description: 'Central Coast sandstone with prominent ironstone features, great texture, and sunny aspects.',
-        tips: 'Exposed hilltop location dries rapidly after rainfall with good air movement.'
+        theCragUrl: 'https://www.thecrag.com/climbing/australia/new-south-wales/central-coast/node/12104538'
       }
     ];
 
@@ -1535,9 +1428,7 @@
         if (this.searchQuery) {
           const matchName = crag.name.toLowerCase().includes(this.searchQuery);
           const matchRegion = crag.regionLabel.toLowerCase().includes(this.searchQuery);
-          const matchStyle = crag.style.some(s => s.toLowerCase().includes(this.searchQuery));
-          const matchDesc = crag.description.toLowerCase().includes(this.searchQuery);
-          if (!matchName && !matchRegion && !matchStyle && !matchDesc) return false;
+          if (!matchName && !matchRegion) return false;
         }
 
         // 2. Region Filter
@@ -1640,16 +1531,11 @@
 
           card.innerHTML = `
             <div>
-              <!-- Top Row: Region, Sandstone & Favorite -->
+              <!-- Top Row: Region & Favorite -->
               <div class="flex items-center justify-between gap-2 mb-2">
-                <div class="flex items-center gap-1.5 flex-wrap">
-                  <span class="px-2 py-0.5 rounded-md bg-paper-100 border border-paper-800 text-[10px] font-bold text-zinc-700">
-                    ${crag.regionLabel}
-                  </span>
-                  <span class="px-2 py-0.5 rounded-md bg-amber-50 border border-paper-800 text-[10px] font-bold text-amber-900">
-                    ${crag.sandstoneType.replace('-', ' ')}
-                  </span>
-                </div>
+                <span class="px-2 py-0.5 rounded-md bg-paper-100 border border-paper-800 text-[10px] font-bold text-zinc-700">
+                  ${crag.regionLabel}
+                </span>
                 <button onclick="UIController.toggleFavorite('${crag.id}', event)" class="p-1 rounded-lg hover:bg-paper-200 transition" title="Toggle favorite">
                   <i data-lucide="star" class="w-4 h-4 ${isFav ? 'text-amber-500 fill-amber-500' : 'text-zinc-400 fill-transparent'}"></i>
                 </button>
@@ -1663,10 +1549,6 @@
                 <span class="text-xs font-mono font-extrabold text-cobalt-700 shrink-0">
                   ${crag.grades.min}–${crag.grades.max}
                 </span>
-              </div>
-
-              <div class="flex items-center gap-1.5 flex-wrap mt-1.5">
-                ${crag.style.map(s => `<span class="px-1.5 py-0.5 rounded bg-paper-100 border border-paper-200 text-[10px] font-medium text-zinc-600">${s}</span>`).join('')}
               </div>
             </div>
 
@@ -1704,10 +1586,16 @@
             </div>
 
             <div class="flex items-center justify-between pt-1 text-xs text-zinc-600 font-medium">
-              <span class="flex items-center gap-1">
-                <i data-lucide="footprints" class="w-3.5 h-3.5 text-zinc-500"></i>
-                ${crag.approachMinutes} min approach
-              </span>
+              ${crag.approachMinutes ? `
+                <span class="flex items-center gap-1">
+                  <i data-lucide="footprints" class="w-3.5 h-3.5 text-zinc-500"></i>
+                  ${crag.approachMinutes} min approach
+                </span>
+              ` : `
+                <span class="text-[11px] font-mono text-zinc-500">
+                  ${crag.grades.count} problems
+                </span>
+              `}
               <button onclick="UIController.openCragDetails('${crag.id}')" class="font-extrabold text-cobalt-700 hover:text-cobalt-900 flex items-center gap-1 transition">
                 <span>7-Day Forecast</span>
                 <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
@@ -1749,8 +1637,18 @@
 
         // Populate modal data
         document.getElementById('modal-region-badge').textContent = crag.regionLabel;
-        document.getElementById('modal-sandstone-badge').textContent = `Sandstone: ${crag.sandstoneType}`;
         document.getElementById('modal-grades-badge').textContent = `${crag.grades.min}–${crag.grades.max} (${crag.grades.count} problems)`;
+        
+        const approachBadge = document.getElementById('modal-approach-badge');
+        if (approachBadge) {
+          if (crag.approachMinutes) {
+            approachBadge.textContent = `${crag.approachMinutes} min walk`;
+            approachBadge.classList.remove('hidden');
+          } else {
+            approachBadge.classList.add('hidden');
+          }
+        }
+
         document.getElementById('modal-crag-name').textContent = crag.name;
         
         // Modal Condition Callout
@@ -1801,12 +1699,6 @@
           li.textContent = r;
           reasonsList.appendChild(li);
         });
-
-        // Crag styles & tips
-        document.getElementById('modal-crag-style').textContent = crag.style.join(' • ');
-        document.getElementById('modal-crag-approach').textContent = `${crag.approachMinutes} min walk • ${crag.dryingProfile.sunExposure.replace('-', ' ')} • ${crag.dryingProfile.windExposure} wind exposure`;
-        document.getElementById('modal-crag-description').textContent = crag.description;
-        document.getElementById('modal-crag-tips').textContent = `Local Tip: ${crag.tips}`;
 
         // theCrag link
         const theCragLink = document.getElementById('modal-thecrag-link');

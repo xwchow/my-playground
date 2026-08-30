@@ -18,9 +18,9 @@ This application predicts safe climbing conditions using a two-tier mathematical
 The application uses a two-tier evaluation model:
 
 1. **Sandstone Moisture Gating (Tier 1)**:
-   - The engine checks recent precipitation and ground seepage risk.
+   - The engine checks recent precipitation.
    - If rainfall exceeds 1.5 mm, the engine sets status to `WET_DANGER`.
-   - The engine models drying time using sun exposure and wind speed.
+   - The engine models drying decay over a 3-day window.
 2. **Ambient Friction Scoring (Tier 2)**:
    - When the rock is dry, the engine calculates a friction score from 0 to 100.
    - Optimal friction requires cold temperature (below 16°C) and low dew point (below 10°C).
@@ -28,20 +28,7 @@ The application uses a two-tier evaluation model:
 
 ---
 
-## 3. Sandstone Typologies
-
-The application tracks 18 crags across six geological profiles:
-
-1. **Hard Coastal Sandstone**: Case-hardened by salt spray (e.g., Frontline Bondi).
-2. **Fine Coastal Sandstone**: Fine-grained maritime bluffs (e.g., North Head Manly).
-3. **Iron-Banded Sandstone**: Dense ironstone roofs (e.g., Undercliffe Earlwood).
-4. **Weathered Inland Sandstone**: Porous valley boulders (e.g., Lindfield Rocks).
-5. **Hard Inland Sandstone**: Open ridge formations (e.g., The Needles Woronora).
-6. **Mountain Quartzite Sandstone**: High-altitude coarse stone (e.g., Blackheath Boulders).
-
----
-
-## 4. Keyboard Shortcuts
+## 3. Keyboard Shortcuts
 
 Use these keyboard shortcuts to navigate the application:
 
@@ -55,7 +42,7 @@ Use these keyboard shortcuts to navigate the application:
 
 ---
 
-## 5. Verification and Tests
+## 4. Verification and Tests
 
 Run the automated verification test suite with Node.js:
 
@@ -68,8 +55,7 @@ Run the automated verification test suite with Node.js:
 
 ---
 
-## 6. Upcoming Features
+## 5. Upcoming Features
 
-- [ ] Add a SKILL that extracts crag information from theCrag given a crag name.
+- [x] Add a SKILL that extracts crag information from theCrag given a crag name.
 - [ ] Add all Sydney bouldering crags into `CRAGS_DATA`.
-
