@@ -57,4 +57,4 @@ Run the automated verification test suite with Node.js:
 
 ## 5. Upcoming Features
 
-- [ ] Add all Sydney bouldering crags into `CRAGS_DATA`.
+- [x] Add all Sydney bouldering crags into `CRAGS_DATA`.
