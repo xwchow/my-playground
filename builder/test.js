@@ -70,13 +70,16 @@ async function runTests() {
   assert(injectedReadme.includes('## 🛠️ How to Add a New Project'), 'README must retain structure');
   console.log('  ✅ README injection verified.');
 
-  // Test 5: Verify API route files exist and parse
+  // Test 5: Verify API route files exist, parse, and enforce STUDIO_SECRET
   console.log('\nTest 5: Verifying api/generate.js and api/commit.js...');
   const generateJs = await fs.readFile(path.join(ROOT_DIR, 'api/generate.js'), 'utf-8');
   const commitJs = await fs.readFile(path.join(ROOT_DIR, 'api/commit.js'), 'utf-8');
   assert(generateJs.includes('export default async function handler'), 'api/generate.js must export handler');
   assert(commitJs.includes('export default async function handler'), 'api/commit.js must export handler');
-  console.log('  ✅ API routes verified.');
+  assert(generateJs.includes('STUDIO_SECRET'), 'api/generate.js must check STUDIO_SECRET');
+  assert(commitJs.includes('STUDIO_SECRET'), 'api/commit.js must check STUDIO_SECRET');
+  assert(builderHtml.includes('id="passcode-modal"'), 'builder/index.html must include passcode modal');
+  console.log('  ✅ API routes and passcode authorization verified.');
 
   console.log('\n🎉 ALL BUILDER STUDIO TESTS PASSED!\n');
 }

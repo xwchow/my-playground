@@ -62,7 +62,7 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
   res.setHeader(
     'Access-Control-Allow-Headers',
-    'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
+    'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, x-studio-secret, Authorization'
   );
 
   if (req.method === 'OPTIONS') {
@@ -71,6 +71,15 @@ export default async function handler(req, res) {
 
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed. Use POST.' });
+  }
+
+  // Verify Studio Passcode if STUDIO_SECRET is configured
+  const expectedSecret = process.env.STUDIO_SECRET;
+  if (expectedSecret) {
+    const providedSecret = req.headers['x-studio-secret'] || (req.headers['authorization'] || '').replace(/^Bearer\s+/i, '');
+    if (providedSecret !== expectedSecret) {
+      return res.status(401).json({ error: 'Unauthorized: Invalid or missing Studio Passcode.' });
+    }
   }
 
   const { prompt, model: requestedModel } = req.body || {};

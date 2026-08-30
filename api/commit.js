@@ -111,7 +111,7 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,POST');
   res.setHeader(
     'Access-Control-Allow-Headers',
-    'X-CSRF-Token, X-Requested-With, Accept, Content-Type'
+    'X-CSRF-Token, X-Requested-With, Accept, Content-Type, x-studio-secret, Authorization'
   );
 
   if (req.method === 'OPTIONS') {
@@ -120,6 +120,15 @@ export default async function handler(req, res) {
 
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed. Use POST.' });
+  }
+
+  // Verify Studio Passcode if STUDIO_SECRET is configured
+  const expectedSecret = process.env.STUDIO_SECRET;
+  if (expectedSecret) {
+    const providedSecret = req.headers['x-studio-secret'] || (req.headers['authorization'] || '').replace(/^Bearer\s+/i, '');
+    if (providedSecret !== expectedSecret) {
+      return res.status(401).json({ error: 'Unauthorized: Invalid or missing Studio Passcode.' });
+    }
   }
 
   const { appData } = req.body || {};

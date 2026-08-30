@@ -22,6 +22,7 @@ Configure these environment variables in your Vercel project dashboard:
 | `GEMINI_API_KEY` | Google AI Studio API key | [Google AI Studio](https://aistudio.google.com/) |
 | `GITHUB_TOKEN` | GitHub Personal Access Token with repository write permissions | [GitHub Token Settings](https://github.com/settings/tokens/new) |
 | `GITHUB_REPO` | Target GitHub repository (for example, `xwchow/my-playground`) | GitHub |
+| `STUDIO_SECRET` | Secret PIN or passcode to protect your builder from unauthorized access | User-defined secret |
 
 ---
 

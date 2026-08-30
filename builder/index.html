@@ -148,6 +148,11 @@
           <option value="gemini-3.7-flash" selected>Gemini 3.7 Flash</option>
           <option value="gemini-3.6-flash">Gemini 3.6 Flash</option>
         </select>
+
+        <!-- Passcode / Settings Button -->
+        <button onclick="openPasscodeModal()" class="btn-editorial p-1.5 rounded-xl text-paper-900 flex items-center justify-center" title="Studio Passcode Settings">
+          <i data-lucide="lock" class="w-3.5 h-3.5 text-zinc-600"></i>
+        </button>
       </div>
     </div>
   </header>
@@ -313,12 +318,88 @@
     </div>
   </div>
 
+  <!-- PASSCODE SETTINGS MODAL -->
+  <div id="passcode-modal" class="hidden fixed inset-0 z-50 bg-paper-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="card-editorial bg-white rounded-2xl p-5 sm:p-6 max-w-sm w-full space-y-4 shadow-editorial-lg">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-xl bg-cobalt-50 border-[1.5px] border-paper-800 flex items-center justify-center text-cobalt-700 shadow-editorial-sm">
+            <i data-lucide="key" class="w-4 h-4"></i>
+          </div>
+          <h3 class="text-sm font-extrabold text-paper-900">Studio Passcode</h3>
+        </div>
+        <button onclick="closePasscodeModal()" class="btn-editorial p-1 rounded-lg text-zinc-500">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <p class="text-xs text-zinc-600 leading-relaxed" id="passcode-modal-msg">
+        Enter your secret PIN (set via <code class="font-mono bg-paper-200 px-1 py-0.5 rounded text-[11px]">STUDIO_SECRET</code> in Vercel) to authorize generation and GitHub commits.
+      </p>
+
+      <div class="space-y-1.5">
+        <label class="text-[11px] font-mono font-bold uppercase text-zinc-500">Secret Passcode</label>
+        <input
+          type="password"
+          id="passcode-input"
+          placeholder="Enter passcode..."
+          class="w-full bg-paper-100 border-[1.5px] border-paper-800 rounded-xl p-2.5 text-xs font-mono text-paper-900 focus:outline-none focus:bg-white shadow-editorial-sm"
+        />
+      </div>
+
+      <div class="flex items-center justify-end gap-2 pt-2">
+        <button onclick="savePasscode()" class="btn-primary px-4 py-2 rounded-xl text-xs font-extrabold flex items-center gap-1.5 w-full justify-center">
+          <i data-lucide="unlock" class="w-3.5 h-3.5"></i>
+          <span>Save & Unlock Studio</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- JAVASCRIPT LOGIC -->
   <script>
     lucide.createIcons();
 
     let currentAppData = null;
     let activeTab = 'chat';
+
+    function getAuthHeaders() {
+      const secret = localStorage.getItem('studio_secret') || '';
+      return {
+        'Content-Type': 'application/json',
+        'x-studio-secret': secret
+      };
+    }
+
+    function openPasscodeModal(customMsg = null) {
+      const modal = document.getElementById('passcode-modal');
+      const input = document.getElementById('passcode-input');
+      const msgEl = document.getElementById('passcode-modal-msg');
+
+      if (customMsg) {
+        msgEl.innerHTML = `<span class="text-red-600 font-bold">🔒 ${escapeHtml(customMsg)}</span>`;
+      }
+      input.value = localStorage.getItem('studio_secret') || '';
+      modal.classList.remove('hidden');
+      input.focus();
+    }
+
+    function closePasscodeModal() {
+      document.getElementById('passcode-modal').classList.add('hidden');
+    }
+
+    function savePasscode() {
+      const input = document.getElementById('passcode-input');
+      const pin = input.value.trim();
+      if (pin) {
+        localStorage.setItem('studio_secret', pin);
+        alert('🔒 Studio Passcode saved to your device!');
+      } else {
+        localStorage.removeItem('studio_secret');
+        alert('ℹ️ Studio Passcode cleared.');
+      }
+      closePasscodeModal();
+    }
 
     function setPrompt(text) {
       const input = document.getElementById('prompt-input');
@@ -368,9 +449,14 @@
       try {
         const res = await fetch('/api/generate', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: getAuthHeaders(),
           body: JSON.stringify({ prompt: promptText, model })
         });
+
+        if (res.status === 401) {
+          openPasscodeModal('Authentication required: Please enter your Studio Passcode.');
+          throw new Error('Unauthorized. Please enter your Studio Passcode.');
+        }
 
         const data = await res.json();
         if (!res.ok || !data.success) {
@@ -428,9 +514,14 @@
       try {
         const res = await fetch('/api/commit', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: getAuthHeaders(),
           body: JSON.stringify({ appData: currentAppData })
         });
+
+        if (res.status === 401) {
+          openPasscodeModal('Authentication required: Please enter your Studio Passcode to push.');
+          throw new Error('Unauthorized. Please enter your Studio Passcode.');
+        }
 
         const data = await res.json();
         if (!res.ok || !data.success) {
