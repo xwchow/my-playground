@@ -227,6 +227,12 @@ CRITICAL ARCHITECTURAL REQUIREMENTS:
    - Navigation: Top-left back button linking to "../" (Home) with arrow icon and consistent styling.
 4. Mobile & Touch Optimized: Large touch targets (min 44x44px), responsive layouts, haptic feedback if appropriate, Web Audio API sound FX.
 5. Self-Contained: The app must live in a dedicated folder (e.g. <slug>/index.html).
+6. Complete Working Logic (CRITICAL):
+   - Every single button, form, slider, and input MUST be fully functional with complete working JavaScript.
+   - Do NOT output placeholder, incomplete, or dummy functions.
+   - If using inline onclick (e.g. onclick="handleClick()"), define functions in the top-level script scope or directly on window (e.g. window.handleClick = ...).
+   - If using addEventListener, ensure element IDs exactly match document.getElementById calls.
+   - Call lucide.createIcons() at the bottom of the script to render icons inside buttons.
 
 OUTPUT FORMAT:
 Output MUST use these exact XML delimiter tags. DO NOT escape code inside JSON.

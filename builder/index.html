@@ -267,7 +267,7 @@
       <div class="flex-1 min-h-[500px] sm:min-h-[600px] card-editorial rounded-2xl overflow-hidden relative flex flex-col bg-paper-100">
         <iframe
           id="preview-frame"
-          sandbox="allow-scripts allow-modals"
+          sandbox="allow-scripts allow-modals allow-forms"
           class="w-full flex-1 border-0 bg-white"
         ></iframe>
 
@@ -435,9 +435,28 @@
       lastRuntimeError = null;
       document.getElementById('preview-error-banner').classList.add('hidden');
 
-      // Enhanced runtime error and rejection trap script
+      // Enhanced runtime error, rejection trap, and storage polyfill script
       const trapScript = `<script>
 (function() {
+  // Polyfill in-memory localStorage & sessionStorage for sandboxed iframes
+  try {
+    window.localStorage.getItem('__probe');
+  } catch (e) {
+    const memStore = {};
+    const createStorage = () => ({
+      getItem: (k) => (k in memStore ? memStore[k] : null),
+      setItem: (k, v) => { memStore[k] = String(v); },
+      removeItem: (k) => { delete memStore[k]; },
+      clear: () => { Object.keys(memStore).forEach(k => delete memStore[k]); },
+      get length() { return Object.keys(memStore).length; },
+      key: (i) => Object.keys(memStore)[i] || null
+    });
+    try {
+      Object.defineProperty(window, 'localStorage', { value: createStorage(), configurable: true, writable: true });
+      Object.defineProperty(window, 'sessionStorage', { value: createStorage(), configurable: true, writable: true });
+    } catch (_) {}
+  }
+
   const logs = [];
   const origError = console.error;
   console.error = function(...args) {

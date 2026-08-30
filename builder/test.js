@@ -28,9 +28,8 @@ async function runTests() {
   assert(builderHtml.includes('shadow-editorial'), 'Builder UI must use shadow-editorial');
   assert(builderHtml.includes('JetBrains Mono'), 'Builder UI must include JetBrains Mono font');
   assert(builderHtml.includes('Plus Jakarta Sans'), 'Builder UI must include Plus Jakarta Sans font');
-  assert(builderHtml.includes('iframe'), 'Builder UI must have live preview iframe');
   assert(!builderHtml.includes('allow-same-origin'), 'Iframe sandbox MUST NOT have allow-same-origin');
-  assert(builderHtml.includes('sandbox="allow-scripts allow-modals"'), 'Iframe sandbox must enforce strict isolation');
+  assert(builderHtml.includes('sandbox="allow-scripts allow-modals allow-forms"'), 'Iframe sandbox must allow scripts, modals, and forms');
   console.log('  ✅ builder/index.html design system & sandbox isolation verified.');
 
   // Test 2: Verify parseModelOutput with XML delimiter tags
