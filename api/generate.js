@@ -14,13 +14,12 @@ async function fetchJson(url, options = {}) {
 }
 
 /**
- * Load repository context (AGENTS.md, DESIGN_SYSTEM.md, index.html)
+ * Load repository context (AGENTS.md, DESIGN_SYSTEM.md)
  */
 async function getRepoContext() {
   const rootDir = process.cwd();
   let agentsDoc = '';
   let designSystemDoc = '';
-  let indexHtmlSample = '';
 
   try {
     agentsDoc = await fs.readFile(path.join(rootDir, 'AGENTS.md'), 'utf-8');
@@ -40,16 +39,7 @@ async function getRepoContext() {
     } catch {}
   }
 
-  try {
-    indexHtmlSample = await fs.readFile(path.join(rootDir, 'index.html'), 'utf-8');
-  } catch {
-    try {
-      const res = await fetch('https://raw.githubusercontent.com/xwchow/my-playground/main/index.html');
-      if (res.ok) indexHtmlSample = await res.text();
-    } catch {}
-  }
-
-  return { agentsDoc, designSystemDoc, indexHtmlSample };
+  return { agentsDoc, designSystemDoc };
 }
 
 /**

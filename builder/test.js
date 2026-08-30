@@ -10,7 +10,7 @@ import assert from 'assert';
 import { promises as fs } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { generateProjectCardHtml, injectCardIntoIndexHtml, injectEntryIntoReadme } from '../api/commit.js';
+import { generateProjectCardHtml, injectCardIntoIndexHtml, injectEntryIntoReadme, validateAppDataSecurity } from '../api/commit.js';
 import { parseModelOutput } from '../api/generate.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -20,8 +20,8 @@ const ROOT_DIR = path.resolve(__dirname, '../');
 async function runTests() {
   console.log('🧪 Running Vercel Builder Studio Verification Suite...\n');
 
-  // Test 1: Verify builder/index.html design system compliance
-  console.log('Test 1: Verifying builder/index.html design system tokens...');
+  // Test 1: Verify builder/index.html design system compliance & secure sandbox
+  console.log('Test 1: Verifying builder/index.html design system tokens & secure sandbox...');
   const builderHtml = await fs.readFile(path.join(ROOT_DIR, 'builder/index.html'), 'utf-8');
   assert(builderHtml.includes('card-editorial'), 'Builder UI must use card-editorial');
   assert(builderHtml.includes('btn-editorial'), 'Builder UI must use btn-editorial');
@@ -29,7 +29,9 @@ async function runTests() {
   assert(builderHtml.includes('JetBrains Mono'), 'Builder UI must include JetBrains Mono font');
   assert(builderHtml.includes('Plus Jakarta Sans'), 'Builder UI must include Plus Jakarta Sans font');
   assert(builderHtml.includes('iframe'), 'Builder UI must have live preview iframe');
-  console.log('  ✅ builder/index.html design system tokens verified.');
+  assert(!builderHtml.includes('allow-same-origin'), 'Iframe sandbox MUST NOT have allow-same-origin');
+  assert(builderHtml.includes('sandbox="allow-scripts allow-modals"'), 'Iframe sandbox must enforce strict isolation');
+  console.log('  ✅ builder/index.html design system & sandbox isolation verified.');
 
   // Test 2: Verify parseModelOutput with XML delimiter tags
   console.log('\nTest 2: Verifying parseModelOutput with raw unescaped code...');
@@ -122,6 +124,7 @@ Here is your mini-app!
   // Test 4: Verify index.html injection
   console.log('\nTest 4: Testing card injection into root index.html...');
   const sampleIndexHtml = `
+    <button data-filter="all" class="btn-editorial">All (2)</button>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl mx-auto" id="projects-grid">
       <!-- EXISTING CARD -->
     </div>
@@ -131,6 +134,7 @@ Here is your mini-app!
   `;
   const injectedIndex = injectCardIntoIndexHtml(sampleIndexHtml, mockApp);
   assert(injectedIndex.includes('href="./focus-clock/"'), 'Injected index must contain new card');
+  assert(injectedIndex.includes('All (3)'), 'Injected index must increment All counter');
   assert(injectedIndex.includes('<!-- Empty Search State -->'), 'Injected index must preserve structure');
   console.log('  ✅ Card injection into index.html verified.');
 
@@ -142,8 +146,37 @@ Here is your mini-app!
   assert(injectedReadme.includes('## 🛠️ How to Add a New Project'), 'README must retain structure');
   console.log('  ✅ README injection verified.');
 
-  // Test 6: Verify API route files exist, parse, and enforce STUDIO_SECRET
-  console.log('\nTest 6: Verifying api/generate.js and api/commit.js...');
+  // Test 6: Verify validateAppDataSecurity prevents path traversal
+  console.log('\nTest 6: Testing validateAppDataSecurity path traversal prevention...');
+  assert.throws(() => {
+    validateAppDataSecurity({
+      slug: 'bad-app',
+      files: [{ path: '../../etc/passwd', content: 'hack' }]
+    });
+  }, /Illegal path traversal/, 'Must reject .. in file path');
+
+  assert.throws(() => {
+    validateAppDataSecurity({
+      slug: 'bad-app',
+      files: [{ path: 'other-app/index.html', content: 'hack' }]
+    });
+  }, /must start with "bad-app\/"/, 'Must reject files outside app slug');
+
+  assert.throws(() => {
+    validateAppDataSecurity({
+      slug: 'bad-app',
+      files: [{ path: 'bad-app/malicious.exe', content: 'hack' }]
+    });
+  }, /unauthorized file extension/, 'Must reject non-web file extensions');
+
+  assert(validateAppDataSecurity({
+    slug: 'good-app',
+    files: [{ path: 'good-app/index.html', content: '<h1>Safe</h1>' }]
+  }), 'Must accept valid file paths');
+  console.log('  ✅ Path traversal & extension validation verified.');
+
+  // Test 7: Verify API route files exist, parse, and enforce STUDIO_SECRET
+  console.log('\nTest 7: Verifying api/generate.js and api/commit.js...');
   const generateJs = await fs.readFile(path.join(ROOT_DIR, 'api/generate.js'), 'utf-8');
   const commitJs = await fs.readFile(path.join(ROOT_DIR, 'api/commit.js'), 'utf-8');
   assert(generateJs.includes('export default async function handler'), 'api/generate.js must export handler');
