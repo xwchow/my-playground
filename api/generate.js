@@ -298,7 +298,7 @@ Apply the requested changes and fixes while keeping all other working features i
         parts: [{ text: systemInstruction }]
       },
       generationConfig: {
-        maxOutputTokens: 8192,
+        maxOutputTokens: 65536,
         temperature: 0.2
       }
     };
