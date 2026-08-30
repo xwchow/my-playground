@@ -70,7 +70,37 @@ Here is your mini-app!
   assert.strictEqual(parsed.files.length, 1);
   assert(parsed.files[0].content.includes('<h1>Test "Double Quotes"'), 'HTML content must be unescaped');
   assert(parsed.files[0].content.includes('const msg = "Don\'t break JSON parsing!"'), 'JS code must be intact');
-  console.log('  ✅ parseModelOutput successfully extracted raw HTML/JS without JSON errors.');
+
+  // Test 2b: Verify parseModelOutput with headless raw scripts (from screenshot)
+  const rawScriptOutput = `
+<meta>
+{
+  "slug": "pomodoro-focus",
+  "title": "Pomodoro Focus",
+  "category": "tools",
+  "emoji": "⏱️",
+  "summary": "Focus timer.",
+  "tags": ["Timer"]
+}
+</meta>
+
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com"></script>
+<!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<script>
+  tailwind.config = { theme: { extend: {} } };
+</script>
+<div class="p-6">
+  <h1>Focus Timer</h1>
+</div>
+`;
+  const parsedHeadless = parseModelOutput(rawScriptOutput);
+  assert.strictEqual(parsedHeadless.slug, 'pomodoro-focus');
+  assert.strictEqual(parsedHeadless.files.length, 1);
+  assert(parsedHeadless.files[0].content.includes('<!DOCTYPE html>'), 'Must wrap in valid HTML document');
+  assert(parsedHeadless.files[0].content.includes('tailwind.config'), 'Must retain scripts');
+  console.log('  ✅ parseModelOutput successfully handled headless script payloads.');
 
   // Test 3: Verify project card generator
   console.log('\nTest 3: Verifying generateProjectCardHtml helper...');

@@ -61,7 +61,7 @@ export function parseModelOutput(rawText) {
     throw new Error('Empty or invalid response from model');
   }
 
-  const text = rawText.trim();
+  let text = rawText.trim();
   let metadata = null;
   const files = [];
 
@@ -79,34 +79,39 @@ export function parseModelOutput(rawText) {
     }
   }
 
-  // 2. Extract all <file path="...">...</file> blocks
-  const fileRegex = /<file\s+path=["']([^"']+)["']>([\s\S]*?)<\/file>/gi;
+  // Remove <meta>...</meta> block from text to isolate code payload
+  let codeText = text.replace(/<meta>[\s\S]*?<\/meta>/gi, '').trim();
+
+  // 2. Extract <file path="...">...</file> (with or without closing </file>)
+  const fileRegex = /<file\s+path=["']([^"']+)["']>([\s\S]*?)(?:<\/file>|$)/gi;
   let match;
-  while ((match = fileRegex.exec(text)) !== null) {
+  while ((match = fileRegex.exec(codeText)) !== null) {
     const filePath = match[1].trim();
     let content = match[2].trim();
     if (content.startsWith('```')) {
       content = content.replace(/^```[a-z]*\s*\n?/i, '').replace(/\n?```$/i, '').trim();
     }
-    files.push({ path: filePath, content });
+    if (content.length > 30) {
+      files.push({ path: filePath, content });
+    }
   }
 
-  // 3. Fallback: If no <file> tags, try finding markdown code block ```html ... ```
+  // 3. Fallback: Check for markdown code fences (closed OR unclosed)
   if (files.length === 0) {
-    const htmlBlockMatch = text.match(/```(?:html|htm|xml)?\s*\n?([\s\S]*?)```/i);
-    if (htmlBlockMatch && htmlBlockMatch[1].trim().length > 50) {
+    const fenceMatch = codeText.match(/```(?:html|htm|xml)?\s*\n?([\s\S]*?)(?:```|$)/i);
+    if (fenceMatch && fenceMatch[1].trim().length > 50) {
       const slug = metadata?.slug || 'my-app';
       files.push({
         path: `${slug}/index.html`,
-        content: htmlBlockMatch[1].trim()
+        content: fenceMatch[1].trim()
       });
     }
   }
 
-  // 4. Fallback: Direct HTML tag extraction (<!DOCTYPE html> or <html>)
+  // 4. Fallback: Direct HTML tag extraction (<!DOCTYPE html> or <html> to </html> or end of string)
   if (files.length === 0) {
-    const directHtmlMatch = text.match(/(?:<!DOCTYPE\s+html[\s\S]*?<\/html>|<html[\s\S]*?<\/html>)/i);
-    if (directHtmlMatch) {
+    const directHtmlMatch = codeText.match(/(?:<!DOCTYPE\s+html|<html)[\s\S]*(?:<\/html>|$)/i);
+    if (directHtmlMatch && directHtmlMatch[0].trim().length > 50) {
       const slug = metadata?.slug || 'my-app';
       files.push({
         path: `${slug}/index.html`,
@@ -115,8 +120,18 @@ export function parseModelOutput(rawText) {
     }
   }
 
-  // 5. Fallback: If model returned pure JSON
-  if (!metadata || files.length === 0) {
+  // 5. Fallback: Raw HTML/Script payload (starts with <script, <head, <!--, <body, <div, etc.)
+  if (files.length === 0 && codeText.length > 50 && /<(script|body|head|div|main|style|link|!--)/i.test(codeText)) {
+    let rawHtml = codeText.replace(/^```[a-z]*\s*\n?/i, '').replace(/\n?```$/i, '').trim();
+    const slug = metadata?.slug || 'my-app';
+    files.push({
+      path: `${slug}/index.html`,
+      content: rawHtml
+    });
+  }
+
+  // 6. Fallback: If model returned pure JSON
+  if (files.length === 0) {
     try {
       let cleaned = text;
       if (cleaned.startsWith('```')) {
@@ -140,6 +155,16 @@ export function parseModelOutput(rawText) {
 
   const slug = metadata?.slug || files[0].path.split('/')[0] || 'my-app';
   const title = metadata?.title || slug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+
+  // Normalize HTML files: Ensure DOCTYPE and HTML wrapper exist if missing
+  for (const file of files) {
+    if (file.path.endsWith('.html')) {
+      let c = file.content.trim();
+      if (!c.toLowerCase().includes('<!doctype') && !c.toLowerCase().includes('<html')) {
+        file.content = `<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8">\n  <meta name="viewport" content="width=device-width, initial-scale=1.0">\n  <title>${title}</title>\n  <script src="https://cdn.tailwindcss.com"><\/script>\n  <script src="https://unpkg.com/lucide@latest"><\/script>\n</head>\n<body class="bg-[#f7f6f2] text-[#18181b] min-h-screen">\n${c}\n</body>\n</html>`;
+      }
+    }
+  }
 
   return {
     slug,
