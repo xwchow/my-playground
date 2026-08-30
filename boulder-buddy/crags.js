@@ -85,6 +85,17 @@ const CRAGS_DATA = [
     theCragUrl: 'https://www.thecrag.com/en/climbing/australia/northern-beaches/area/667176168'
   },
   {
+    id: 'black-cave',
+    name: 'Black Cave (Manly)',
+    region: 'sydney-north',
+    regionLabel: 'Northern Beaches & North Shore',
+    lat: -33.805297,
+    lng: 151.272203,
+    grades: { min: 'V1', max: 'V13', count: 18 },
+    approachMinutes: 5,
+    theCragUrl: 'https://www.thecrag.com/en/climbing/australia/northern-beaches/area/524265501'
+  },
+  {
     id: 'belrose',
     name: 'Belrose',
     region: 'sydney-north',
