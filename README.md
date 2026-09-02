@@ -16,8 +16,6 @@ A personal collection of tools and web projects built for things that interest m
 │   ├── crags.js               # Dedicated verified crag dataset
 │   ├── README.md              # Sandstone drying physics & crags guide
 │   └── test.js                # Zero-dependency verification test suite
-├── hangboard-timer/           # ⏱️ CrimpLab — Hangboard Protocol Timer
-│   └── index.html             # Self-contained SPA
 ├── docs/
 │   └── design-system/         # 🎨 Editorial Paper Design System documentation & tokens
 │       ├── DESIGN_SYSTEM.md
@@ -46,12 +44,6 @@ Real-time Sydney bouldering weather forecaster, rock dryness evaluator, and fric
 - **Interactive Map**: Custom condition-coded SVG markers, search, region & grade filters, and favorites.
 - **Client-Side & Offline Ready**: Batch API queries via Open-Meteo with 30-minute caching and synthetic fallback data.
 - **Documentation**: See [`boulder-buddy/README.md`](./boulder-buddy/README.md).
-
-### 3. [CrimpLab — Hangboard Protocol Timer](./hangboard-timer/)
-Precision hangboard interval timer for rock climbing training protocols.
-- **Protocols**: Max Hangs, Repeaters (7:3), and Density Hangs with audio cues.
-- **Custom Regimes**: Configurable hang, rest, rep, and set timers.
-- **Zero Dependencies**: Single-file HTML, Tailwind CSS, and Web Audio API.
 
 ---
 

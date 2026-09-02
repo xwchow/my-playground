@@ -41,8 +41,6 @@ This repository is built as a zero-build-step, static playground inspired by sit
 │   ├── crags.js               # Dedicated verified crag dataset
 │   ├── README.md              # Sandstone drying physics & crags guide
 │   └── test.js                # Zero-dependency verification test suite
-├── hangboard-timer/           # ⏱️ CrimpLab — Hangboard Protocol Timer
-│   └── index.html             # Self-contained SPA
 ├── docs/
 │   └── design-system/
 │       ├── DESIGN_SYSTEM.md   # 🎨 Unified design system reference
