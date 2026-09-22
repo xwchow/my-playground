@@ -328,14 +328,14 @@ const CRAGS_DATA = [
   },
   {
     id: 'fish-ponds',
-    name: 'Fish Ponds (North Wahroonga)',
+    name: 'Fishponds (Hornsby)',
     region: 'sydney-north',
     regionLabel: 'Northern Beaches & North Shore',
-    lat: -33.700208,
-    lng: 151.132362,
-    grades: { min: 'V0', max: 'V10', count: 102 },
-    approachMinutes: 5,
-    theCragUrl: 'https://www.thecrag.com/en/climbing/australia/north-shore/area/879045540'
+    lat: -33.692214,
+    lng: 151.084823,
+    grades: { min: 'V1', max: 'V10', count: 6 },
+    approachMinutes: 20,
+    theCragUrl: 'https://www.thecrag.com/en/climbing/australia/hornsby-and-the-north/area/1963642659'
   },
 
   // ==========================================
