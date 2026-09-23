@@ -69,9 +69,9 @@ Real-time Sydney bouldering weather forecaster, rock dryness evaluator, and fric
 
 ### 3. [Studio Builder](./builder/)
 Mobile-first creation studio that generates, previews, and deploys new single-file apps into this repository.
-- **Generation**: [`handleGenerate()`](./builder/index.html#L567) posts to [`api/generate.js`](./api/generate.js#L174), which parses model output with [`parseModelOutput()`](./api/generate.js#L49).
-- **Sandboxed Preview**: [`setPreviewContent()`](./builder/index.html#L434) injects an error trap into a restricted iframe ([`sandbox` attribute](./builder/index.html#L270)).
-- **Deployment**: [`handleCommit()`](./builder/index.html#L652) posts to [`api/commit.js`](./api/commit.js#L158), which injects the new project card ([`injectCardIntoIndexHtml()`](./api/commit.js#L73)) and README entry ([`injectEntryIntoReadme()`](./api/commit.js#L100)).
+- **Generation**: [`handleGenerate()`](./builder/index.html#L568) posts to [`api/generate.js`](./api/generate.js#L174), which parses model output with [`parseModelOutput()`](./api/generate.js#L49).
+- **Sandboxed Preview**: [`setPreviewContent()`](./builder/index.html#L435) injects an error trap into a restricted iframe ([`sandbox` attribute](./builder/index.html#L271)).
+- **Deployment**: [`handleCommit()`](./builder/index.html#L653) posts to [`api/commit.js`](./api/commit.js#L158), which injects the new project card ([`injectCardIntoIndexHtml()`](./api/commit.js#L73)) and README entry ([`injectEntryIntoReadme()`](./api/commit.js#L100)).
 - **Documentation**: See [`builder/README.md`](./builder/README.md).
 
 ---

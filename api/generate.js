@@ -303,10 +303,10 @@ Apply the requested changes and fixes while keeping all other working features i
       }
     };
 
-    // Candidate model sequence: requested -> gemini-3.7-flash -> gemini-3.6-flash
+    // Candidate model sequence: requested -> gemini-3.8-flash -> gemini-3.7-flash
     const candidateModels = [
-      requestedModel || 'gemini-3.7-flash',
-      'gemini-3.6-flash'
+      requestedModel || 'gemini-3.8-flash',
+      'gemini-3.7-flash'
     ].filter((m, idx, self) => self.indexOf(m) === idx);
 
     let rawTextResponse = '';

@@ -8,10 +8,10 @@ Source: [`index.html`](./index.html) (client), [`api/generate.js`](../api/genera
 
 ## 🎯 Features
 
-- **Conversational Studio**: Generate complete web applications with Gemini — [`handleGenerate()`](./index.html#L567) calls [`/api/generate`](../api/generate.js#L174), which tries `gemini-3.7-flash` then falls back to `gemini-3.6-flash` ([`api/generate.js#L307`](../api/generate.js#L307)).
-- **Interactive Live Preview**: Test touch controls, layouts, and sound effects in a sandboxed frame before you publish — [`setPreviewContent()`](./index.html#L434) writes into an iframe restricted to `allow-scripts allow-modals allow-forms` ([`index.html#L270`](./index.html#L270)).
-- **Runtime Error Auto-Fix**: Errors trapped inside the preview are fed back to the model with surrounding source context — [`autoFixRuntimeError()`](./index.html#L402).
-- **Atomic Deployment**: Commit new applications directly to GitHub with one tap — [`handleCommit()`](./index.html#L652) calls [`/api/commit`](../api/commit.js#L158), which retries up to 3 times when `HEAD` shifts ([`api/commit.js#L202`](../api/commit.js#L202)).
+- **Conversational Studio**: Generate complete web applications with Gemini — [`handleGenerate()`](./index.html#L568) calls [`/api/generate`](../api/generate.js#L174), which tries `gemini-3.8-flash` then falls back to `gemini-3.7-flash` ([`api/generate.js#L307`](../api/generate.js#L307)).
+- **Interactive Live Preview**: Test touch controls, layouts, and sound effects in a sandboxed frame before you publish — [`setPreviewContent()`](./index.html#L435) writes into an iframe restricted to `allow-scripts allow-modals allow-forms` ([`index.html#L271`](./index.html#L271)).
+- **Runtime Error Auto-Fix**: Errors trapped inside the preview are fed back to the model with surrounding source context — [`autoFixRuntimeError()`](./index.html#L403).
+- **Atomic Deployment**: Commit new applications directly to GitHub with one tap — [`handleCommit()`](./index.html#L653) calls [`/api/commit`](../api/commit.js#L158), which retries up to 3 times when `HEAD` shifts ([`api/commit.js#L202`](../api/commit.js#L202)).
 - **Design System Enforcement**: Applications automatically follow the [Editorial Paper Design System](../docs/design-system/DESIGN_SYSTEM.md). [`getRepoContext()`](../api/generate.js#L19) loads `AGENTS.md` and `DESIGN_SYSTEM.md` into the system instruction ([`api/generate.js#L216`](../api/generate.js#L216)).
 
 ---
@@ -22,15 +22,15 @@ Source: [`index.html`](./index.html) (client), [`api/generate.js`](../api/genera
 
 | Concern | Symbol | Location |
 | :--- | :--- | :--- |
-| Passcode header | `getAuthHeaders()` | [`index.html#L381`](./index.html#L381) |
-| Passcode modal | `openPasscodeModal()` / `savePasscode()` | [`index.html#L508`](./index.html#L508) |
-| Error auto-fix | `autoFixRuntimeError()` | [`index.html#L402`](./index.html#L402) |
-| Sandboxed preview | `setPreviewContent()` | [`index.html#L434`](./index.html#L434) |
-| Storage polyfill for iframe | `createStorage()` | [`index.html#L446`](./index.html#L446) |
-| Tab switching | `switchTab()` | [`index.html#L544`](./index.html#L544) |
-| Generation | `handleGenerate()` | [`index.html#L567`](./index.html#L567) |
-| Deployment | `handleCommit()` | [`index.html#L652`](./index.html#L652) |
-| Chat rendering | `appendChatMessage()` / `formatMarkdown()` | [`index.html#L690`](./index.html#L690) |
+| Passcode header | `getAuthHeaders()` | [`index.html#L382`](./index.html#L382) |
+| Passcode modal | `openPasscodeModal()` / `savePasscode()` | [`index.html#L509`](./index.html#L509) |
+| Error auto-fix | `autoFixRuntimeError()` | [`index.html#L403`](./index.html#L403) |
+| Sandboxed preview | `setPreviewContent()` | [`index.html#L435`](./index.html#L435) |
+| Storage polyfill for iframe | `createStorage()` | [`index.html#L447`](./index.html#L447) |
+| Tab switching | `switchTab()` | [`index.html#L545`](./index.html#L545) |
+| Generation | `handleGenerate()` | [`index.html#L568`](./index.html#L568) |
+| Deployment | `handleCommit()` | [`index.html#L653`](./index.html#L653) |
+| Chat rendering | `appendChatMessage()` / `formatMarkdown()` | [`index.html#L691`](./index.html#L691) |
 
 ### Serverless — [`api/generate.js`](../api/generate.js)
 
@@ -65,7 +65,7 @@ Configure these environment variables in your Vercel project dashboard:
 | `GITHUB_REPO` | Target GitHub repository (defaults to `xwchow/my-playground`) | [`commit.js#L192`](../api/commit.js#L192) | GitHub |
 | `STUDIO_SECRET` | Secret PIN or passcode to protect your builder from unauthorized access | [`generate.js#L193`](../api/generate.js#L193), [`commit.js#L176`](../api/commit.js#L176) | User-defined secret |
 
-If `STUDIO_SECRET` is unset, both endpoints skip authorization entirely. When it is set, the client sends it as the `x-studio-secret` header from [`getAuthHeaders()`](./index.html#L381).
+If `STUDIO_SECRET` is unset, both endpoints skip authorization entirely. When it is set, the client sends it as the `x-studio-secret` header from [`getAuthHeaders()`](./index.html#L382).
 
 ---
 
@@ -85,9 +85,9 @@ If `STUDIO_SECRET` is unset, both endpoints skip authorization entirely. When it
 1. Open `https://<your-vercel-domain>/builder/` on your mobile phone.
 2. Add the page to your home screen for quick access.
 3. Enter your application requirements in the input field.
-4. Select **Generate App** to build the application — [`handleGenerate()`](./index.html#L567).
-5. Tap **Preview** to test the application interactively — [`setPreviewContent()`](./index.html#L434).
-6. Select **Push to GitHub** to publish your application — [`handleCommit()`](./index.html#L652).
+4. Select **Generate App** to build the application — [`handleGenerate()`](./index.html#L568).
+5. Tap **Preview** to test the application interactively — [`setPreviewContent()`](./index.html#L435).
+6. Select **Push to GitHub** to publish your application — [`handleCommit()`](./index.html#L653).
 
 ---
 
