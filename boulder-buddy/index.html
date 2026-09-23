@@ -1052,7 +1052,7 @@
           } else if (e.key >= '1' && e.key <= '7') {
             const dayNum = parseInt(e.key, 10);
             const targetDayIdx = 2 + dayNum; // 1 -> index 3 (today), 7 -> index 9
-            this.selectForecastDay(targetDayIdx);
+            this.setForecastDay(targetDayIdx);
           } else if (e.key.toLowerCase() === 'f') {
             e.preventDefault();
             this.toggleFavoritesOnly();

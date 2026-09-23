@@ -5,7 +5,7 @@
 
 const CRAGS_DATA = [
   // ==========================================
-  // 📍 Northern Beaches & North Shore (29 crags)
+  // 📍 Northern Beaches & North Shore (30 crags)
   // ==========================================
   {
     id: 'palm-beach',
